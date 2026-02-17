@@ -1,4 +1,4 @@
-# Cocktail Cortex
+# Cocktail Cartography
 
 An interactive clustering visualization of 102 classic cocktails, using UMAP dimensionality reduction to explore how different ways of representing a cocktail's character produce different — and sometimes surprising — groupings.
 
