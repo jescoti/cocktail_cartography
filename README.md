@@ -68,10 +68,31 @@ Treats a cocktail as **grammar** rather than flavor. Each of 4 functional slots 
 
 Ingredients within a slot are volume-weighted and summed within that slot only. The 4 sub-vectors are concatenated to form the full 60-dim representation.
 
-This means two drinks can have very similar flavors but land far apart if those flavors come from different structural positions — and vice versa. The Negroni and Americano are an instructive example: they cluster together here precisely because campari plays the `accent` role in both (the Americano recipe was initially miscoded with campari as `base`, which pushed it away; correcting this collapsed the distance to 0.87 in UMAP space).
+This means two drinks can have very similar flavors but land far apart if those flavors come from different structural positions — and vice versa. The Negroni and Americano are an instructive example: they cluster together here precisely because campari plays the `accent` role in both. However, whenthe Americano recipe was initially composed with campari as `base`, it produced a significant distance between two otherwise similar drinks. Correcting this collapsed the distance to 0.87 in UMAP space, but the impact of this small change illustrates the brittleness of this method.
 
 #### 4. PERCEPTUAL (15-dim)
 A modified BLEND that **down-weights neutral filler ingredients** and **amplifies the most intense components**. A `punch_weight` parameter (0.4) re-balances contributions by flavor intensity rather than pure volume. This gives more influence to high-proof, bold-flavored accents relative to large-volume but neutral components like soda water or ice-diluted juice.
+
+**The formula (lines 194–198):**
+```python
+stacked = np.array(ingredient_vecs)   # shape: (n_ingredients, 15)
+max_vec  = stacked.max(axis=0)        # column-wise max: shape (15,)
+blend    = blend_vector(recipe)       # volume-weighted average: shape (15,)
+
+return PUNCH_WEIGHT * max_vec + (1 - PUNCH_WEIGHT) * blend
+# = 0.4 × max_vec + 0.6 × blend
+```
+
+For each of the 15 flavor dimensions independently, it takes the per-column maximum across all ingredients in the drink, then linearly blends that with the normal volume-weighted average (40/60 split).
+
+**What this actually means**
+The `max_vec` records the highest value any single ingredient contributes to each flavor channel — regardless of volume. So if a drink has 60ml gin (smoke=0.0) and 7.5ml islay scotch (smoke=0.9), the `max_vec` smoke dimension is 0.9. In the plain BLEND, islay scotch contributes only `7.5/67.5 × 0.9 ≈ 0.10`. Perceptual gives it `0.4 × 0.9 + 0.6 × 0.10 = 0.42` — four times more weight. This is the model's approximation of how aromatic intensity, proof, and volatility let minor-volume ingredients dominate perception. Fernet Branca, green chartreuse, mezcal, absinthe, and islay scotch all benefit from this. Large-volume but neutral ingredients (soda water, prosecco, egg white, lime juice) lose relative influence.
+
+**Where it's imprecise**
+The `max_vec` is taken per dimension independently, not per ingredient. So the "max smoky" ingredient and the "max herbal" ingredient might be completely different — the vector describes a kind of Frankenstein ingredient that maximally expresses every channel simultaneously from any contributor. That's not physically realistic. It works acceptably because strong ingredients tend to be strong across correlated dimensions (mezcal is both smoky and rich; green chartreuse is both herbal and spicy), but it could misrepresent, say, a drink where the smokiest ingredient is neutral everywhere else. The 40/60 split `(PUNCH_WEIGHT = 0.4)` was chosen manually, not tuned. It's a single parameter with no validation against human perception data.
+
+**What it doesn't capture**
+The perceptual insight it's gesturing at — that 7.5ml of Fernet "punches above its weight" — is real, but the mechanism it's modeling is really aromatic intensity × volatility, not just max(flavor_value). A proper model would weight each ingredient by something like its aromatic compound concentration or proof level. Those values aren't in the dataset, so the max-pooling is a structural proxy for the same idea.
 
 ---
 
