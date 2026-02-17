@@ -1,5 +1,5 @@
 """
-Validation script — run with:  python -m cocktail_cortex
+Validation script — run with:  python -m cocktail_cartography
 or directly:                   python __main__.py
 """
 
