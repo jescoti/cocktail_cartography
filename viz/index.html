@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cocktail Cortex — Clustering Viz</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    /* ── Reset & base ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+      font-size: 13px;
+      background: #0f0f12;
+      color: #d4d4d8;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ── Sidebar ──────────────────────────────────────────────── */
+    #sidebar {
+      width: 280px;
+      min-width: 180px;
+      max-width: 520px;
+      background: #17171c;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      padding: 16px;
+      gap: 20px;
+      flex-shrink: 0;
+    }
+
+    /* ── Resize handle ────────────────────────────────────────── */
+    #resize-handle {
+      width: 5px;
+      background: #2a2a35;
+      cursor: col-resize;
+      flex-shrink: 0;
+      position: relative;
+      transition: background 0.15s;
+      z-index: 10;
+    }
+    #resize-handle:hover,
+    #resize-handle.dragging {
+      background: #f97316;
+    }
+    /* Wider invisible hit area */
+    #resize-handle::after {
+      content: "";
+      position: absolute;
+      inset: 0 -4px;
+    }
+
+    h1 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #f4f4f5;
+      letter-spacing: 0.02em;
+    }
+    h1 span { color: #f97316; }
+
+    .section-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #71717a;
+      margin-bottom: 8px;
+    }
+
+    /* Strategy radio group */
+    .strategy-btn {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 9px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: background 0.15s, border-color 0.15s;
+      user-select: none;
+    }
+    .strategy-btn:hover { background: #1e1e26; }
+    .strategy-btn.active {
+      background: #1e1e26;
+      border-color: #f97316;
+    }
+    .strategy-btn input { display: none; }
+    .strategy-title {
+      font-weight: 600;
+      color: #f4f4f5;
+      font-size: 12px;
+    }
+    .strategy-desc {
+      font-size: 11px;
+      color: #71717a;
+      line-height: 1.4;
+    }
+
+    /* α/β slider */
+    #alpha-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    #alpha-row.disabled { opacity: 0.35; pointer-events: none; }
+    #alpha-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      color: #71717a;
+    }
+    #alpha-slider-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    #alpha-slider {
+      flex: 1;
+      accent-color: #f97316;
+    }
+    .alpha-step-btn {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      background: #1e1e26;
+      border: 1px solid #3f3f46;
+      border-radius: 4px;
+      color: #a1a1aa;
+      font-size: 13px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      transition: background 0.1s, border-color 0.1s, color 0.1s;
+    }
+    .alpha-step-btn:hover { background: #2a2a35; border-color: #f97316; color: #f97316; }
+    .alpha-step-btn:active { background: #f97316; color: #fff; }
+    #alpha-value {
+      text-align: center;
+      font-size: 11px;
+      color: #a1a1aa;
+    }
+
+    /* Dropdowns and toggles */
+    select {
+      width: 100%;
+      background: #1e1e26;
+      border: 1px solid #2a2a35;
+      border-radius: 6px;
+      color: #d4d4d8;
+      padding: 6px 8px;
+      font-size: 12px;
+      cursor: pointer;
+      outline: none;
+    }
+    select:focus { border-color: #f97316; }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+    .toggle-row input[type="checkbox"] { accent-color: #f97316; }
+
+    /* Family checkboxes */
+    .family-checks {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .family-checks label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .family-checks input[type="checkbox"] { accent-color: #f97316; }
+
+    /* Explanation panel */
+    #explanation {
+      background: #1a1a22;
+      border: 1px solid #2a2a35;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 11.5px;
+      line-height: 1.6;
+      color: #a1a1aa;
+    }
+    #explanation strong { color: #f4f4f5; }
+
+    /* ── Main area ────────────────────────────────────────────── */
+    #main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    #chart {
+      flex: 1;
+      position: relative;
+    }
+
+    svg#scatter {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Dots */
+    .dot {
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .dot:hover { filter: brightness(1.4); }
+    .dot.dimmed { opacity: 0.08; }
+
+    /* Labels */
+    .dot-label {
+      font-size: 10px;
+      fill: #d4d4d8;
+      pointer-events: none;
+      user-select: none;
+      paint-order: stroke fill;
+      stroke: #0f0f12;
+      stroke-width: 3px;
+      stroke-linejoin: round;
+    }
+    .dot-label.dimmed { opacity: 0.08; }
+
+    /* Leader lines from label to dot */
+    .label-line {
+      stroke: #3f3f46;
+      stroke-width: 1;
+      pointer-events: none;
+      fill: none;
+    }
+    .label-line.dimmed { opacity: 0.08; }
+
+    /* ── Tooltip ──────────────────────────────────────────────── */
+    #tooltip {
+      position: absolute;
+      top: 0; left: 0;
+      background: #17171c;
+      border: 1px solid #3f3f46;
+      border-radius: 10px;
+      padding: 14px 16px;
+      pointer-events: none;
+      opacity: 0;
+      min-width: 240px;
+      max-width: 300px;
+      transition: opacity 0.1s;
+      z-index: 100;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+    }
+    #tooltip.pinned { pointer-events: all; }
+    #tooltip.visible { opacity: 1; }
+
+    .tt-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: #f4f4f5;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .tt-meta {
+      font-size: 11px;
+      color: #71717a;
+      margin-bottom: 10px;
+    }
+    .tt-components {
+      font-size: 11.5px;
+      line-height: 1.8;
+      border-collapse: collapse;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+    .tt-components td { padding: 1px 4px; vertical-align: top; }
+    .tt-components td:first-child { color: #f4f4f5; font-weight: 500; }
+    .tt-components td:nth-child(2) { color: #71717a; font-size: 10px; }
+    .tt-components td:last-child { color: #52525b; text-align: right; }
+    .tt-garnish {
+      font-size: 11px;
+      color: #71717a;
+      margin-bottom: 10px;
+    }
+    .tt-nn-title {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #52525b;
+      margin-bottom: 6px;
+    }
+    .tt-nn-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      padding: 2px 0;
+    }
+    .tt-nn-name { color: #a1a1aa; }
+    .tt-nn-dist { color: #52525b; font-variant-numeric: tabular-nums; }
+    .tt-close {
+      display: block;
+      margin-top: 10px;
+      text-align: center;
+      font-size: 10px;
+      color: #52525b;
+      cursor: pointer;
+    }
+    .tt-close:hover { color: #f97316; }
+
+    /* ── Loading overlay ──────────────────────────────────────── */
+    #loading {
+      position: absolute;
+      inset: 0;
+      background: #0f0f12;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: #52525b;
+      z-index: 200;
+    }
+
+    /* Legend */
+    #legend {
+      position: absolute;
+      bottom: 16px;
+      right: 16px;
+      background: #17171c;
+      border: 1px solid #2a2a35;
+      border-radius: 8px;
+      padding: 10px 14px;
+      min-width: 130px;
+      z-index: 10;
+    }
+    #legend-title {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #52525b;
+      margin-bottom: 8px;
+    }
+    .legend-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: #a1a1aa;
+      padding: 2px 0;
+    }
+    .legend-swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── SIDEBAR ──────────────────────────────────────────────────────────── -->
+<div id="sidebar">
+  <h1>Cocktail <span>Cortex</span></h1>
+
+  <!-- Strategy selector -->
+  <div>
+    <div class="section-label">Vectorization Strategy</div>
+    <div id="strategy-group" style="display:flex;flex-direction:column;gap:4px;">
+
+      <label class="strategy-btn active" data-strategy="blend">
+        <input type="radio" name="strategy" value="blend" checked />
+        <span class="strategy-title">Flavor Blend</span>
+        <span class="strategy-desc">What does it taste like overall? Proportion-weighted sum of ingredient flavors.</span>
+      </label>
+
+      <label class="strategy-btn" data-strategy="blend_struct">
+        <input type="radio" name="strategy" value="blend_struct" />
+        <span class="strategy-title">Blend + Structure</span>
+        <span class="strategy-desc">Taste + shape. Adds how much of the drink is base vs. modifier vs. citrus. Use the α/β slider to weight them.</span>
+      </label>
+
+      <label class="strategy-btn" data-strategy="role_slot">
+        <input type="radio" name="strategy" value="role_slot" />
+        <span class="strategy-title">Role-Slot</span>
+        <span class="strategy-desc">Structure first. Compares base-to-base, modifier-to-modifier. Two drinks are close only if the same slots taste similar.</span>
+      </label>
+
+      <label class="strategy-btn" data-strategy="perceptual">
+        <input type="radio" name="strategy" value="perceptual" />
+        <span class="strategy-title">Perceptual</span>
+        <span class="strategy-desc">Punchy ingredients win. Small amounts of Chartreuse, Fernet, Mezcal pull their slot's character toward theirs.</span>
+      </label>
+
+    </div>
+  </div>
+
+  <!-- α/β slider -->
+  <div>
+    <div class="section-label">Flavor ↔ Structure Weight (α/β)</div>
+    <div id="alpha-row" class="disabled">
+      <div id="alpha-labels">
+        <span>← More flavor</span>
+        <span>More structure →</span>
+      </div>
+      <div id="alpha-slider-row">
+        <button class="alpha-step-btn" id="alpha-dec" title="More structure">‹</button>
+        <input id="alpha-slider" type="range" min="0" max="20" step="1" value="10" />
+        <button class="alpha-step-btn" id="alpha-inc" title="More flavor">›</button>
+      </div>
+      <div id="alpha-value">α = 0.50 (balanced)</div>
+    </div>
+  </div>
+
+  <!-- Color by -->
+  <div>
+    <div class="section-label">Color By</div>
+    <select id="color-select">
+      <option value="base_spirit">Base spirit</option>
+      <option value="family">Family</option>
+      <option value="served">Served</option>
+      <option value="dominant_flavor">Dominant flavor</option>
+      <option value="sweet">Sweetness</option>
+      <option value="bitter">Bitterness</option>
+      <option value="herbal">Herbaceousness</option>
+      <option value="smoke">Smoke</option>
+      <option value="citrus_acid">Citrus intensity</option>
+    </select>
+  </div>
+
+  <!-- Show labels -->
+  <div>
+    <div class="section-label">Labels</div>
+    <label class="toggle-row">
+      <input id="show-labels" type="checkbox" />
+      <span>Show cocktail names</span>
+    </label>
+  </div>
+
+  <!-- Highlight family -->
+  <div>
+    <div class="section-label">Highlight Family</div>
+    <div class="family-checks" id="family-checks">
+      <label><input type="checkbox" class="family-cb" value="sour" checked /> Sour</label>
+      <label><input type="checkbox" class="family-cb" value="spirit_forward" checked /> Spirit-forward</label>
+      <label><input type="checkbox" class="family-cb" value="built" checked /> Built</label>
+      <label><input type="checkbox" class="family-cb" value="other" checked /> Other</label>
+    </div>
+  </div>
+
+  <!-- Strategy explanation -->
+  <div>
+    <div class="section-label">About This View</div>
+    <div id="explanation"></div>
+  </div>
+</div>
+
+<!-- ── RESIZE HANDLE ─────────────────────────────────────────────────────── -->
+<div id="resize-handle"></div>
+
+<!-- ── MAIN CHART ────────────────────────────────────────────────────────── -->
+<div id="main">
+  <div id="loading">Loading embeddings…</div>
+  <div id="chart">
+    <svg id="scatter"></svg>
+    <div id="tooltip">
+      <div class="tt-name" id="tt-name"></div>
+      <div class="tt-meta" id="tt-meta"></div>
+      <table class="tt-components" id="tt-components"></table>
+      <div class="tt-garnish" id="tt-garnish"></div>
+      <div class="tt-nn-title">Nearest neighbors</div>
+      <div id="tt-neighbors"></div>
+      <span class="tt-close" id="tt-close">click to dismiss · esc</span>
+    </div>
+    <div id="legend">
+      <div id="legend-title">Legend</div>
+      <div id="legend-items"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ────────────────────────────────────────────────────────────────────────────
+// Constants & color scales
+// ────────────────────────────────────────────────────────────────────────────
+
+const STRATEGY_EXPLANATIONS = {
+  blend: `<strong>Flavor Blend</strong><br>
+Each cocktail is represented as a <em>proportion-weighted sum</em> of its ingredients'
+15-dimensional flavor vectors. Seasonings get a fixed weight of 0.05; garnishes 0.03.<br><br>
+<strong>Look for:</strong> Drinks that share an overall taste profile cluster together
+regardless of their structure. A Negroni and a Bijou should be close — both bitter,
+herbal, and sweet.<br><br>
+<strong>Limitation:</strong> Structure is invisible. A Manhattan and a Bee's Knees
+could appear close if their blended flavors happen to converge.`,
+
+  blend_struct: `<strong>Blend + Structure</strong><br>
+Concatenates the 15-dim flavor blend with 7 structural features: proportion of base,
+modifying, citrus, and accent components; presence of seasoning; and serving style.<br><br>
+The <strong>α/β slider</strong> controls the relative weight of flavor vs. structure.
+At α=1 this is identical to Flavor Blend; at α=0 it's pure structure.<br><br>
+<strong>Look for:</strong> Two drinks are close only if they taste similar AND have
+similar role proportions (how much spirit, how much modifier, etc.).<br><br>
+<strong>Limitation:</strong> The α/β weighting is somewhat arbitrary — tune it to
+find the most interesting groupings.`,
+
+  role_slot: `<strong>Role-Slot</strong><br>
+The most structurally explicit strategy. Each cocktail becomes a 60-dimensional vector:
+four 15-dim flavor profiles, one per structural slot — base, modifying, citrus, accent.<br><br>
+<strong>Look for:</strong> A Manhattan and a Bijou are close because their base slots
+(rye/gin) and modifier slots (vermouth) are flavour-similar. A Manhattan and a Daiquiri
+are far because one has no citrus slot, the other has no modifying slot.<br><br>
+<strong>Limitation:</strong> Drinks with unusual role distributions need care.
+Empty slots create sparsity, and high dimensionality can make UMAP noisier.`,
+
+  perceptual: `<strong>Perceptual</strong><br>
+Motivated by the observation that some ingredients <em>punch above their weight.</em>
+A small dash of Fernet-Branca, Chartreuse, or Mezcal dominates the character of a
+drink regardless of proportion.<br><br>
+Models this as: <code>v_d = max_ingredient_d × 0.4 + blend_d × 0.6</code><br><br>
+<strong>Look for:</strong> Drinks anchored by a strong accent ingredient cluster
+together even if the rest of the recipe differs. The Hanky Panky should be near
+other Fernet drinks.<br><br>
+<strong>Limitation:</strong> The punch weight (0.4) is a tuned guess. Doesn't
+explicitly model structure.`
+};
+
+const CATEGORICAL_PALETTES = {
+  base_spirit: {
+    whiskey: "#f97316",
+    gin:     "#22d3ee",
+    agave:   "#4ade80",
+    rum:     "#a78bfa",
+    brandy:  "#fb7185",
+    vodka:   "#fbbf24",
+    mixed:   "#94a3b8",
+    other:   "#52525b",
+  },
+  family: {
+    sour:           "#22d3ee",
+    spirit_forward: "#f97316",
+    built:          "#4ade80",
+    other:          "#94a3b8",
+  },
+  served: {
+    up:     "#f97316",
+    on_ice: "#22d3ee",
+    either: "#a78bfa",
+  },
+  dominant_flavor: {
+    sweet:  "#f97316",
+    bitter: "#22d3ee",
+    herbal: "#4ade80",
+    citrus: "#fbbf24",
+    fruit:  "#fb7185",
+    spice:  "#a78bfa",
+    other:  "#52525b",
+  },
+};
+
+const SEQUENTIAL_COLOR = d3.scaleSequential(d3.interpolatePlasma).domain([0, 1]);
+
+// 21 steps: 0.00, 0.05, 0.10, … 1.00
+const ALPHA_STEPS = Array.from({length: 21}, (_, i) => Math.round(i * 5) / 100);
+const ALPHA_KEY_MAP = Object.fromEntries(
+  ALPHA_STEPS.map((a, i) => [i, `blend_struct_a${String(Math.round(a * 100)).padStart(3, "0")}`])
+);
+
+// ────────────────────────────────────────────────────────────────────────────
+// State
+// ────────────────────────────────────────────────────────────────────────────
+
+let DATA = null;
+let currentStrategy = "blend";
+let currentAlpha    = 10;  // index into ALPHA_STEPS (0.50 = balanced)
+let currentColor    = "base_spirit";
+let showLabels      = false;
+let highlightFamilies = new Set(["sour", "spirit_forward", "built", "other"]);
+let pinnedTooltip   = false;
+let pinnedName      = null;
+
+// ────────────────────────────────────────────────────────────────────────────
+// SVG setup
+// ────────────────────────────────────────────────────────────────────────────
+
+const svg    = d3.select("#scatter");
+const gMain  = svg.append("g").attr("class", "main-g");
+const gLines  = gMain.append("g").attr("class", "lines-g");   // leader lines — below dots
+const gDots   = gMain.append("g").attr("class", "dots-g");
+const gLabels = gMain.append("g").attr("class", "labels-g");  // labels — above dots
+
+const margin = { top: 30, right: 30, bottom: 30, left: 30 };
+let width, height, xScale, yScale;
+
+function resize() {
+  const el = document.getElementById("chart");
+  width  = el.clientWidth  - margin.left - margin.right;
+  height = el.clientHeight - margin.top  - margin.bottom;
+  gMain.attr("transform", `translate(${margin.left},${margin.top})`);
+  if (DATA) redraw(true);
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// Helpers
+// ────────────────────────────────────────────────────────────────────────────
+
+function getStrategyKey() {
+  if (currentStrategy === "blend_struct") {
+    return ALPHA_KEY_MAP[currentAlpha];
+  }
+  return currentStrategy;
+}
+
+function getPoints() {
+  const key = getStrategyKey();
+  return DATA.strategies[key].points;
+}
+
+function getNeighbors(name) {
+  const key = getStrategyKey();
+  return (DATA.strategies[key].neighbors || {})[name] || [];
+}
+
+function dominantFlavor(recipe) {
+  const v = recipe.flavor_vector;
+  if (!v) return "other";
+  const FLAVOR_DIMS = ["sweet","bitter","saline","acid","herbal","spice","citrus","floral","fruit","smoke","oak","grain","vegetal","nutty","anise"];
+  const TRACKED = ["sweet","bitter","herbal","citrus","fruit","spice"];
+  let best = "other", bestVal = -Infinity;
+  TRACKED.forEach((d, _) => {
+    const idx = FLAVOR_DIMS.indexOf(d);
+    if (idx >= 0 && v[idx] > bestVal) { bestVal = v[idx]; best = d; }
+  });
+  return bestVal > 0 ? best : "other";
+}
+
+function getColorValue(name, recipe) {
+  const fv = recipe.flavor_vector || [];
+  const FLAVOR_DIMS = ["sweet","bitter","saline","acid","herbal","spice","citrus","floral","fruit","smoke","oak","grain","vegetal","nutty","anise"];
+  const idx = d => FLAVOR_DIMS.indexOf(d);
+
+  switch (currentColor) {
+    case "base_spirit":      return recipe.base_spirit;
+    case "family":           return recipe.family;
+    case "served":           return recipe.served;
+    case "dominant_flavor":  return dominantFlavor(recipe);
+    case "sweet":            return fv[idx("sweet")] ?? 0;
+    case "bitter":           return fv[idx("bitter")] ?? 0;
+    case "herbal":           return fv[idx("herbal")] ?? 0;
+    case "smoke":            return fv[idx("smoke")] ?? 0;
+    case "citrus_acid":      return (fv[idx("citrus")] ?? 0) + (fv[idx("acid")] ?? 0);
+    default:                 return 0;
+  }
+}
+
+function isCategorical(dim) {
+  return ["base_spirit","family","served","dominant_flavor"].includes(dim);
+}
+
+function colorFor(name, recipe) {
+  const val = getColorValue(name, recipe);
+  if (isCategorical(currentColor)) {
+    const palette = CATEGORICAL_PALETTES[currentColor] || {};
+    return palette[val] || "#52525b";
+  }
+  // Sequential: normalize roughly 0-1
+  const norm = currentColor === "citrus_acid" ? Math.min(val / 1.2, 1) : Math.min(val, 1);
+  return SEQUENTIAL_COLOR(norm);
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// Shape generators
+// ────────────────────────────────────────────────────────────────────────────
+
+function dotShape(served) {
+  return served === "up"     ? "triangle"
+       : served === "on_ice" ? "square"
+       :                       "circle";
+}
+
+function appendDotShape(sel, r = 8) {
+  sel.each(function(d) {
+    const shape = dotShape(d.recipe.served);
+    const g = d3.select(this);
+    if (shape === "circle") {
+      g.append("circle").attr("r", r);
+    } else if (shape === "square") {
+      const s = r * 1.5;
+      g.append("rect").attr("x", -s/2).attr("y", -s/2).attr("width", s).attr("height", s).attr("rx", 1);
+    } else {
+      // inverted triangle (martini glass silhouette)
+      const pts = `0,${r} ${-r*0.9},${-r*0.7} ${r*0.9},${-r*0.7}`;
+      g.append("polygon").attr("points", pts);
+    }
+  });
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// Main draw / redraw
+// ────────────────────────────────────────────────────────────────────────────
+
+function buildScales(points) {
+  const xs = Object.values(points).map(p => p.x);
+  const ys = Object.values(points).map(p => p.y);
+  const xExt = d3.extent(xs);
+  const yExt = d3.extent(ys);
+  const padX = (xExt[1] - xExt[0]) * 0.1;
+  const padY = (yExt[1] - yExt[0]) * 0.1;
+  xScale = d3.scaleLinear().domain([xExt[0]-padX, xExt[1]+padX]).range([0, width]);
+  yScale = d3.scaleLinear().domain([yExt[0]-padY, yExt[1]+padY]).range([height, 0]);
+}
+
+function dotData(points) {
+  return Object.entries(points).map(([name, pt]) => ({
+    name,
+    x: pt.x,
+    y: pt.y,
+    recipe: DATA.recipes[name] || {},
+  }));
+}
+
+function redraw(animate = false) {
+  const points = getPoints();
+  buildScales(points);
+
+  const data = dotData(points);
+  const dur   = animate ? 500 : 0;
+
+  // ── Dots ────────────────────────────────────────────────────────────────
+  const dotSel = gDots.selectAll(".dot-g")
+    .data(data, d => d.name);
+
+  // ENTER
+  const enter = dotSel.enter()
+    .append("g")
+    .attr("class", "dot-g dot")
+    .attr("transform", d => `translate(${xScale(d.x)},${yScale(d.y)})`)
+    .on("mouseover", onMouseover)
+    .on("mouseout",  onMouseout)
+    .on("click",     onClick);
+
+  appendDotShape(enter);
+
+  // UPDATE (shape already exists)
+  const all = enter.merge(dotSel);
+
+  // Color & opacity (instant)
+  all.selectAll("circle,rect,polygon")
+    .attr("fill", d => colorFor(d.name, d.recipe))
+    .attr("fill-opacity", 0.9)
+    .attr("stroke", "#0f0f12")
+    .attr("stroke-width", 0.5);
+
+  // Dim non-highlighted families
+  all.classed("dimmed", d => !highlightFamilies.has(d.recipe.family));
+
+  // Transition position
+  if (animate) {
+    all.transition().duration(dur).ease(d3.easeCubicInOut)
+      .attr("transform", d => `translate(${xScale(d.x)},${yScale(d.y)})`);
+  } else {
+    all.attr("transform", d => `translate(${xScale(d.x)},${yScale(d.y)})`);
+  }
+
+  dotSel.exit().remove();
+
+  // ── Labels + leader lines ────────────────────────────────────────────────
+  if (showLabels) {
+    drawLabels(data);
+  } else {
+    gLabels.selectAll(".dot-label").remove();
+    gLines.selectAll(".label-line").remove();
+  }
+}
+
+// ── Label force simulation ───────────────────────────────────────────────────
+let labelSimulation = null;
+
+function drawLabels(data) {
+  // Each node: dot position (fx/fy fixed) + floating label position (x/y)
+  const nodes = data.map(d => ({
+    name:    d.name,
+    recipe:  d.recipe,
+    dotX:    xScale(d.x),   // fixed dot position
+    dotY:    yScale(d.y),
+    x:       xScale(d.x),   // label starts at dot, then floats
+    y:       yScale(d.y),
+  }));
+
+  // Stop any previous simulation
+  if (labelSimulation) labelSimulation.stop();
+
+  // ── Text elements ──────────────────────────────────────────────────────
+  const textSel = gLabels.selectAll(".dot-label")
+    .data(nodes, d => d.name);
+
+  textSel.exit().remove();
+
+  const textEnter = textSel.enter()
+    .append("text")
+    .attr("class", "dot-label")
+    .attr("text-anchor", "middle")
+    .text(d => d.name.replace(/_/g, " "));
+
+  const texts = textEnter.merge(textSel)
+    .classed("dimmed", d => !highlightFamilies.has(d.recipe.family));
+
+  // ── Line elements ──────────────────────────────────────────────────────
+  const lineSel = gLines.selectAll(".label-line")
+    .data(nodes, d => d.name);
+
+  lineSel.exit().remove();
+
+  const lineEnter = lineSel.enter()
+    .append("line")
+    .attr("class", "label-line");
+
+  const lines = lineEnter.merge(lineSel)
+    .classed("dimmed", d => !highlightFamilies.has(d.recipe.family));
+
+  // Approximate text half-width for collision radius (chars × ~3.5px at 10px font)
+  const collideR = d => (d.name.length * 3.5) / 2 + 4;
+
+  labelSimulation = d3.forceSimulation(nodes)
+    .force("collide", d3.forceCollide().radius(collideR).strength(0.8).iterations(3))
+    // Spring each label back toward its dot
+    .force("x", d3.forceX(d => d.dotX).strength(0.12))
+    .force("y", d3.forceY(d => d.dotY).strength(0.12))
+    .alphaDecay(0.03)
+    .on("tick", () => {
+      texts
+        .attr("x", d => d.x)
+        .attr("y", d => d.y);
+
+      lines
+        .attr("x1", d => d.dotX)
+        .attr("y1", d => d.dotY)
+        .attr("x2", d => d.x)
+        .attr("y2", d => d.y)
+        // Hide line when label is very close to dot
+        .attr("visibility", d => {
+          const dx = d.x - d.dotX, dy = d.y - d.dotY;
+          return Math.sqrt(dx*dx + dy*dy) < 6 ? "hidden" : "visible";
+        });
+    });
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// Tooltip
+// ────────────────────────────────────────────────────────────────────────────
+
+const tooltip    = document.getElementById("tooltip");
+const ttName     = document.getElementById("tt-name");
+const ttMeta     = document.getElementById("tt-meta");
+const ttComps    = document.getElementById("tt-components");
+const ttGarnish  = document.getElementById("tt-garnish");
+const ttNeighbors = document.getElementById("tt-neighbors");
+
+function showTooltip(name, recipe, event) {
+  ttName.textContent = name.replace(/_/g, " ").toUpperCase();
+  ttMeta.textContent = `${recipe.method} · served ${(recipe.served||"").replace(/_/," ")}`;
+
+  // Components table
+  ttComps.innerHTML = "";
+  const liqComps = (recipe.components || []).filter(c => c.ml !== null);
+  const seasonings = (recipe.components || []).filter(c => c.ml === null);
+  const totalMl = liqComps.reduce((s, c) => s + c.ml, 0);
+
+  [...liqComps, ...seasonings].forEach(c => {
+    const tr = document.createElement("tr");
+    const pct = c.ml !== null ? `${Math.round(c.ml / totalMl * 100)}%` : "—";
+    tr.innerHTML = `<td>${c.ingredient.replace(/_/g," ")}</td><td>${c.role}</td><td>${c.ml !== null ? c.ml+"ml" : "—"} ${pct}</td>`;
+    ttComps.appendChild(tr);
+  });
+
+  // Garnish
+  const garnish = recipe.garnish || [];
+  ttGarnish.textContent = garnish.length ? `Garnish: ${garnish.map(g=>g.replace(/_/g," ")).join(", ")}` : "";
+
+  // Nearest neighbors
+  const nn = getNeighbors(name);
+  ttNeighbors.innerHTML = nn.map(n =>
+    `<div class="tt-nn-row">
+      <span class="tt-nn-name">${n.name.replace(/_/g," ")}</span>
+      <span class="tt-nn-dist">${n.distance.toFixed(3)}</span>
+    </div>`
+  ).join("");
+
+  // Position tooltip (keep it in viewport)
+  const chartRect = document.getElementById("chart").getBoundingClientRect();
+  let x = event.clientX - chartRect.left + 16;
+  let y = event.clientY - chartRect.top  + 16;
+  const tw = 300, th = 320;
+  if (x + tw > chartRect.width)  x = event.clientX - chartRect.left - tw - 16;
+  if (y + th > chartRect.height) y = event.clientY - chartRect.top  - th - 16;
+  tooltip.style.transform = `translate(${x}px, ${y}px)`;
+
+  tooltip.classList.add("visible");
+}
+
+function hideTooltip() {
+  if (!pinnedTooltip) tooltip.classList.remove("visible");
+}
+
+function onMouseover(event, d) {
+  if (pinnedTooltip && pinnedName !== d.name) return;
+  showTooltip(d.name, d.recipe, event);
+}
+
+function onMouseout() {
+  if (!pinnedTooltip) hideTooltip();
+}
+
+function onClick(event, d) {
+  event.stopPropagation();
+  if (pinnedTooltip && pinnedName === d.name) {
+    // Unpin
+    pinnedTooltip = false;
+    pinnedName    = null;
+    tooltip.classList.remove("pinned");
+    tooltip.classList.remove("visible");
+  } else {
+    pinnedTooltip = true;
+    pinnedName    = d.name;
+    tooltip.classList.add("pinned");
+    showTooltip(d.name, d.recipe, event);
+  }
+}
+
+document.getElementById("tt-close").addEventListener("click", () => {
+  pinnedTooltip = false;
+  pinnedName    = null;
+  tooltip.classList.remove("pinned", "visible");
+});
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") {
+    pinnedTooltip = false;
+    pinnedName    = null;
+    tooltip.classList.remove("pinned", "visible");
+  }
+});
+
+svg.on("click", () => {
+  if (pinnedTooltip) {
+    pinnedTooltip = false;
+    pinnedName    = null;
+    tooltip.classList.remove("pinned", "visible");
+  }
+});
+
+// ────────────────────────────────────────────────────────────────────────────
+// Legend
+// ────────────────────────────────────────────────────────────────────────────
+
+function updateLegend() {
+  const container = document.getElementById("legend-items");
+  container.innerHTML = "";
+
+  if (isCategorical(currentColor)) {
+    const palette = CATEGORICAL_PALETTES[currentColor] || {};
+    Object.entries(palette).forEach(([key, color]) => {
+      const row = document.createElement("div");
+      row.className = "legend-row";
+      row.innerHTML = `<div class="legend-swatch" style="background:${color}"></div><span>${key.replace(/_/g," ")}</span>`;
+      container.appendChild(row);
+    });
+  } else {
+    // Sequential gradient
+    const grad = document.createElement("div");
+    grad.style.cssText = `width:100%;height:10px;border-radius:4px;background:linear-gradient(to right,${
+      d3.range(0, 1.01, 0.1).map(t => SEQUENTIAL_COLOR(t)).join(",")
+    });margin-bottom:4px;`;
+    const labels = document.createElement("div");
+    labels.style.cssText = "display:flex;justify-content:space-between;font-size:10px;color:#52525b;";
+    labels.innerHTML = "<span>low</span><span>high</span>";
+    container.appendChild(grad);
+    container.appendChild(labels);
+  }
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// Explanation panel
+// ────────────────────────────────────────────────────────────────────────────
+
+function updateExplanation() {
+  document.getElementById("explanation").innerHTML = STRATEGY_EXPLANATIONS[currentStrategy] || "";
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// Controls wiring
+// ────────────────────────────────────────────────────────────────────────────
+
+// Strategy radio
+document.getElementById("strategy-group").addEventListener("click", e => {
+  const label = e.target.closest(".strategy-btn");
+  if (!label) return;
+  const strategy = label.dataset.strategy;
+  if (!strategy || strategy === currentStrategy) return;
+
+  // Update radio + active class
+  document.querySelectorAll(".strategy-btn").forEach(l => l.classList.remove("active"));
+  label.classList.add("active");
+  label.querySelector("input").checked = true;
+  currentStrategy = strategy;
+
+  // Enable/disable α slider
+  document.getElementById("alpha-row").classList.toggle("disabled", strategy !== "blend_struct");
+
+  updateExplanation();
+  if (DATA) redraw(true);
+});
+
+// α slider
+function setAlpha(idx) {
+  currentAlpha = Math.max(0, Math.min(20, idx));
+  document.getElementById("alpha-slider").value = currentAlpha;
+  const alpha = ALPHA_STEPS[currentAlpha];
+  document.getElementById("alpha-value").textContent =
+    `α = ${alpha.toFixed(2)} (${alpha === 0.5 ? "balanced" : alpha < 0.5 ? "structure-heavy" : "flavor-heavy"})`;
+  if (DATA && currentStrategy === "blend_struct") redraw(true);
+}
+
+document.getElementById("alpha-slider").addEventListener("input", e => setAlpha(parseInt(e.target.value)));
+document.getElementById("alpha-dec").addEventListener("click", () => setAlpha(currentAlpha - 1));
+document.getElementById("alpha-inc").addEventListener("click", () => setAlpha(currentAlpha + 1));
+
+// Color by
+document.getElementById("color-select").addEventListener("change", e => {
+  currentColor = e.target.value;
+  updateLegend();
+  if (DATA) redraw(false);
+});
+
+// Show labels
+document.getElementById("show-labels").addEventListener("change", e => {
+  showLabels = e.target.checked;
+  if (DATA) redraw(false);
+});
+
+// Family checkboxes
+document.querySelectorAll(".family-cb").forEach(cb => {
+  cb.addEventListener("change", () => {
+    highlightFamilies = new Set(
+      [...document.querySelectorAll(".family-cb:checked")].map(c => c.value)
+    );
+    if (DATA) redraw(false);
+  });
+});
+
+// Resize
+window.addEventListener("resize", resize);
+
+// ────────────────────────────────────────────────────────────────────────────
+// Zoom & pan
+// ────────────────────────────────────────────────────────────────────────────
+
+let currentTransform = d3.zoomIdentity;
+
+const zoom = d3.zoom()
+  .scaleExtent([0.5, 15])
+  .on("zoom", e => {
+    currentTransform = e.transform;
+    gMain.attr("transform", e.transform);
+    // Re-run label simulation with updated dot positions if labels are visible
+    if (showLabels && DATA) {
+      drawLabels(dotData(getPoints()));
+    }
+  });
+
+svg.call(zoom);
+
+// ────────────────────────────────────────────────────────────────────────────
+// Resizable sidebar
+// ────────────────────────────────────────────────────────────────────────────
+
+(function() {
+  const handle  = document.getElementById("resize-handle");
+  const sidebar = document.getElementById("sidebar");
+  let dragging  = false;
+  let startX    = 0;
+  let startW    = 0;
+
+  handle.addEventListener("mousedown", e => {
+    dragging = true;
+    startX   = e.clientX;
+    startW   = sidebar.getBoundingClientRect().width;
+    handle.classList.add("dragging");
+    // Prevent text selection while dragging
+    document.body.style.userSelect = "none";
+    document.body.style.cursor = "col-resize";
+    e.preventDefault();
+  });
+
+  document.addEventListener("mousemove", e => {
+    if (!dragging) return;
+    const delta  = e.clientX - startX;
+    const newW   = Math.min(520, Math.max(180, startW + delta));
+    sidebar.style.width = newW + "px";
+    resize(); // recompute chart scales
+  });
+
+  document.addEventListener("mouseup", () => {
+    if (!dragging) return;
+    dragging = false;
+    handle.classList.remove("dragging");
+    document.body.style.userSelect = "";
+    document.body.style.cursor = "";
+  });
+})();
+
+// ────────────────────────────────────────────────────────────────────────────
+// Fetch & init
+// ────────────────────────────────────────────────────────────────────────────
+
+d3.json("../data/embeddings.json").then(data => {
+  DATA = data;
+  document.getElementById("loading").style.display = "none";
+
+  resize();
+  updateExplanation();
+  updateLegend();
+}).catch(err => {
+  document.getElementById("loading").textContent = `Failed to load embeddings.json: ${err.message}`;
+  console.error(err);
+});
+</script>
+</body>
+</html>
