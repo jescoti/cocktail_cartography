@@ -88,11 +88,38 @@ For each of the 15 flavor dimensions independently, it takes the per-column maxi
 **What this actually means**
 The `max_vec` records the highest value any single ingredient contributes to each flavor channel — regardless of volume. So if a drink has 60ml gin (smoke=0.0) and 7.5ml islay scotch (smoke=0.9), the `max_vec` smoke dimension is 0.9. In the plain BLEND, islay scotch contributes only `7.5/67.5 × 0.9 ≈ 0.10`. Perceptual gives it `0.4 × 0.9 + 0.6 × 0.10 = 0.42` — four times more weight. This is the model's approximation of how aromatic intensity, proof, and volatility let minor-volume ingredients dominate perception. Fernet Branca, green chartreuse, mezcal, absinthe, and islay scotch all benefit from this. Large-volume but neutral ingredients (soda water, prosecco, egg white, lime juice) lose relative influence.
 
-**Where it's imprecise**
-The `max_vec` is taken per dimension independently, not per ingredient. So the "max smoky" ingredient and the "max herbal" ingredient might be completely different — the vector describes a kind of Frankenstein ingredient that maximally expresses every channel simultaneously from any contributor. That's not physically realistic. It works acceptably because strong ingredients tend to be strong across correlated dimensions (mezcal is both smoky and rich; green chartreuse is both herbal and spicy), but it could misrepresent, say, a drink where the smokiest ingredient is neutral everywhere else. The 40/60 split `(PUNCH_WEIGHT = 0.4)` was chosen manually, not tuned. It's a single parameter with no validation against human perception data.
+**Why the max operation makes sense**
+The `max_vec` is taken per dimension independently, not per ingredient. Initially this might seem wrong — the "max smoky" ingredient and the "max herbal" ingredient might be completely different, creating a vector that no single ingredient possesses. But this is actually the point: when you taste a cocktail, you don't taste ingredients sequentially — you taste the unified expression of all their strongest contributions simultaneously. A drink with smoky mezcal, herbal green chartreuse, and spicy rye expresses all three characteristics at once. The max operation captures this perceptual ceiling for each flavor channel in the finished drink.
+
+The real limitation is more mundane: volume still matters. A drop of mezcal in a mostly-vodka drink doesn't make it as smoky as a proper mezcal cocktail, even if mezcal's smoke value is 0.9 in both cases. The `max_vec` is volume-blind, so it can't distinguish between "a trace of smoke" and "smoke as a defining character." That's what the 60/40 blend with the volume-weighted average compensates for — anchoring the signal so that a 2ml rinse of absinthe doesn't make a drink as aggressively herbal as one where absinthe is a full 22ml pour. The 40/60 split `(PUNCH_WEIGHT = 0.4)` was chosen manually, not tuned against human perception data.
 
 **What it doesn't capture**
 The perceptual insight it's gesturing at — that 7.5ml of Fernet "punches above its weight" — is real, but the mechanism it's modeling is really aromatic intensity × volatility, not just max(flavor_value). A proper model would weight each ingredient by something like its aromatic compound concentration or proof level. Those values aren't in the dataset, so the max-pooling is a structural proxy for the same idea.
+
+**Alternative transformations to explore**
+The current linear mix `(0.4 × max + 0.6 × blend)` is a blunt instrument. Several more principled approaches could better capture the interplay between volume and intensity:
+
+1. **Power-weighted blend** — Instead of linear volume weighting, raise each ingredient's proportion to a power > 1 before normalizing:
+   ```python
+   weights = (ml_i / total_ml) ** p   # p=2 or p=3, then renormalize
+   ```
+   At p=1 you get BLEND. As p → ∞ you approach "winner takes all." At p=2, something at 30% of the drink contributes 9x more than something at 10%, versus 3x in the linear case.
+
+2. **Intensity-scaled blend** — Weight each ingredient by volume × flavor_norm rather than volume alone:
+   ```python
+   intensity = np.linalg.norm(flavor_vec)
+   weight = (ml_i / total_ml) * intensity
+   ```
+   Neutral ingredients (soda water, egg white) naturally recede; intense ones (Campari, green chartreuse) punch up.
+
+3. **Softmax over ingredients** — Treat flavor intensity as a temperature-scaled attention mechanism:
+   ```python
+   intensities = [np.linalg.norm(vec) for vec in ingredient_vecs]
+   weights = softmax(np.array(intensities) / tau)
+   ```
+   Low τ → the most intense ingredient dominates; high τ → equal weights. This elegantly interpolates between max (τ→0) and uniform blend (τ→∞) with a single parameter, more principled than the ad-hoc 0.4/0.6 split.
+
+Of these, the softmax approach is probably most theoretically sound — it captures the idea that volume and intensity interact multiplicatively, with a tunable parameter controlling how much intense ingredients dominate perception.
 
 ---
 

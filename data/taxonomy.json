@@ -2,7 +2,7 @@
   "spirit": {
     "whiskey": {
       "bourbon": null,
-      "rye": null,
+      "rye_whiskey": null,
       "irish_whiskey": null,
       "scotch": null,
       "blended_scotch": null,
@@ -40,9 +40,12 @@
     "punt_e_mes": null
   },
   "amaro": {
-    "amaro_medium": null,
-    "amaro_bitter": null,
-    "amaro_light": null
+    "campari": null,
+    "cynar": null,
+    "averna": null,
+    "amaro_nonino": null,
+    "fernet_branca": null,
+    "suze": null
   },
   "herbal_liqueur": {
     "green_chartreuse": null,
