@@ -1,0 +1,13 @@
+.git
+.venv
+.claude
+__pycache__
+*.pyc
+node_modules
+.DS_Store
+scripts/
+loaders.py
+utils.py
+__main__.py
+*.md
+*.xlsx
