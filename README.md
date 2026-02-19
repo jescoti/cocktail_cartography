@@ -239,6 +239,70 @@ The perceptual view also shows the sharpest gin-versus-whiskey-versus-rum separa
 
 ---
 
+### Cluster Migrations: How Tau Shapes the Map
+
+The tau (τ) parameter in the softmax perceptual strategy creates a continuous spectrum from **intensity-dominated** (low τ) to **volume-dominated** (high τ) clustering. As you slide from τ=0.1 to τ=316, cocktails migrate between clusters in revealing ways:
+
+#### The Most Mobile Cocktails
+
+These drinks visit 8 different clusters across the tau range, indicating they occupy ambiguous positions in cocktail space:
+
+- **Aviation** (gin/lemon/maraschino) — The maraschino liqueur dominates at low τ, grouping it with other maraschino drinks. At high τ, the gin volume takes over, moving it to gin sour clusters.
+
+- **Boulevardier** (bourbon/vermouth/Campari) — At low τ, Campari's intensity places it with Negronis and Americanos. At high τ, bourbon volume moves it to whiskey clusters.
+
+- **Champs-Élysées** (cognac/lemon/yellow Chartreuse) — Yellow Chartreuse dominates at low τ (intense herbal cluster). At high τ, cognac and lemon volumes place it with brandy sours.
+
+- **Division Bell** (mezcal/Aperol/maraschino) — Three intense ingredients pull it different directions. At low τ it clusters by whichever intensity wins locally; at high τ mezcal's volume dominates.
+
+#### Key Tau Breakpoints
+
+**τ ≈ 0.1 (Maximum Intensity)**
+- Clusters form around single intense ingredients: Campari cluster, green Chartreuse cluster, Fernet cluster
+- Base spirits nearly irrelevant — a gin drink with Campari groups with whiskey drinks with Campari
+- Martinis surprisingly group with Alaska (gin/yellow Chartreuse) due to vermouth's herbal intensity
+
+**τ ≈ 2-3 (Balanced)**
+- Most semantically coherent clusters emerge
+- Intensity still matters but volume provides context
+- Paper Plane finally groups with other equal-parts drinks rather than just "Aperol drinks"
+- Penicillin's smoky Islay float still pulls it toward mezcal drinks
+
+**τ ≈ 20-30 (Volume-Weighted)**
+- Base spirit becomes primary organizing principle
+- Whiskey drinks group together regardless of modifiers
+- Gin drinks separate into London Dry vs. Old Tom clusters
+- Citrus vs. non-citrus becomes a major axis
+
+**τ > 100 (Approaching Pure Volume)**
+- Essentially converges to the BLEND strategy
+- Large-volume mixers dominate: Collins drinks group together
+- Spritz-style drinks (prosecco-based) form their own cluster
+- High-proof stirred drinks separate from lower-ABV shaken drinks
+
+#### Drinks That Reveal Strategy Limitations
+
+Several cocktails' migrations expose what each strategy captures or misses:
+
+**Americano** — Changes clusters 7 times. At low τ, Campari dominates (bitter cluster). At high τ, soda water volume makes it group with spritzes and Collins drinks. The "correct" placement depends on whether you think of it as "a Negroni without gin" or "a bitter spritz."
+
+**Corpse Reviver #2** — Equal parts gin/lemon/Cointreau/Lillet with absinthe rinse. At low τ, the absinthe rinse has outsized influence. At mid τ, it's an equal-parts drink. At high τ, it's just another gin sour. Each view is defensible.
+
+**Chartreuse Swizzle** — At low τ, green Chartreuse's intensity completely dominates, grouping it with Last Word and Bijou. At high τ, the pineapple and lime volumes make it a rum-adjacent tropical drink. Both are true.
+
+#### The Stable Cores
+
+Some drinks barely move across the entire tau range, indicating unambiguous positions:
+
+- **Martini variations** — Always cluster together (gin + vermouth is distinctive at any τ)
+- **Manhattan family** — Whiskey + vermouth maintains coherence
+- **Classic Daiquiri/Gimlet/Margarita** — Simple sours stay together
+- **Negroni** — The equal balance of gin/vermouth/Campari keeps it stable
+
+These stable clusters represent the "canonical" drinks that define their categories, while the mobile cocktails occupy the interesting boundaries between flavor families.
+
+---
+
 ### Data Sensitivity: Would Different Profiles Change Things?
 
 Yes, substantially. A few specific cases:

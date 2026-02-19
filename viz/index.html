@@ -18,6 +18,19 @@
       overflow: hidden;
     }
 
+    /* ── Dark scrollbars ───────────────────────────────────────── */
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: #3f3f46 transparent;
+    }
+    *::-webkit-scrollbar { width: 6px; }
+    *::-webkit-scrollbar-track { background: transparent; }
+    *::-webkit-scrollbar-thumb {
+      background: #3f3f46;
+      border-radius: 3px;
+    }
+    *::-webkit-scrollbar-thumb:hover { background: #52525b; }
+
     /* ── Sidebar ──────────────────────────────────────────────── */
     #sidebar {
       width: 280px;
@@ -100,24 +113,33 @@
     }
 
     /* α/β slider */
-    #alpha-row {
+    .slider-drawer {
       display: flex;
       flex-direction: column;
       gap: 6px;
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      padding: 0 8px;
+      transition: max-height 0.3s ease, opacity 0.25s ease, padding 0.3s ease;
     }
-    #alpha-row.disabled { opacity: 0.35; pointer-events: none; }
-    #alpha-labels {
+    .slider-drawer.open {
+      max-height: 80px;
+      opacity: 1;
+      padding: 8px 8px 4px;
+    }
+    #alpha-labels, #tau-labels {
       display: flex;
       justify-content: space-between;
       font-size: 10px;
       color: #71717a;
     }
-    #alpha-slider-row {
+    #alpha-slider-row, #tau-slider-row {
       display: flex;
       align-items: center;
       gap: 6px;
     }
-    #alpha-slider {
+    #alpha-slider, #tau-slider {
       flex: 1;
       accent-color: #f97316;
     }
@@ -140,10 +162,11 @@
     }
     .alpha-step-btn:hover { background: #2a2a35; border-color: #f97316; color: #f97316; }
     .alpha-step-btn:active { background: #f97316; color: #fff; }
-    #alpha-value {
+    #alpha-value, #tau-value {
       text-align: center;
       font-size: 11px;
       color: #a1a1aa;
+      margin: 0;
     }
 
     /* Dropdowns and toggles */
@@ -520,6 +543,20 @@
         <span class="strategy-desc">Taste + shape. Adds how much of the drink is base vs. modifier vs. citrus. Use the α/β slider to weight them.</span>
       </label>
 
+      <!-- α/β slider — inline after Blend+Structure -->
+      <div id="alpha-row" class="slider-drawer">
+        <div id="alpha-labels">
+          <span>← More flavor</span>
+          <span>More structure →</span>
+        </div>
+        <div id="alpha-slider-row">
+          <button class="alpha-step-btn" id="alpha-dec" title="More structure">‹</button>
+          <input id="alpha-slider" type="range" min="0" max="20" step="1" value="10" />
+          <button class="alpha-step-btn" id="alpha-inc" title="More flavor">›</button>
+        </div>
+        <div id="alpha-value">α = 0.50 (balanced)</div>
+      </div>
+
       <label class="strategy-btn" data-strategy="role_slot">
         <input type="radio" name="strategy" value="role_slot" />
         <span class="strategy-title">Role-Slot</span>
@@ -532,23 +569,26 @@
         <span class="strategy-desc">Punchy ingredients win. Small amounts of Chartreuse, Fernet, Mezcal pull their slot's character toward theirs.</span>
       </label>
 
-    </div>
-  </div>
+      <label class="strategy-btn" data-strategy="tau">
+        <input type="radio" name="strategy" value="tau" />
+        <span class="strategy-title">Tau (τ)</span>
+        <span class="strategy-desc">Softmax perceptual. Use the τ slider to control how much intense ingredients dominate (low τ) vs uniform blend (high τ).</span>
+      </label>
 
-  <!-- α/β slider -->
-  <div>
-    <div class="section-label">Flavor ↔ Structure Weight (α/β)</div>
-    <div id="alpha-row" class="disabled">
-      <div id="alpha-labels">
-        <span>← More flavor</span>
-        <span>More structure →</span>
+      <!-- τ slider — inline after Tau -->
+      <div id="tau-row" class="slider-drawer">
+        <div id="tau-labels">
+          <span>← Max pooling</span>
+          <span>Flavor Blend →</span>
+        </div>
+        <div id="tau-slider-row">
+          <button class="alpha-step-btn" id="tau-dec" title="Lower tau">‹</button>
+          <input id="tau-slider" type="range" min="0" max="24" step="1" value="12" />
+          <button class="alpha-step-btn" id="tau-inc" title="Higher tau">›</button>
+        </div>
+        <div id="tau-value">τ = 5.62 (balanced)</div>
       </div>
-      <div id="alpha-slider-row">
-        <button class="alpha-step-btn" id="alpha-dec" title="More structure">‹</button>
-        <input id="alpha-slider" type="range" min="0" max="20" step="1" value="10" />
-        <button class="alpha-step-btn" id="alpha-inc" title="More flavor">›</button>
-      </div>
-      <div id="alpha-value">α = 0.50 (balanced)</div>
+
     </div>
   </div>
 
@@ -676,7 +716,18 @@ Models this as: <code>v_d = max_ingredient_d × 0.4 + blend_d × 0.6</code><br><
 together even if the rest of the recipe differs. The Hanky Panky should be near
 other Fernet drinks.<br><br>
 <strong>Limitation:</strong> The punch weight (0.4) is a tuned guess. Doesn't
-explicitly model structure.`
+explicitly model structure.`,
+
+  tau: `<strong>Softmax Perceptual (τ)</strong><br>
+Uses a temperature-controlled softmax to weight ingredients by both volume and intensity.
+Low τ (≈0.1) approaches max pooling where the most intense ingredient dominates.
+High τ (≈30) approaches uniform blend where all ingredients contribute equally.<br><br>
+The <strong>τ slider</strong> controls this temperature parameter. Start at τ≈2 for a
+balanced view, then explore: lower values emphasize punch, higher values emphasize volume.<br><br>
+<strong>Advantage:</strong> More principled than the 40/60 linear mix — τ smoothly
+interpolates between extremes with a single, interpretable parameter.<br><br>
+<strong>Note:</strong> The embeddings are spatially stabilized, so sliding τ creates
+smooth transitions rather than chaotic reorganization.`
 };
 
 const CATEGORICAL_PALETTES = {
@@ -720,6 +771,11 @@ const ALPHA_KEY_MAP = Object.fromEntries(
   ALPHA_STEPS.map((a, i) => [i, `blend_struct_a${String(Math.round(a * 100)).padStart(3, "0")}`])
 );
 
+// Tau values from our generation script (logspace 0.1 → 316)
+const TAU_VALUES = [0.1, 0.14, 0.196, 0.274, 0.383, 0.536, 0.75, 1.049, 1.468, 2.054,
+                    2.873, 4.019, 5.623, 7.867, 11.007, 15.399, 21.544, 30.142, 42.17, 58.997,
+                    82.54, 115.478, 161.56, 226.03, 316.228];
+
 // ────────────────────────────────────────────────────────────────────────────
 // State
 // ────────────────────────────────────────────────────────────────────────────
@@ -727,6 +783,7 @@ const ALPHA_KEY_MAP = Object.fromEntries(
 let DATA = null;
 let currentStrategy = "blend";
 let currentAlpha    = 10;  // index into ALPHA_STEPS (0.50 = balanced)
+let currentTau      = 12;  // index into TAU_VALUES (~5.62 = middle)
 let currentColor    = "base_spirit";
 let showLabels      = false;
 let highlightFamilies = new Set(["sour", "spirit_forward", "built", "other"]);
@@ -767,16 +824,26 @@ function getStrategyKey() {
   if (currentStrategy === "blend_struct") {
     return ALPHA_KEY_MAP[currentAlpha];
   }
+  if (currentStrategy === "tau") {
+    return String(TAU_VALUES[currentTau]);
+  }
   return currentStrategy;
 }
 
 function getPoints() {
   const key = getStrategyKey();
+  if (currentStrategy === "tau") {
+    return DATA.strategies.tau[key].embedding;
+  }
   return DATA.strategies[key].points;
 }
 
 function getNeighbors(name) {
   const key = getStrategyKey();
+  if (currentStrategy === "tau") {
+    // Tau strategies don't have precomputed neighbors
+    return [];
+  }
   return (DATA.strategies[key].neighbors || {})[name] || [];
 }
 
@@ -1177,8 +1244,9 @@ document.getElementById("strategy-group").addEventListener("click", e => {
   label.querySelector("input").checked = true;
   currentStrategy = strategy;
 
-  // Enable/disable α slider
-  document.getElementById("alpha-row").classList.toggle("disabled", strategy !== "blend_struct");
+  // Slide open/closed the relevant slider drawer
+  document.getElementById("alpha-row").classList.toggle("open", strategy === "blend_struct");
+  document.getElementById("tau-row").classList.toggle("open", strategy === "tau");
 
   updateExplanation();
   if (DATA) redraw(true);
@@ -1197,6 +1265,20 @@ function setAlpha(idx) {
 document.getElementById("alpha-slider").addEventListener("input", e => setAlpha(parseInt(e.target.value)));
 document.getElementById("alpha-dec").addEventListener("click", () => setAlpha(currentAlpha - 1));
 document.getElementById("alpha-inc").addEventListener("click", () => setAlpha(currentAlpha + 1));
+
+// τ slider
+function setTau(idx) {
+  currentTau = Math.max(0, Math.min(24, idx));
+  document.getElementById("tau-slider").value = currentTau;
+  const tau = TAU_VALUES[currentTau];
+  const description = tau < 0.5 ? "intensity-dominated" : tau < 3 ? "intense + volume" : tau < 30 ? "balanced" : tau < 100 ? "volume-dominated" : "≈ Flavor Blend";
+  document.getElementById("tau-value").textContent = `τ = ${tau < 10 ? tau.toFixed(2) : tau.toFixed(0)} (${description})`;
+  if (DATA && currentStrategy === "tau") redraw(true);
+}
+
+document.getElementById("tau-slider").addEventListener("input", e => setTau(parseInt(e.target.value)));
+document.getElementById("tau-dec").addEventListener("click", () => setTau(currentTau - 1));
+document.getElementById("tau-inc").addEventListener("click", () => setTau(currentTau + 1));
 
 // Color by
 document.getElementById("color-select").addEventListener("change", e => {
