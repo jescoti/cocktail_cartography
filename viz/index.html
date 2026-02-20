@@ -812,16 +812,30 @@
     <div class="section-label">Vectorization Strategy</div>
     <div id="strategy-group" style="display:flex;flex-direction:column;gap:4px;">
 
-      <label class="strategy-btn active" data-strategy="blend">
-        <input type="radio" name="strategy" value="blend" checked />
-        <span class="strategy-title">Flavor Blend</span>
-        <span class="strategy-desc">What does it taste like overall? Proportion-weighted sum of ingredient flavors.</span>
+      <label class="strategy-btn active" data-strategy="tau">
+        <input type="radio" name="strategy" value="tau" checked />
+        <span class="strategy-title">Perceptual Blend</span>
+        <span class="strategy-desc">Controls how much intense ingredients influence clustering. Slide from punchy-dominates to volume-proportional.</span>
       </label>
+
+      <!-- τ slider — inline after Perceptual Blend -->
+      <div id="tau-row" class="slider-drawer open">
+        <div id="tau-labels">
+          <span>← Intense wins</span>
+          <span>By volume →</span>
+        </div>
+        <div id="tau-slider-row">
+          <button class="alpha-step-btn" id="tau-dec" title="Lower tau">‹</button>
+          <input id="tau-slider" type="range" min="0" max="24" step="1" value="12">
+          <button class="alpha-step-btn" id="tau-inc" title="Higher tau">›</button>
+        </div>
+        <div id="tau-value">τ = 5.62 (balanced)</div>
+      </div>
 
       <label class="strategy-btn" data-strategy="blend_struct">
         <input type="radio" name="strategy" value="blend_struct" />
-        <span class="strategy-title">Blend + Structure</span>
-        <span class="strategy-desc">Taste + shape. Adds how much of the drink is base vs. modifier vs. citrus. Use the α/β slider to weight them.</span>
+        <span class="strategy-title">Taste + Structure</span>
+        <span class="strategy-desc">Balances between how a cocktail tastes and how it's constructed. Use the slider to explore.</span>
       </label>
 
       <!-- α/β slider — inline after Blend+Structure -->
@@ -840,35 +854,9 @@
 
       <label class="strategy-btn" data-strategy="role_slot">
         <input type="radio" name="strategy" value="role_slot" />
-        <span class="strategy-title">Role-Slot</span>
-        <span class="strategy-desc">Structure first. Compares base-to-base, modifier-to-modifier. Two drinks are close only if the same slots taste similar.</span>
+        <span class="strategy-title">Recipe Grammar</span>
+        <span class="strategy-desc">Compares drinks by matching ingredient roles: base-to-base, modifier-to-modifier. Pure structural view.</span>
       </label>
-
-      <label class="strategy-btn" data-strategy="perceptual">
-        <input type="radio" name="strategy" value="perceptual" />
-        <span class="strategy-title">Perceptual</span>
-        <span class="strategy-desc">Punchy ingredients win. Small amounts of Chartreuse, Fernet, Mezcal pull their slot's character toward theirs.</span>
-      </label>
-
-      <label class="strategy-btn" data-strategy="tau">
-        <input type="radio" name="strategy" value="tau" />
-        <span class="strategy-title">Tau (τ)</span>
-        <span class="strategy-desc">Softmax perceptual. Use the τ slider to control how much intense ingredients dominate (low τ) vs uniform blend (high τ).</span>
-      </label>
-
-      <!-- τ slider — inline after Tau -->
-      <div id="tau-row" class="slider-drawer">
-        <div id="tau-labels">
-          <span>← Max pooling</span>
-          <span>Flavor Blend →</span>
-        </div>
-        <div id="tau-slider-row">
-          <button class="alpha-step-btn" id="tau-dec" title="Lower tau">‹</button>
-          <input id="tau-slider" type="range" min="0" max="24" step="1" value="12" />
-          <button class="alpha-step-btn" id="tau-inc" title="Higher tau">›</button>
-        </div>
-        <div id="tau-value">τ = 5.62 (balanced)</div>
-      </div>
 
     </div>
   </div>
@@ -960,55 +948,32 @@
 // ────────────────────────────────────────────────────────────────────────────
 
 const STRATEGY_EXPLANATIONS = {
-  blend: `<strong>Flavor Blend</strong><br>
-Each cocktail is represented as a <em>proportion-weighted sum</em> of its ingredients'
-15-dimensional flavor vectors. Seasonings get a fixed weight of 0.05; garnishes 0.03.<br><br>
-<strong>Look for:</strong> Drinks that share an overall taste profile cluster together
-regardless of their structure. A Negroni and a Bijou should be close — both bitter,
-herbal, and sweet.<br><br>
-<strong>Limitation:</strong> Structure is invisible. A Manhattan and a Bee's Knees
-could appear close if their blended flavors happen to converge.`,
+  tau: `<strong>Perceptual Blend</strong><br>
+Controls how much intense ingredients influence the clustering.
+Low τ: a dash of Chartreuse or Fernet dominates a drink's character.
+High τ: every ingredient contributes proportionally by volume.<br><br>
+<strong>Look for:</strong> At low τ, drinks anchored by a punchy accent cluster together.
+At high τ, drinks with similar overall flavor profiles are nearest neighbors.<br><br>
+<strong>Tip:</strong> Start in the middle, then slide left to see "punch-driven" groupings
+or right for "volume-proportional" ones.`,
 
-  blend_struct: `<strong>Blend + Structure</strong><br>
-Concatenates the 15-dim flavor blend with 7 structural features: proportion of base,
-modifying, citrus, and accent components; presence of seasoning; and serving style.<br><br>
-The <strong>α/β slider</strong> controls the relative weight of flavor vs. structure.
-At α=1 this is identical to Flavor Blend; at α=0 it's pure structure.<br><br>
-<strong>Look for:</strong> Two drinks are close only if they taste similar AND have
-similar role proportions (how much spirit, how much modifier, etc.).<br><br>
-<strong>Limitation:</strong> The α/β weighting is somewhat arbitrary — tune it to
-find the most interesting groupings.`,
+  blend_struct: `<strong>Taste + Structure</strong><br>
+Balances between how a cocktail <em>tastes</em> and how it's <em>constructed</em>.
+Flavor = the 15-dimensional taste profile. Structure = proportions of base, modifier,
+citrus, accent, plus serving style.<br><br>
+<strong>Look for:</strong> Slide toward "How it tastes" and similar flavors cluster;
+slide toward "How it's made" and similar recipes cluster.
+Two drinks can taste alike but be built very differently.<br><br>
+<strong>Tip:</strong> The sweet spot is often around α = 0.50 (balanced).`,
 
-  role_slot: `<strong>Role-Slot</strong><br>
-The most structurally explicit strategy. Each cocktail becomes a 60-dimensional vector:
-four 15-dim flavor profiles, one per structural slot — base, modifying, citrus, accent.<br><br>
-<strong>Look for:</strong> A Manhattan and a Bijou are close because their base slots
-(rye/gin) and modifier slots (vermouth) are flavour-similar. A Manhattan and a Daiquiri
-are far because one has no citrus slot, the other has no modifying slot.<br><br>
-<strong>Limitation:</strong> Drinks with unusual role distributions need care.
-Empty slots create sparsity, and high dimensionality can make UMAP noisier.`,
-
-  perceptual: `<strong>Perceptual</strong><br>
-Motivated by the observation that some ingredients <em>punch above their weight.</em>
-A small dash of Fernet-Branca, Chartreuse, or Mezcal dominates the character of a
-drink regardless of proportion.<br><br>
-Models this as: <code>v_d = max_ingredient_d × 0.4 + blend_d × 0.6</code><br><br>
-<strong>Look for:</strong> Drinks anchored by a strong accent ingredient cluster
-together even if the rest of the recipe differs. The Hanky Panky should be near
-other Fernet drinks.<br><br>
-<strong>Limitation:</strong> The punch weight (0.4) is a tuned guess. Doesn't
-explicitly model structure.`,
-
-  tau: `<strong>Softmax Perceptual (τ)</strong><br>
-Uses a temperature-controlled softmax to weight ingredients by both volume and intensity.
-Low τ (≈0.1) approaches max pooling where the most intense ingredient dominates.
-High τ (≈30) approaches uniform blend where all ingredients contribute equally.<br><br>
-The <strong>τ slider</strong> controls this temperature parameter. Start at τ≈2 for a
-balanced view, then explore: lower values emphasize punch, higher values emphasize volume.<br><br>
-<strong>Advantage:</strong> More principled than the 40/60 linear mix — τ smoothly
-interpolates between extremes with a single, interpretable parameter.<br><br>
-<strong>Note:</strong> The embeddings are spatially stabilized, so sliding τ creates
-smooth transitions rather than chaotic reorganization.`
+  role_slot: `<strong>Recipe Grammar</strong><br>
+Compares drinks slot-by-slot: base vs. base, modifier vs. modifier, citrus vs. citrus.
+Each cocktail becomes a 60-dimensional vector (four 15-dim flavor profiles).<br><br>
+<strong>Look for:</strong> A Manhattan and a Bijou are close because their base and
+modifier slots are flavor-similar. A Manhattan and a Daiquiri are far apart because
+one has no citrus slot, the other has no modifying slot.<br><br>
+<strong>Unique:</strong> The only strategy that respects ingredient <em>roles</em>,
+not just overall flavor.`
 };
 
 const CATEGORICAL_PALETTES = {
@@ -1062,7 +1027,7 @@ const TAU_VALUES = [0.1, 0.14, 0.196, 0.274, 0.383, 0.536, 0.75, 1.049, 1.468, 2
 // ────────────────────────────────────────────────────────────────────────────
 
 let DATA = null;
-let currentStrategy = "blend";
+let currentStrategy = "tau";
 let currentAlpha    = 10;  // index into ALPHA_STEPS (0.50 = balanced)
 let currentTau      = 12;  // index into TAU_VALUES (~5.62 = middle)
 let currentColor    = "base_spirit";
