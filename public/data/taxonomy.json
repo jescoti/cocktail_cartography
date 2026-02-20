@@ -1,0 +1,116 @@
+{
+  "spirit": {
+    "whiskey": {
+      "bourbon": null,
+      "rye_whiskey": null,
+      "irish_whiskey": null,
+      "scotch": null,
+      "blended_scotch": null,
+      "islay_scotch": null
+    },
+    "gin": {
+      "gin": null,
+      "old_tom_gin": null
+    },
+    "agave": {
+      "tequila_blanco": null,
+      "tequila_reposado": null,
+      "mezcal": null
+    },
+    "rum": {
+      "white_rum": null,
+      "aged_rum": null,
+      "dark_rum": null,
+      "overproof_rum": null,
+      "cachaca": null
+    },
+    "brandy": {
+      "cognac": null,
+      "pisco": null,
+      "applejack": null
+    },
+    "vodka": {
+      "vodka": null
+    }
+  },
+  "vermouth": {
+    "sweet_vermouth": null,
+    "dry_vermouth": null,
+    "blanc_vermouth": null,
+    "punt_e_mes": null
+  },
+  "amaro": {
+    "campari": null,
+    "cynar": null,
+    "averna": null,
+    "amaro_nonino": null,
+    "fernet_branca": null,
+    "suze": null
+  },
+  "herbal_liqueur": {
+    "green_chartreuse": null,
+    "yellow_chartreuse": null,
+    "benedictine": null,
+    "genepy": null,
+    "st_germain": null,
+    "drambuie": null,
+    "falernum": null,
+    "allspice_dram": null
+  },
+  "fruit_liqueur": {
+    "maraschino": null,
+    "cointreau": null,
+    "grand_marnier": null,
+    "curacao": null,
+    "aperol": null,
+    "amaretto": null,
+    "cherry_heering": null,
+    "creme_de_violette": null,
+    "creme_de_mure": null,
+    "creme_de_cassis": null,
+    "apricot_liqueur": null
+  },
+  "sweetener": {
+    "simple_syrup": null,
+    "honey_syrup": null,
+    "agave_syrup": null,
+    "demerara_syrup": null,
+    "grenadine": null,
+    "orgeat": null,
+    "raspberry_syrup": null,
+    "honey_ginger_syrup": null
+  },
+  "citrus": {
+    "lemon_juice": null,
+    "lime_juice": null,
+    "orange_juice": null,
+    "grapefruit_juice": null
+  },
+  "bitters": {
+    "angostura_bitters": null,
+    "peychauds_bitters": null,
+    "orange_bitters": null
+  },
+  "other": {
+    "absinthe": null,
+    "lillet_blanc": null,
+    "egg_white": null,
+    "fino_sherry": null,
+    "pineapple_juice": null
+  },
+  "sparkling": {
+    "prosecco": null,
+    "sparkling_water": null
+  },
+  "mixer": {
+    "ginger_beer": null
+  },
+  "garnish": {
+    "lemon_twist": null,
+    "orange_twist": null,
+    "cherry": null,
+    "olive": null,
+    "mint_sprig": null,
+    "lime_wheel": null
+  }
+}

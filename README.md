@@ -211,7 +211,7 @@ The perceptual view also shows the sharpest gin-versus-whiskey-versus-rum separa
 
 ---
 
-### What Is Not Working
+### Further work needed
 
 **BLEND+STRUCT in the middle (α ≈ 0.5)** — The clusters are meaningful at both endpoints but somewhat weaker at the midpoint. This is somewhat fundamental: the "average" of a structural signal and a flavor signal doesn't necessarily produce a coherent single signal. Silhouette score drops from ~0.81 (endpoints) to ~0.53 (midpoint). The topology is stable (thanks to AlignedUMAP), but the clusters are genuinely less pronounced at α=0.5 — this may be irreducible.
 
@@ -219,7 +219,7 @@ The perceptual view also shows the sharpest gin-versus-whiskey-versus-rum separa
 
 **Seasoning ingredients (bitters, absinthe rinses)** — Modeled at a fixed low weight (0.02 × total volume) with `ml=None` in the data. This is a reasonable proxy but inaccurate: the aromatic intensity of 2 dashes of Peychaud's bitters in a Sazerac is not the same as 2 dashes of angostura in a Manhattan. Bitters express differently depending on dilution and base spirit chemistry.
 
-**Equal-parts cocktails** — The Last Word, Final Ward, Naked & Famous, and Paper Plane (all equal-parts templates) share a structural trait that none of our strategies explicitly capture: every slot has equal weight. They end up distributed across different clusters depending on their flavor profiles, when a bartender would recognize them as the same structural template. A 4-way equal-parts slot as a distinct strategy dimension could be interesting.
+**Equal-parts cocktails** — The Last Word, Final Ward, Naked & Famous, and Paper Plane (all equal-parts templates) share a structural trait that none of our strategies explicitly capture: every slot has equal weight. They end up distributed across different clusters depending on their flavor profiles, when a bartender would recognize them as the same structural template. A 4-way equal-parts slot as a distinct strategy dimension could be interesting. 
 
 ---
 
@@ -233,7 +233,7 @@ The perceptual view also shows the sharpest gin-versus-whiskey-versus-rum separa
 
 **Vesper / Tuxedo / Brooklyn** — These three show the largest displacement between BLEND and ROLE-SLOT strategies (normalized drift of 3.5, 3.4, 3.4 respectively). The reason: all three have **dry vermouth as the modifier** (rather than the more common sweet vermouth), which in role-slot creates a slot-vector that's quite different from most other stirred Martini-family drinks. But in flavor-space they're indistinguishable from other gin/rye + vermouth + accent drinks. The dry vermouth acts as a structural differentiator that isn't a strong flavor differentiator.
 
-**Martinez** — In perceptual view, ends up next to the Negroni, which is reasonable (both are stirred, spirit-forward, bitter-accented drinks). But it also lands near the Tequila Old Fashioned, which is less intuitive. The connecting thread is that the Martinez's maraschino contributes a mild sweetness and nuttiness that reads similarly to agave sweetener — neither is strongly bitter or citrus-forward. This might indicate a missing **"sweetener character"** dimension that would distinguish cherry-forward sweetness from agave/cane sweetness.
+**Martinez** — In perceptual view, sometimes ends up next to the Negroni, which is reasonable, though not always (both are spirit-forward, but the intense bitterness of the Negroni isn't present in the Martinez). But it also lands near the Tequila Old Fashioned, which is less intuitive. The connecting thread is that the Martinez's maraschino contributes a mild sweetness and nuttiness that reads similarly to agave sweetener — neither is strongly bitter or citrus-forward. This might indicate a missing **"sweetener character"** dimension that would distinguish cherry-forward sweetness from agave/cane sweetness.
 
 **El Presidente** — Consistently isolated in role-slot (nearest neighbor distance 0.287, the third-highest in the strategy). It's a white rum + dry vermouth + curaçao + grenadine build — the only drink with dry vermouth as modifier, curaçao as accent, and a sweetener in a stirred template. Its flavor profile and structural grammar are genuinely unusual. This is correct behavior, not a bug.
 
@@ -241,7 +241,11 @@ The perceptual view also shows the sharpest gin-versus-whiskey-versus-rum separa
 
 ### Cluster Migrations: How Tau Shapes the Map
 
-The tau (τ) parameter in the softmax perceptual strategy creates a continuous spectrum from **intensity-dominated** (low τ) to **volume-dominated** (high τ) clustering. As you slide from τ=0.1 to τ=316, cocktails migrate between clusters in revealing ways:
+We introduced the tau (τ) parameter in the softmax perceptual strategy to allow us to experiment with how different ingredient weighting schemes affect clustering. Changing values of τ create a continuous spectrum from...
+- **intensity-dominated** (low τ), where a small amount of an intense ingredient, like chartreuse or mescal, can dominate the cluster assignment to
+- **volume-dominated** (high τ), where the impact of an ingredient is more proportional to its volume
+
+As you slide from τ=0.1 to τ=316, cocktails migrate between clusters in revealing ways:
 
 #### The Most Mobile Cocktails
 
@@ -344,10 +348,45 @@ pip install umap-learn numpy scipy openpyxl scikit-learn
 # Build embeddings
 python scripts/build_embeddings.py
 
-# Serve viz
+# Serve viz locally
 python -m http.server 8000
 # → open http://localhost:8000/viz/index.html
 ```
+
+## Deployment
+
+This project supports two deployment strategies:
+
+### Option 1: Static Hosting (DreamHost, GitHub Pages, etc.)
+
+The `public/` directory contains a completely static version ready for deployment:
+
+```bash
+# Test locally
+cd public && python3 -m http.server 8888
+# → open http://localhost:8888
+
+# Deploy to DreamHost via rsync
+./deploy.sh <username> cocktail-cartography.com
+
+# Or manually upload the public/ directory contents via FTP
+```
+
+See [DEPLOY_DREAMHOST.md](DEPLOY_DREAMHOST.md) for detailed DreamHost deployment instructions and [DOMAIN_SETUP.md](DOMAIN_SETUP.md) for domain configuration.
+
+### Option 2: Container Deployment (Fly.io, Heroku, etc.)
+
+The project includes Docker and Fly.io configuration for container-based deployment:
+
+```bash
+# Deploy to Fly.io
+fly deploy
+
+# Point custom domain to Fly.io app
+fly certs add cocktail-cartography.com
+```
+
+The containerized version runs a minimal Express server for compatibility with platform-as-a-service providers.
 
 ## Files
 

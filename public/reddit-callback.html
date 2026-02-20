@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reddit Authorization - Cocktail Cartography</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+      background: #0f0f12;
+      color: #d4d4d8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      padding: 2rem;
+    }
+    .container {
+      max-width: 500px;
+      text-align: center;
+    }
+    h1 {
+      color: #fbbf24;
+      margin-bottom: 1rem;
+      font-size: 2rem;
+    }
+    p {
+      color: #a1a1aa;
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+    .success {
+      color: #86efac;
+      font-weight: bold;
+    }
+    .error {
+      color: #fca5a5;
+      font-weight: bold;
+    }
+    code {
+      background: #27272a;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.9em;
+      display: inline-block;
+      margin: 0.5rem 0;
+      word-break: break-all;
+    }
+    a {
+      color: #60a5fa;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .nav {
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Reddit Authorization</h1>
+
+    <div id="status">
+      <p>Processing Reddit authorization...</p>
+    </div>
+
+    <div class="nav">
+      <a href="/">← Back to Cocktail Cartography</a>
+    </div>
+  </div>
+
+  <script>
+    // Parse the URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    const state = urlParams.get('state');
+    const error = urlParams.get('error');
+
+    const statusDiv = document.getElementById('status');
+
+    if (error) {
+      statusDiv.innerHTML = `
+        <p class="error">Authorization failed!</p>
+        <p>Error: ${error}</p>
+        <p>Please try again or check your Reddit app configuration.</p>
+      `;
+    } else if (code) {
+      statusDiv.innerHTML = `
+        <p class="success">✓ Authorization successful!</p>
+        <p>Authorization code received. You can use this code to obtain an access token.</p>
+        <p>Code: <code>${code}</code></p>
+        <p>State: <code>${state || 'none'}</code></p>
+        <p style="margin-top: 1rem;">
+          <small>Note: This code expires quickly. Use it to exchange for an access token in your script.</small>
+        </p>
+      `;
+    } else {
+      statusDiv.innerHTML = `
+        <p>No authorization code received.</p>
+        <p>This page is used as the redirect URI for Reddit OAuth.</p>
+        <p>If you're seeing this directly, you may need to start the OAuth flow from Reddit.</p>
+      `;
+    }
+  </script>
+</body>
+</html>

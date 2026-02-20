@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About - Cocktail Cartography</title>
+  <style>
+    :root {
+      --deco-black: #1a1a1d;
+      --deco-charcoal: #2d2d30;
+      --deco-gold: #D4AF37;
+      --deco-gold-dark: #B8941E;
+      --text-primary: #F5F5DC;
+      --text-primary-hover: #E8E8CF;
+      --text-secondary: #C5C5B0;
+      --text-tertiary: #9A9A88;
+      --text-muted: #6B6B60;
+      --border-primary: #D4AF37;
+      --border-secondary: #4a4a3d;
+      --bg-panel: #1a1a1d;
+      --bg-panel-lighter: #2d2d30;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Futura", "Century Gothic", "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      background: var(--deco-black);
+      padding: 0;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 30px;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      font-weight: 300;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--deco-gold);
+      margin-bottom: 0.5em;
+      border-bottom: 3px solid var(--deco-gold);
+      padding-bottom: 0.3em;
+    }
+
+    h2 {
+      font-size: 1.4em;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--deco-gold);
+      margin-top: 2em;
+      margin-bottom: 0.8em;
+      border-bottom: 2px solid var(--border-secondary);
+      padding-bottom: 0.4em;
+    }
+
+    h3 {
+      font-size: 1.1em;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: var(--text-primary);
+      margin-top: 1.5em;
+      margin-bottom: 0.6em;
+    }
+
+    p {
+      margin: 1em 0;
+      color: var(--text-secondary);
+      font-size: 14px;
+      letter-spacing: 0.01em;
+    }
+
+    .lead {
+      font-size: 1.15em;
+      color: var(--text-primary);
+      margin-bottom: 1.5em;
+      line-height: 1.7;
+    }
+
+    ul, ol {
+      margin: 1em 0 1em 2em;
+      color: var(--text-secondary);
+    }
+
+    li {
+      margin: 0.6em 0;
+      line-height: 1.6;
+    }
+
+    strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    em {
+      color: var(--text-primary);
+      font-style: italic;
+    }
+
+    code {
+      background: var(--bg-panel-lighter);
+      padding: 3px 8px;
+      border-radius: 2px;
+      font-family: "Monaco", "Courier New", monospace;
+      font-size: 0.9em;
+      color: var(--deco-gold);
+      border: 1px solid var(--border-secondary);
+    }
+
+    pre {
+      background: var(--bg-panel-lighter);
+      color: var(--text-primary);
+      padding: 18px;
+      border-radius: 2px;
+      overflow-x: auto;
+      line-height: 1.5;
+      border: 2px solid var(--border-secondary);
+      margin: 1.5em 0;
+    }
+
+    pre code {
+      background: none;
+      padding: 0;
+      color: var(--text-primary);
+      border: none;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 1.5em 0;
+      border: 2px solid var(--border-secondary);
+    }
+
+    th, td {
+      border: 1px solid var(--border-secondary);
+      padding: 12px 14px;
+      text-align: left;
+    }
+
+    th {
+      background: var(--bg-panel-lighter);
+      color: var(--deco-gold);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 12px;
+    }
+
+    td {
+      color: var(--text-secondary);
+    }
+
+    tr:nth-child(even) td {
+      background: rgba(45, 45, 48, 0.3);
+    }
+
+    hr {
+      border: none;
+      border-top: 2px solid var(--border-secondary);
+      margin: 2.5em 0;
+    }
+
+    .about-footer {
+      font-style: italic;
+      color: var(--text-muted);
+      margin-top: 3em;
+      padding-top: 2em;
+      border-top: 1px solid var(--border-secondary);
+    }
+
+    /* Back to viz link */
+    .back-link {
+      display: inline-block;
+      margin-bottom: 30px;
+      color: var(--deco-gold);
+      text-decoration: none;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 12px;
+      padding: 10px 16px;
+      border: 2px solid var(--border-secondary);
+      background: var(--bg-panel-lighter);
+      transition: all 0.2s ease;
+    }
+
+    .back-link:hover {
+      border-color: var(--deco-gold);
+      box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+      background: var(--deco-charcoal);
+    }
+
+    /* Nerd Toggle UI */
+    .nerd-toggle-container {
+      position: fixed;
+      top: 30px;
+      right: 30px;
+      z-index: 1000;
+    }
+
+    .talk-nerdy-btn {
+      background: var(--bg-panel-lighter);
+      color: var(--deco-gold);
+      border: 2px solid var(--deco-gold);
+      padding: 12px 24px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 0 8px rgba(212, 175, 55, 0.2);
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .talk-nerdy-btn:hover {
+      background: var(--deco-gold);
+      color: var(--deco-black);
+      box-shadow: 0 0 12px rgba(212, 175, 55, 0.5);
+    }
+
+    .talk-nerdy-btn:active {
+      transform: scale(0.98);
+    }
+
+    .nerd-modal {
+      display: none;
+      position: fixed;
+      top: 90px;
+      right: 30px;
+      background: var(--bg-panel-lighter);
+      border: 3px solid var(--deco-gold);
+      padding: 20px;
+      min-width: 220px;
+      box-shadow:
+        0 12px 40px rgba(0, 0, 0, 0.7),
+        0 0 20px rgba(212, 175, 55, 0.2);
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .nerd-modal.visible {
+      display: block;
+    }
+
+    .nerd-modal h3 {
+      margin-top: 0;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--deco-gold);
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--border-secondary);
+    }
+
+    .nerd-option {
+      display: flex;
+      align-items: center;
+      padding: 10px 12px;
+      margin: 6px 0;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 2px solid transparent;
+      background: var(--bg-panel);
+    }
+
+    .nerd-option:hover {
+      background: var(--deco-charcoal);
+      border-color: var(--border-secondary);
+    }
+
+    .nerd-option.active {
+      background: var(--deco-charcoal);
+      border-color: var(--deco-gold);
+      position: relative;
+    }
+
+    .nerd-option.active::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--deco-gold);
+    }
+
+    .nerd-radio {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid var(--border-secondary);
+      margin-right: 12px;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+
+    .nerd-option.active .nerd-radio {
+      border-color: var(--deco-gold);
+    }
+
+    .nerd-option.active .nerd-radio::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: var(--deco-gold);
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .nerd-label {
+      font-weight: 500;
+      color: var(--text-secondary);
+      font-size: 13px;
+      letter-spacing: 0.02em;
+    }
+
+    .nerd-option.active .nerd-label {
+      color: var(--text-primary);
+    }
+
+    .about-content {
+      display: none;
+    }
+
+    .about-content.visible {
+      display: block;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+      .container {
+        padding: 30px 20px;
+      }
+
+      .nerd-toggle-container {
+        position: static;
+        margin-bottom: 20px;
+        text-align: center;
+      }
+
+      .nerd-modal {
+        position: static;
+        margin-top: 15px;
+        width: 100%;
+      }
+
+      h1 {
+        font-size: 2em;
+        letter-spacing: 0.1em;
+      }
+
+      h2 {
+        font-size: 1.2em;
+        letter-spacing: 0.08em;
+      }
+    }
+
+    /* Top decoration */
+    .chevron-decoration {
+      height: 6px;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        transparent 15%,
+        var(--deco-gold) 50%,
+        transparent 85%,
+        transparent 100%
+      );
+      margin-bottom: 40px;
+      opacity: 0.6;
+      box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+    }
+  </style>
+</head>
+<body>
+  <div class="chevron-decoration"></div>
+
+  <div class="container">
+    <a href="index.html" class="back-link">← Back to Visualization</a>
+
+    <div class="nerd-toggle-container">
+      <button class="talk-nerdy-btn" id="toggleBtn">
+        Talk nerdy to me
+      </button>
+      <div class="nerd-modal" id="nerdModal">
+        <h3>Choose your nerdiness:</h3>
+        <div class="nerd-option active" data-level="curious">
+          <div class="nerd-radio"></div>
+          <div class="nerd-label">Just curious</div>
+        </div>
+        <div class="nerd-option" data-level="cocktail">
+          <div class="nerd-radio"></div>
+          <div class="nerd-label">Cocktail nerd</div>
+        </div>
+        <div class="nerd-option" data-level="data">
+          <div class="nerd-radio"></div>
+          <div class="nerd-label">Data nerd</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="contentContainer">
+      <!-- Content will be loaded here -->
+    </div>
+  </div>
+
+  <script>
+    // State management
+    let currentLevel = 'curious';
+    let modalVisible = false;
+    let contentCache = {};
+
+    // DOM elements
+    const toggleBtn = document.getElementById('toggleBtn');
+    const nerdModal = document.getElementById('nerdModal');
+    const contentContainer = document.getElementById('contentContainer');
+    const nerdOptions = document.querySelectorAll('.nerd-option');
+
+    // Toggle modal visibility
+    toggleBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      modalVisible = !modalVisible;
+      nerdModal.classList.toggle('visible', modalVisible);
+    });
+
+    // Close modal when clicking outside
+    document.addEventListener('click', (e) => {
+      if (modalVisible && !nerdModal.contains(e.target) && e.target !== toggleBtn) {
+        modalVisible = false;
+        nerdModal.classList.remove('visible');
+      }
+    });
+
+    // Handle nerd level selection
+    nerdOptions.forEach(option => {
+      option.addEventListener('click', async () => {
+        const level = option.dataset.level;
+        if (level !== currentLevel) {
+          currentLevel = level;
+          updateActiveOption();
+          await loadContent(level);
+          modalVisible = false;
+          nerdModal.classList.remove('visible');
+        }
+      });
+    });
+
+    // Update active option styling
+    function updateActiveOption() {
+      nerdOptions.forEach(opt => {
+        opt.classList.toggle('active', opt.dataset.level === currentLevel);
+      });
+    }
+
+    // Load content for a specific nerd level
+    async function loadContent(level) {
+      // Check cache first
+      if (contentCache[level]) {
+        displayContent(contentCache[level]);
+        return;
+      }
+
+      // Fetch content
+      try {
+        const response = await fetch(`about_${level}.html`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const html = await response.text();
+        contentCache[level] = html;
+        displayContent(html);
+      } catch (error) {
+        console.error('Error loading content:', error);
+        contentContainer.innerHTML = '<p style="color: var(--text-primary);">Error loading content: ' + error.message + '<br>Tried to load: about_' + level + '.html</p>';
+      }
+    }
+
+    // Display content with fade animation
+    function displayContent(html) {
+      // Remove existing content
+      const oldContent = contentContainer.querySelector('.about-content');
+      if (oldContent) {
+        oldContent.classList.remove('visible');
+        setTimeout(() => {
+          contentContainer.innerHTML = html;
+          const newContent = contentContainer.querySelector('.about-content');
+          if (newContent) {
+            setTimeout(() => newContent.classList.add('visible'), 10);
+          }
+        }, 200);
+      } else {
+        contentContainer.innerHTML = html;
+        const newContent = contentContainer.querySelector('.about-content');
+        if (newContent) {
+          setTimeout(() => newContent.classList.add('visible'), 10);
+        }
+      }
+    }
+
+    // Load initial content
+    loadContent(currentLevel);
+
+    // Load content from URL hash if present
+    const hash = window.location.hash.slice(1);
+    if (hash && ['curious', 'cocktail', 'data'].includes(hash)) {
+      currentLevel = hash;
+      updateActiveOption();
+      loadContent(currentLevel);
+    }
+
+    // Update URL hash when level changes
+    nerdOptions.forEach(option => {
+      const origClick = option.onclick;
+      option.addEventListener('click', () => {
+        window.location.hash = option.dataset.level;
+      });
+    });
+  </script>
+</body>
+</html>

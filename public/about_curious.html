@@ -1,0 +1,228 @@
+<div class="about-content" id="curious-content">
+  <h1>Cocktail Cartography</h1>
+
+  <p class="lead">An interactive map of 102 classic cocktails that shows you which drinks are similar to each other — and lets you explore <em>why</em> they're similar by switching between different ways of thinking about cocktails.</p>
+
+  <h2>What This Shows You</h2>
+
+  <p>If you've ever enjoyed a Margarita and wondered "what else would I like?", this visualization tries to answer that question. But here's the interesting part: the answer changes depending on whether you want something that <em>tastes</em> similar, or something that's <em>made</em> in a similar way.</p>
+
+  <p>The map includes everything from familiar classics like:</p>
+  <ul>
+    <li><strong>Margarita</strong> — tequila, lime juice, orange liqueur (like Cointreau)</li>
+    <li><strong>Manhattan</strong> — whiskey, sweet vermouth, bitters</li>
+    <li><strong>Martini</strong> — gin and dry vermouth</li>
+    <li><strong>Daiquiri</strong> — rum, lime juice, simple syrup</li>
+    <li><strong>Negroni</strong> — gin, sweet vermouth, Campari (bitter liqueur)</li>
+    <li><strong>Old Fashioned</strong> — whiskey, sugar, bitters</li>
+    <li><strong>Aperol Spritz</strong> — Aperol (bitter orange liqueur), prosecco, soda water</li>
+  </ul>
+
+  <p>...to more obscure ones like the Last Word (gin, lime, maraschino cherry liqueur, and green Chartreuse herb liqueur, all in equal amounts) or the Trinidad Sour (which uses Angostura bitters as the main ingredient — yes, really).</p>
+
+  <h2>The Four Different Views</h2>
+
+  <p>You can switch between four different ways of grouping the cocktails. Each one tells you something different about what makes drinks similar.</p>
+
+  <h3>"Flavor" View</h3>
+  <p>Groups drinks by what they actually taste like, ignoring how they're made.</p>
+
+  <p><strong>What ends up together:</strong></p>
+  <ul>
+    <li>Daiquiri, Mojito (which is basically a Daiquiri with mint), and Caipirinha (which uses cachaça — Brazilian sugarcane spirit — instead of rum) all cluster together because they're refreshing, lime-forward, lightly sweet drinks</li>
+    <li>Manhattan and Rob Roy (which is the same drink but with scotch instead of rye whiskey) stay next to each other</li>
+    <li>All the Martini variations stay grouped</li>
+  </ul>
+
+  <p><strong>What splits apart:</strong></p>
+  <ul>
+    <li>Negroni and Manhattan don't end up near each other, even though they're both made the same way (spirit + vermouth + something else, stirred and served). They just taste completely different — one is bitter and herbaceous, the other is sweet and whiskey-forward.</li>
+  </ul>
+
+  <h3>"Flavor + Structure" View (with a slider)</h3>
+  <p>This view has a slider that lets you blend between "how it's made" and "how it tastes." You can watch drinks move around the map as you change what matters.</p>
+
+  <p>At one end of the slider, drinks group by:</p>
+  <ul>
+    <li>Stirred vs. shaken vs. built (poured directly in the glass)</li>
+    <li>Served up (in a cocktail glass, no ice) vs. on ice</li>
+    <li>Number of ingredients</li>
+  </ul>
+
+  <p>At the other end, it's pure flavor. In between, it's a mix of both.</p>
+
+  <p><strong>Worth watching:</strong></p>
+  <ul>
+    <li>The Boulevardier (whiskey, sweet vermouth, Campari — basically a Negroni made with bourbon instead of gin) starts near other Negroni-style drinks and drifts toward whiskey drinks as you move the slider toward "flavor"</li>
+    <li>Aperol Spritz wanders between bitter Italian aperitivo drinks and light fizzy drinks depending on whether you weight structure or taste</li>
+  </ul>
+
+  <h3>"Grammar" View</h3>
+  <p>This one treats cocktails like sentences with a specific structure. Each drink has up to four "slots":</p>
+  <ol>
+    <li><strong>Base spirit</strong> (gin, whiskey, rum, tequila, etc.)</li>
+    <li><strong>Modifying ingredients</strong> (vermouth, liqueurs)</li>
+    <li><strong>Citrus</strong> (lemon, lime, grapefruit)</li>
+    <li><strong>Accent</strong> (the thing that gives it personality — Campari in a Negroni, green Chartreuse in a Last Word)</li>
+  </ol>
+
+  <p>Two drinks can taste similar but land far apart if the same flavors come from different positions in the recipe.</p>
+
+  <p><strong>Example:</strong> The Negroni and Americano both use Campari and sweet vermouth, but Negroni has gin as the base and Americano has soda water. In this view, they cluster together because Campari plays the same role in both (the "accent" that defines the drink). But in the flavor view, they can drift apart because one is spirit-forward and one is light and fizzy.</p>
+
+  <p><strong>What this captures:</strong></p>
+  <ul>
+    <li>All the Negroni variations (Boulevardier with bourbon, White Negroni with Suze instead of Campari, Mezcal Negroni, etc.) cluster together because they're all "base spirit + vermouth + bitter accent" in equal parts</li>
+    <li>All the sours (Daiquiri, Whiskey Sour, Margarita, etc.) group together because they're all "base spirit + citrus + sweetener"</li>
+  </ul>
+
+  <h3>"Intensity" View</h3>
+  <p>Like the flavor view, but it gives extra weight to ingredients that "punch above their weight" — things that are super intense even in small amounts.</p>
+
+  <p><strong>Example:</strong> A Penicillin has 2 ounces of regular scotch and just ¼ ounce of Islay scotch (the super smoky kind) floated on top. By volume, the Islay is only about 11% of the drink, but it completely defines what the drink tastes like. This view recognizes that and groups the Penicillin with other smoky drinks.</p>
+
+  <p>Same with:</p>
+  <ul>
+    <li>Hanky Panky (gin + vermouth + a tiny bit of Fernet Branca, which is an intensely bitter/minty Italian liqueur) clusters with other Fernet drinks rather than regular Martinis</li>
+    <li>Sazerac (whiskey + sugar + bitters, with an absinthe rinse — just a few drops coating the glass) gets pulled toward anise-flavored drinks because that absinthe hits hard</li>
+    <li>Bijou (gin + vermouth + green Chartreuse, an intensely herbal liqueur) clusters with other Chartreuse drinks</li>
+  </ul>
+
+  <p><strong>What it can't do perfectly:</strong></p>
+  <ul>
+    <li>It can't tell the difference between "a few drops of absinthe as a rinse" and "a full ounce of absinthe as a main ingredient." Both get up-weighted for intensity, but obviously one is way more absinthe-forward than the other.</li>
+  </ul>
+
+  <h2>Interesting Patterns You Might Notice</h2>
+
+  <h3>Drinks That Stay Together No Matter What</h3>
+  <p>Some cocktails are just... unambiguous. They cluster the same way in all four views:</p>
+  <ul>
+    <li>The Martini family (Martini, Dry Martini, Fifty-Fifty Martini) always groups together</li>
+    <li>The Manhattan family (Manhattan, Rob Roy, Perfect Manhattan) stays coherent</li>
+    <li>Simple sours (Daiquiri, Gimlet, Margarita) always cluster</li>
+  </ul>
+  <p>These are the "classics" that define their categories.</p>
+
+  <h3>Drinks That Travel</h3>
+  <p>These cocktails move to completely different neighborhoods depending on which view you're using:</p>
+
+  <p><strong>Boulevardier</strong> (bourbon + sweet vermouth + Campari)</p>
+  <ul>
+    <li>In "grammar" view: with Negronis (same structure)</li>
+    <li>In "flavor" view: drifts toward Manhattan-style whiskey drinks</li>
+    <li>It's a boundary-dweller between bitter Italian aperitivo territory and American whiskey land</li>
+  </ul>
+
+  <p><strong>Aviation</strong> (gin + lemon + maraschino cherry liqueur + crème de violette)</p>
+  <ul>
+    <li>In "intensity" view: clusters with other maraschino-heavy drinks</li>
+    <li>In "flavor" view: the gin dominates and it becomes just another gin sour</li>
+  </ul>
+
+  <p><strong>Corpse Reviver #2</strong> (gin + lemon + Cointreau + Lillet + absinthe rinse)</p>
+  <ul>
+    <li>In "intensity" view: the absinthe rinse pulls it toward licorice/anise drinks</li>
+    <li>In "grammar" view: it's an equal-parts drink (all four liquid ingredients are the same amount)</li>
+    <li>In "flavor" view: it's basically a gin sour</li>
+  </ul>
+
+  <p>Each interpretation is defensible — these drinks genuinely occupy the interesting spaces <em>between</em> categories.</p>
+
+  <h3>The Genuine Weirdos</h3>
+
+  <p><strong>Trinidad Sour</strong> — This drink is completely isolated in every view. Instead of using a normal base spirit, it uses 1.5 ounces of Angostura bitters (yes, the stuff you usually add a few drops of) as the main ingredient, with just ½ ounce of whiskey and some orgeat (almond syrup) and lemon. Nothing else in the cocktail canon does this.</p>
+
+  <p><strong>El Presidente</strong> (white rum + dry vermouth + curaçao + grenadine) — Structurally unique. It's the only drink in the dataset that combines these specific ingredients in this specific way. Tastes great, just... different.</p>
+
+  <h2>What This Doesn't Tell You (But Maybe Should)</h2>
+
+  <p><strong>How strong the drink is</strong><br>
+  A Martini is basically pure alcohol (gin + a little vermouth, maybe 30% alcohol after you stir it with ice and dilute it a bit). A Sherry Cobbler is mostly fortified wine and juice, maybe 8% alcohol. The map doesn't know this, so it could theoretically group them together if their flavors matched. But obviously if you're looking for "something like a Martini," you probably care about the strength.</p>
+
+  <p><strong>How cold and diluted it is</strong><br>
+  Shaken drinks are colder and more diluted than stirred drinks (more ice contact, more agitation). Built drinks (poured directly over ice) keep diluting as you drink them. This completely changes how a drink feels in your mouth, but the map doesn't capture it.</p>
+
+  <p><strong>Sweetener personality</strong><br>
+  The map knows maraschino cherry liqueur is sweet, but it doesn't distinguish:</p>
+  <ul>
+    <li>Cherry/almond sweetness (maraschino)</li>
+    <li>Floral honey sweetness (honey syrup)</li>
+    <li>Vegetal agave sweetness (agave syrup)</li>
+    <li>Pomegranate sweetness (grenadine)</li>
+  </ul>
+  <p>These taste really different, but the model just sees "sweet."</p>
+
+  <h2>Using the Map</h2>
+
+  <p><strong>Shapes:</strong></p>
+  <ul>
+    <li>Triangle pointing down (▽) = served "up" in a cocktail glass</li>
+    <li>Square (■) = served on ice</li>
+    <li>Circle (●) = can be served either way</li>
+  </ul>
+
+  <p><strong>Colors:</strong><br>
+  You can color the dots by:</p>
+  <ul>
+    <li>Base spirit (gin, whiskey, rum, tequila, etc.)</li>
+    <li>Dominant flavor (sweet, bitter, citrus, smoky, etc.)</li>
+    <li>Individual flavors (just the sweet ones, just the bitter ones, etc.)</li>
+  </ul>
+
+  <p><strong>Clicking on a drink:</strong><br>
+  Shows you the 5 most similar drinks based on the true recipe similarity (not just what's close on the map, because the map is a flattened approximation).</p>
+
+  <p><strong>The slider (Flavor + Structure view only):</strong><br>
+  Use the ‹ / › buttons to step through, or drag the slider. You'll see the dots animate smoothly to new positions as the definition of "similar" changes.</p>
+
+  <h2>A Few Cocktails You Might Recognize</h2>
+
+  <p>In case you want to orient yourself on the map, here are some classics and how they're made:</p>
+
+  <p><strong>Margarita:</strong> 2 oz tequila, 1 oz lime juice, 1 oz Cointreau (orange liqueur). Shaken, served up or on ice with salt rim.</p>
+
+  <p><strong>Manhattan:</strong> 2 oz rye whiskey, 1 oz sweet vermouth, bitters. Stirred, served up with a cherry.</p>
+
+  <p><strong>Martini:</strong> 2.5 oz gin, 0.5 oz dry vermouth, bitters. Stirred, served up with lemon twist.</p>
+
+  <p><strong>Daiquiri:</strong> 2 oz white rum, 0.75 oz lime juice, 0.5 oz simple syrup. Shaken, served up.</p>
+
+  <p><strong>Negroni:</strong> 1 oz gin, 1 oz sweet vermouth, 1 oz Campari. Stirred, served on ice with orange twist. (Note: everything is equal parts — this is key to the drink.)</p>
+
+  <p><strong>Old Fashioned:</strong> 2 oz bourbon, ¼ oz simple syrup (or a sugar cube), bitters. Built in the glass over ice, orange twist.</p>
+
+  <p><strong>Aperol Spritz:</strong> 2 oz Aperol, 3 oz prosecco, splash of soda water. Built in glass over ice, orange slice.</p>
+
+  <p><strong>Whiskey Sour:</strong> 2 oz bourbon, 0.75 oz lemon juice, 0.5 oz simple syrup. Shaken, served up or on ice.</p>
+
+  <p><strong>Gimlet:</strong> 2 oz gin, 0.75 oz lime juice, 0.5 oz simple syrup. Shaken, served up. (Basically a gin Daiquiri.)</p>
+
+  <p><strong>Last Word:</strong> 0.75 oz gin, 0.75 oz lime juice, 0.75 oz maraschino, 0.75 oz green Chartreuse. Equal parts. Shaken, served up. Surprisingly balanced despite the intense Chartreuse.</p>
+
+  <p><strong>Paper Plane:</strong> 0.75 oz bourbon, 0.75 oz lemon juice, 0.75 oz Aperol, 0.75 oz Amaro Nonino. Another equal-parts drink, shaken and served up. Modern classic.</p>
+
+  <h2>Why This Exists</h2>
+
+  <p>Cocktail recipes are structured data: you have ingredients, amounts, and methods. But "similarity" is subjective. Do you group by taste? By structure? By the role each ingredient plays?</p>
+
+  <p>This project explores that question by showing you all the groupings at once, and letting you switch between them. Sometimes the structure matters more (Negroni and Boulevardier are the "same drink" with different base spirits). Sometimes the flavor matters more (Daiquiri and Mojito taste nearly identical despite different methods).</p>
+
+  <p>The map is a tool for curiosity. If you liked a Boulevardier, should you try a Negroni next (same structure, different base spirit) or a Manhattan (same base spirit, different accent)? The answer depends on what you liked about the Boulevardier in the first place.</p>
+
+  <h2>One More Thing: The Recipes Might Be Different Than Yours</h2>
+
+  <p>All the recipes come from canonical bartending sources (Cocktail Codex, Death & Co, etc.), but there's always room for interpretation. For example:</p>
+
+  <ul>
+    <li><strong>Negroni:</strong> This map uses equal parts (1 oz each of gin, vermouth, Campari). Some bartenders do 1.25 oz gin to let it lead.</li>
+    <li><strong>Martini:</strong> 5:1 gin to vermouth (2.5 oz gin, 0.5 oz vermouth) is the classic midcentury ratio. Modern "dry" Martinis can be 10:1 or even 15:1.</li>
+    <li><strong>Daiquiri:</strong> The map uses roughly 2:0.75:0.5 (rum:lime:syrup). Some prefer 2:1:1 for a sharper drink.</li>
+  </ul>
+
+  <p>If a drink doesn't taste like you expect, it's probably not wrong — it's just a different canonical version. The clustering still works because we're comparing recipes to each other, not to your personal preference.</p>
+
+  <hr>
+
+  <p class="about-footer">This is a side project for exploring how data science applies to something tactile and cultural. If you find it interesting, try the visualization and see which drinks end up near your favorites. You might discover something new.</p>
+</div>

@@ -1,0 +1,3108 @@
+{
+  "martinez": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "old_tom_gin",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "sweet_vermouth",
+        "role": "modifier",
+        "ml": 30
+      },
+      {
+        "ingredient": "maraschino",
+        "role": "accent",
+        "ml": 7.5
+      },
+      {
+        "ingredient": "angostura_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "lemon_twist"
+    ]
+  },
+  "martini": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "gin",
+        "role": "base",
+        "ml": 75
+      },
+      {
+        "ingredient": "dry_vermouth",
+        "role": "modifier",
+        "ml": 15
+      },
+      {
+        "ingredient": "orange_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "lemon_twist"
+    ]
+  },
+  "martini_olive": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "gin",
+        "role": "base",
+        "ml": 75
+      },
+      {
+        "ingredient": "dry_vermouth",
+        "role": "modifier",
+        "ml": 15
+      },
+      {
+        "ingredient": "orange_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "olive"
+    ]
+  },
+  "manhattan": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "rye_whiskey",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "sweet_vermouth",
+        "role": "modifier",
+        "ml": 30
+      },
+      {
+        "ingredient": "angostura_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "cherry"
+    ]
+  },
+  "old_fashioned": {
+    "method": "built",
+    "served": "on_ice",
+    "components": [
+      {
+        "ingredient": "bourbon",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "demerara_syrup",
+        "role": "sweetener",
+        "ml": 7.5
+      },
+      {
+        "ingredient": "angostura_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "orange_twist"
+    ]
+  },
+  "bijou": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "gin",
+        "role": "base",
+        "ml": 30
+      },
+      {
+        "ingredient": "sweet_vermouth",
+        "role": "modifier",
+        "ml": 30
+      },
+      {
+        "ingredient": "green_chartreuse",
+        "role": "accent",
+        "ml": 30
+      },
+      {
+        "ingredient": "orange_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "cherry"
+    ]
+  },
+  "tipperary": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "irish_whiskey",
+        "role": "base",
+        "ml": 30
+      },
+      {
+        "ingredient": "sweet_vermouth",
+        "role": "modifier",
+        "ml": 30
+      },
+      {
+        "ingredient": "green_chartreuse",
+        "role": "accent",
+        "ml": 30
+      },
+      {
+        "ingredient": "orange_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "orange_twist"
+    ]
+  },
+  "vancouver": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "gin",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "sweet_vermouth",
+        "role": "modifier",
+        "ml": 30
+      },
+      {
+        "ingredient": "benedictine",
+        "role": "accent",
+        "ml": 7.5
+      },
+      {
+        "ingredient": "orange_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "lemon_twist"
+    ]
+  },
+  "hanky_panky": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "gin",
+        "role": "base",
+        "ml": 45
+      },
+      {
+        "ingredient": "sweet_vermouth",
+        "role": "modifier",
+        "ml": 45
+      },
+      {
+        "ingredient": "fernet_branca",
+        "role": "accent",
+        "ml": 7.5
+      }
+    ],
+    "garnish": [
+      "orange_twist"
+    ]
+  },
+  "black_manhattan": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "bourbon",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "averna",
+        "role": "modifier",
+        "ml": 30
+      },
+      {
+        "ingredient": "angostura_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "cherry"
+    ]
+  },
+  "little_italy": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "rye_whiskey",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "sweet_vermouth",
+        "role": "modifier",
+        "ml": 22
+      },
+      {
+        "ingredient": "cynar",
+        "role": "accent",
+        "ml": 15
+      }
+    ],
+    "garnish": [
+      "cherry"
+    ]
+  },
+  "palmetto": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "aged_rum",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "sweet_vermouth",
+        "role": "modifier",
+        "ml": 30
+      },
+      {
+        "ingredient": "orange_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "lemon_twist"
+    ]
+  },
+  "brooklyn": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "rye_whiskey",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "dry_vermouth",
+        "role": "modifier",
+        "ml": 30
+      },
+      {
+        "ingredient": "maraschino",
+        "role": "accent",
+        "ml": 7.5
+      }
+    ],
+    "garnish": [
+      "cherry"
+    ]
+  },
+  "vieux_carre": {
+    "method": "stirred",
+    "served": "either",
+    "components": [
+      {
+        "ingredient": "rye_whiskey",
+        "role": "base",
+        "ml": 30
+      },
+      {
+        "ingredient": "cognac",
+        "role": "base",
+        "ml": 30
+      },
+      {
+        "ingredient": "sweet_vermouth",
+        "role": "modifier",
+        "ml": 30
+      },
+      {
+        "ingredient": "benedictine",
+        "role": "accent",
+        "ml": 7.5
+      },
+      {
+        "ingredient": "peychauds_bitters",
+        "role": "seasoning",
+        "ml": null
+      },
+      {
+        "ingredient": "angostura_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "lemon_twist"
+    ]
+  },
+  "last_word": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "gin",
+        "role": "base",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "lime_juice",
+        "role": "citrus",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "maraschino",
+        "role": "sweetener",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "green_chartreuse",
+        "role": "accent",
+        "ml": 22.5
+      }
+    ],
+    "garnish": []
+  },
+  "final_ward": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "rye_whiskey",
+        "role": "base",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "lemon_juice",
+        "role": "citrus",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "maraschino",
+        "role": "sweetener",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "green_chartreuse",
+        "role": "accent",
+        "ml": 22.5
+      }
+    ],
+    "garnish": []
+  },
+  "naked_and_famous": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "mezcal",
+        "role": "base",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "lime_juice",
+        "role": "citrus",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "aperol",
+        "role": "sweetener",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "yellow_chartreuse",
+        "role": "accent",
+        "ml": 22.5
+      }
+    ],
+    "garnish": []
+  },
+  "paper_plane": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "bourbon",
+        "role": "base",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "lemon_juice",
+        "role": "citrus",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "aperol",
+        "role": "sweetener",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "amaro_nonino",
+        "role": "accent",
+        "ml": 22.5
+      }
+    ],
+    "garnish": []
+  },
+  "corpse_reviver_2": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "gin",
+        "role": "base",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "lemon_juice",
+        "role": "citrus",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "cointreau",
+        "role": "sweetener",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "lillet_blanc",
+        "role": "accent",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "absinthe",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": []
+  },
+  "margarita": {
+    "method": "shaken",
+    "served": "either",
+    "components": [
+      {
+        "ingredient": "tequila_blanco",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "lime_juice",
+        "role": "citrus",
+        "ml": 30
+      },
+      {
+        "ingredient": "cointreau",
+        "role": "accent",
+        "ml": 30
+      }
+    ],
+    "garnish": []
+  },
+  "tommys_margarita": {
+    "method": "shaken",
+    "served": "either",
+    "components": [
+      {
+        "ingredient": "tequila_blanco",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "lime_juice",
+        "role": "citrus",
+        "ml": 30
+      },
+      {
+        "ingredient": "agave_syrup",
+        "role": "sweetener",
+        "ml": 15
+      }
+    ],
+    "garnish": []
+  },
+  "daiquiri": {
+    "method": "shaken",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "white_rum",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "lime_juice",
+        "role": "citrus",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "simple_syrup",
+        "role": "sweetener",
+        "ml": 15
+      }
+    ],
+    "garnish": []
+  },
+  "bees_knees": {
+    "method": "shaken",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "gin",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "lemon_juice",
+        "role": "citrus",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "honey_syrup",
+        "role": "sweetener",
+        "ml": 22.5
+      }
+    ],
+    "garnish": [
+      "lemon_twist"
+    ]
+  },
+  "gold_rush": {
+    "method": "shaken",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "bourbon",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "lemon_juice",
+        "role": "citrus",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "honey_syrup",
+        "role": "sweetener",
+        "ml": 22.5
+      }
+    ],
+    "garnish": []
+  },
+  "whiskey_sour": {
+    "method": "shaken",
+    "served": "either",
+    "components": [
+      {
+        "ingredient": "bourbon",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "lemon_juice",
+        "role": "citrus",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "simple_syrup",
+        "role": "sweetener",
+        "ml": 15
+      }
+    ],
+    "garnish": [
+      "cherry"
+    ]
+  },
+  "negroni": {
+    "method": "stirred",
+    "served": "on_ice",
+    "components": [
+      {
+        "ingredient": "gin",
+        "role": "base",
+        "ml": 30
+      },
+      {
+        "ingredient": "sweet_vermouth",
+        "role": "modifier",
+        "ml": 30
+      },
+      {
+        "ingredient": "campari",
+        "role": "accent",
+        "ml": 30
+      }
+    ],
+    "garnish": [
+      "orange_twist"
+    ]
+  },
+  "boulevardier": {
+    "method": "stirred",
+    "served": "either",
+    "components": [
+      {
+        "ingredient": "bourbon",
+        "role": "base",
+        "ml": 45
+      },
+      {
+        "ingredient": "sweet_vermouth",
+        "role": "modifier",
+        "ml": 30
+      },
+      {
+        "ingredient": "campari",
+        "role": "accent",
+        "ml": 30
+      }
+    ],
+    "garnish": [
+      "orange_twist"
+    ]
+  },
+  "old_pal": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "rye_whiskey",
+        "role": "base",
+        "ml": 30
+      },
+      {
+        "ingredient": "dry_vermouth",
+        "role": "modifier",
+        "ml": 30
+      },
+      {
+        "ingredient": "campari",
+        "role": "accent",
+        "ml": 30
+      }
+    ],
+    "garnish": [
+      "lemon_twist"
+    ]
+  },
+  "americano": {
+    "method": "built",
+    "served": "on_ice",
+    "components": [
+      {
+        "ingredient": "sweet_vermouth",
+        "role": "base",
+        "ml": 30
+      },
+      {
+        "ingredient": "campari",
+        "role": "accent",
+        "ml": 30
+      },
+      {
+        "ingredient": "sparkling_water",
+        "role": "accent",
+        "ml": 60
+      }
+    ],
+    "garnish": [
+      "orange_twist"
+    ]
+  },
+  "sazerac": {
+    "method": "built",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "rye_whiskey",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "demerara_syrup",
+        "role": "sweetener",
+        "ml": 7.5
+      },
+      {
+        "ingredient": "peychauds_bitters",
+        "role": "seasoning",
+        "ml": null
+      },
+      {
+        "ingredient": "absinthe",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "lemon_twist"
+    ]
+  },
+  "rob_roy": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "scotch",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "sweet_vermouth",
+        "role": "modifier",
+        "ml": 30
+      },
+      {
+        "ingredient": "angostura_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "cherry"
+    ]
+  },
+  "bobby_burns": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "scotch",
+        "role": "base",
+        "ml": 45
+      },
+      {
+        "ingredient": "sweet_vermouth",
+        "role": "modifier",
+        "ml": 45
+      },
+      {
+        "ingredient": "benedictine",
+        "role": "accent",
+        "ml": 7.5
+      }
+    ],
+    "garnish": [
+      "lemon_twist"
+    ]
+  },
+  "rusty_nail": {
+    "method": "built",
+    "served": "on_ice",
+    "components": [
+      {
+        "ingredient": "scotch",
+        "role": "base",
+        "ml": 45
+      },
+      {
+        "ingredient": "drambuie",
+        "role": "modifier",
+        "ml": 22
+      }
+    ],
+    "garnish": [
+      "lemon_twist"
+    ]
+  },
+  "penicillin": {
+    "method": "shaken",
+    "served": "on_ice",
+    "components": [
+      {
+        "ingredient": "blended_scotch",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "lemon_juice",
+        "role": "citrus",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "honey_ginger_syrup",
+        "role": "sweetener",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "islay_scotch",
+        "role": "accent",
+        "ml": 7.5
+      }
+    ],
+    "garnish": []
+  },
+  "remember_the_maine": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "rye_whiskey",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "sweet_vermouth",
+        "role": "modifier",
+        "ml": 22
+      },
+      {
+        "ingredient": "cherry_heering",
+        "role": "accent",
+        "ml": 7.5
+      },
+      {
+        "ingredient": "absinthe",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "cherry"
+    ]
+  },
+  "red_hook": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "rye_whiskey",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "maraschino",
+        "role": "modifier",
+        "ml": 15
+      },
+      {
+        "ingredient": "punt_e_mes",
+        "role": "accent",
+        "ml": 15
+      }
+    ],
+    "garnish": [
+      "cherry"
+    ]
+  },
+  "toronto": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "rye_whiskey",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "fernet_branca",
+        "role": "modifier",
+        "ml": 7.5
+      },
+      {
+        "ingredient": "demerara_syrup",
+        "role": "sweetener",
+        "ml": 7.5
+      },
+      {
+        "ingredient": "angostura_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "orange_twist"
+    ]
+  },
+  "monte_carlo": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "rye_whiskey",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "benedictine",
+        "role": "modifier",
+        "ml": 15
+      },
+      {
+        "ingredient": "angostura_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "lemon_twist"
+    ]
+  },
+  "tuxedo": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "gin",
+        "role": "base",
+        "ml": 45
+      },
+      {
+        "ingredient": "dry_vermouth",
+        "role": "modifier",
+        "ml": 45
+      },
+      {
+        "ingredient": "maraschino",
+        "role": "accent",
+        "ml": 5
+      },
+      {
+        "ingredient": "absinthe",
+        "role": "seasoning",
+        "ml": null
+      },
+      {
+        "ingredient": "orange_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "cherry"
+    ]
+  },
+  "casino": {
+    "method": "shaken",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "gin",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "lemon_juice",
+        "role": "citrus",
+        "ml": 7.5
+      },
+      {
+        "ingredient": "maraschino",
+        "role": "accent",
+        "ml": 7.5
+      },
+      {
+        "ingredient": "orange_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "lemon_twist"
+    ]
+  },
+  "alaska": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "gin",
+        "role": "base",
+        "ml": 45
+      },
+      {
+        "ingredient": "yellow_chartreuse",
+        "role": "modifier",
+        "ml": 22
+      },
+      {
+        "ingredient": "orange_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "lemon_twist"
+    ]
+  },
+  "greenpoint": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "rye_whiskey",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "sweet_vermouth",
+        "role": "modifier",
+        "ml": 15
+      },
+      {
+        "ingredient": "yellow_chartreuse",
+        "role": "accent",
+        "ml": 15
+      },
+      {
+        "ingredient": "angostura_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "lemon_twist"
+    ]
+  },
+  "chrysanthemum": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "dry_vermouth",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "benedictine",
+        "role": "modifier",
+        "ml": 22
+      },
+      {
+        "ingredient": "absinthe",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "orange_twist"
+    ]
+  },
+  "adonis": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "fino_sherry",
+        "role": "base",
+        "ml": 45
+      },
+      {
+        "ingredient": "sweet_vermouth",
+        "role": "modifier",
+        "ml": 30
+      },
+      {
+        "ingredient": "orange_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "orange_twist"
+    ]
+  },
+  "mezcal_negroni": {
+    "method": "stirred",
+    "served": "on_ice",
+    "components": [
+      {
+        "ingredient": "mezcal",
+        "role": "base",
+        "ml": 30
+      },
+      {
+        "ingredient": "sweet_vermouth",
+        "role": "modifier",
+        "ml": 30
+      },
+      {
+        "ingredient": "campari",
+        "role": "accent",
+        "ml": 30
+      }
+    ],
+    "garnish": [
+      "orange_twist"
+    ]
+  },
+  "white_negroni": {
+    "method": "stirred",
+    "served": "on_ice",
+    "components": [
+      {
+        "ingredient": "gin",
+        "role": "base",
+        "ml": 30
+      },
+      {
+        "ingredient": "lillet_blanc",
+        "role": "modifier",
+        "ml": 30
+      },
+      {
+        "ingredient": "suze",
+        "role": "accent",
+        "ml": 30
+      }
+    ],
+    "garnish": [
+      "lemon_twist"
+    ]
+  },
+  "fanciulli": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "bourbon",
+        "role": "base",
+        "ml": 45
+      },
+      {
+        "ingredient": "sweet_vermouth",
+        "role": "modifier",
+        "ml": 30
+      },
+      {
+        "ingredient": "fernet_branca",
+        "role": "accent",
+        "ml": 7.5
+      }
+    ],
+    "garnish": [
+      "cherry"
+    ]
+  },
+  "el_presidente": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "white_rum",
+        "role": "base",
+        "ml": 45
+      },
+      {
+        "ingredient": "dry_vermouth",
+        "role": "modifier",
+        "ml": 22
+      },
+      {
+        "ingredient": "curacao",
+        "role": "accent",
+        "ml": 7.5
+      },
+      {
+        "ingredient": "grenadine",
+        "role": "sweetener",
+        "ml": 5
+      }
+    ],
+    "garnish": [
+      "orange_twist"
+    ]
+  },
+  "la_rosita": {
+    "method": "stirred",
+    "served": "on_ice",
+    "components": [
+      {
+        "ingredient": "tequila_reposado",
+        "role": "base",
+        "ml": 45
+      },
+      {
+        "ingredient": "sweet_vermouth",
+        "role": "modifier",
+        "ml": 15
+      },
+      {
+        "ingredient": "dry_vermouth",
+        "role": "modifier",
+        "ml": 15
+      },
+      {
+        "ingredient": "campari",
+        "role": "accent",
+        "ml": 15
+      },
+      {
+        "ingredient": "angostura_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "orange_twist"
+    ]
+  },
+  "oaxaca_old_fashioned": {
+    "method": "built",
+    "served": "on_ice",
+    "components": [
+      {
+        "ingredient": "tequila_reposado",
+        "role": "base",
+        "ml": 45
+      },
+      {
+        "ingredient": "mezcal",
+        "role": "base",
+        "ml": 15
+      },
+      {
+        "ingredient": "agave_syrup",
+        "role": "sweetener",
+        "ml": 7.5
+      },
+      {
+        "ingredient": "angostura_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "orange_twist"
+    ]
+  },
+  "rum_old_fashioned": {
+    "method": "built",
+    "served": "on_ice",
+    "components": [
+      {
+        "ingredient": "aged_rum",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "demerara_syrup",
+        "role": "sweetener",
+        "ml": 7.5
+      },
+      {
+        "ingredient": "angostura_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "orange_twist"
+    ]
+  },
+  "rabo_de_galo": {
+    "method": "stirred",
+    "served": "on_ice",
+    "components": [
+      {
+        "ingredient": "cachaca",
+        "role": "base",
+        "ml": 45
+      },
+      {
+        "ingredient": "sweet_vermouth",
+        "role": "modifier",
+        "ml": 22
+      },
+      {
+        "ingredient": "cynar",
+        "role": "accent",
+        "ml": 15
+      },
+      {
+        "ingredient": "angostura_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "orange_twist"
+    ]
+  },
+  "jersey_cocktail": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "applejack",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "sweet_vermouth",
+        "role": "modifier",
+        "ml": 30
+      },
+      {
+        "ingredient": "angostura_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "cherry"
+    ]
+  },
+  "sidecar": {
+    "method": "shaken",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "cognac",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "lemon_juice",
+        "role": "citrus",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "cointreau",
+        "role": "sweetener",
+        "ml": 22.5
+      }
+    ],
+    "garnish": [
+      "lemon_twist"
+    ]
+  },
+  "white_lady": {
+    "method": "shaken",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "gin",
+        "role": "base",
+        "ml": 45
+      },
+      {
+        "ingredient": "lemon_juice",
+        "role": "citrus",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "cointreau",
+        "role": "sweetener",
+        "ml": 22.5
+      }
+    ],
+    "garnish": [
+      "lemon_twist"
+    ]
+  },
+  "aviation": {
+    "method": "shaken",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "gin",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "lemon_juice",
+        "role": "citrus",
+        "ml": 15
+      },
+      {
+        "ingredient": "maraschino",
+        "role": "sweetener",
+        "ml": 10
+      },
+      {
+        "ingredient": "creme_de_violette",
+        "role": "accent",
+        "ml": 5
+      }
+    ],
+    "garnish": [
+      "cherry"
+    ]
+  },
+  "clover_club": {
+    "method": "shaken",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "gin",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "lemon_juice",
+        "role": "citrus",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "raspberry_syrup",
+        "role": "sweetener",
+        "ml": 15
+      },
+      {
+        "ingredient": "egg_white",
+        "role": "accent",
+        "ml": 30
+      }
+    ],
+    "garnish": []
+  },
+  "gimlet": {
+    "method": "shaken",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "gin",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "lime_juice",
+        "role": "citrus",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "simple_syrup",
+        "role": "sweetener",
+        "ml": 15
+      }
+    ],
+    "garnish": [
+      "lime_wheel"
+    ]
+  },
+  "gin_sour": {
+    "method": "shaken",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "gin",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "lemon_juice",
+        "role": "citrus",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "simple_syrup",
+        "role": "sweetener",
+        "ml": 15
+      }
+    ],
+    "garnish": [
+      "lemon_twist"
+    ]
+  },
+  "pisco_sour": {
+    "method": "shaken",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "pisco",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "lemon_juice",
+        "role": "citrus",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "simple_syrup",
+        "role": "sweetener",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "egg_white",
+        "role": "accent",
+        "ml": 30
+      },
+      {
+        "ingredient": "angostura_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": []
+  },
+  "amaretto_sour": {
+    "method": "shaken",
+    "served": "on_ice",
+    "components": [
+      {
+        "ingredient": "amaretto",
+        "role": "base",
+        "ml": 45
+      },
+      {
+        "ingredient": "bourbon",
+        "role": "base",
+        "ml": 22
+      },
+      {
+        "ingredient": "lemon_juice",
+        "role": "citrus",
+        "ml": 30
+      },
+      {
+        "ingredient": "simple_syrup",
+        "role": "sweetener",
+        "ml": 7.5
+      },
+      {
+        "ingredient": "egg_white",
+        "role": "accent",
+        "ml": 30
+      }
+    ],
+    "garnish": [
+      "cherry"
+    ]
+  },
+  "rum_sour": {
+    "method": "shaken",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "aged_rum",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "lemon_juice",
+        "role": "citrus",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "simple_syrup",
+        "role": "sweetener",
+        "ml": 15
+      }
+    ],
+    "garnish": []
+  },
+  "hemingway_daiquiri": {
+    "method": "shaken",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "white_rum",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "lime_juice",
+        "role": "citrus",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "grapefruit_juice",
+        "role": "citrus",
+        "ml": 15
+      },
+      {
+        "ingredient": "maraschino",
+        "role": "sweetener",
+        "ml": 10
+      }
+    ],
+    "garnish": [
+      "lime_wheel"
+    ]
+  },
+  "caipirinha": {
+    "method": "built",
+    "served": "on_ice",
+    "components": [
+      {
+        "ingredient": "cachaca",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "lime_juice",
+        "role": "citrus",
+        "ml": 30
+      },
+      {
+        "ingredient": "simple_syrup",
+        "role": "sweetener",
+        "ml": 15
+      }
+    ],
+    "garnish": [
+      "lime_wheel"
+    ]
+  },
+  "bramble": {
+    "method": "built",
+    "served": "on_ice",
+    "components": [
+      {
+        "ingredient": "gin",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "lemon_juice",
+        "role": "citrus",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "simple_syrup",
+        "role": "sweetener",
+        "ml": 10
+      },
+      {
+        "ingredient": "creme_de_mure",
+        "role": "accent",
+        "ml": 15
+      }
+    ],
+    "garnish": []
+  },
+  "between_the_sheets": {
+    "method": "shaken",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "cognac",
+        "role": "base",
+        "ml": 30
+      },
+      {
+        "ingredient": "white_rum",
+        "role": "base",
+        "ml": 30
+      },
+      {
+        "ingredient": "lemon_juice",
+        "role": "citrus",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "cointreau",
+        "role": "sweetener",
+        "ml": 22.5
+      }
+    ],
+    "garnish": [
+      "lemon_twist"
+    ]
+  },
+  "jack_rose": {
+    "method": "shaken",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "applejack",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "lime_juice",
+        "role": "citrus",
+        "ml": 22
+      },
+      {
+        "ingredient": "grenadine",
+        "role": "sweetener",
+        "ml": 15
+      }
+    ],
+    "garnish": [
+      "lemon_twist"
+    ]
+  },
+  "brown_derby": {
+    "method": "shaken",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "bourbon",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "grapefruit_juice",
+        "role": "citrus",
+        "ml": 30
+      },
+      {
+        "ingredient": "honey_syrup",
+        "role": "sweetener",
+        "ml": 15
+      }
+    ],
+    "garnish": []
+  },
+  "fitzgerald": {
+    "method": "shaken",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "gin",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "lemon_juice",
+        "role": "citrus",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "simple_syrup",
+        "role": "sweetener",
+        "ml": 15
+      },
+      {
+        "ingredient": "angostura_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "lemon_twist"
+    ]
+  },
+  "champs_elysees": {
+    "method": "shaken",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "cognac",
+        "role": "base",
+        "ml": 45
+      },
+      {
+        "ingredient": "lemon_juice",
+        "role": "citrus",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "yellow_chartreuse",
+        "role": "accent",
+        "ml": 15
+      },
+      {
+        "ingredient": "simple_syrup",
+        "role": "sweetener",
+        "ml": 7.5
+      },
+      {
+        "ingredient": "angostura_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "lemon_twist"
+    ]
+  },
+  "brandy_crusta": {
+    "method": "shaken",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "cognac",
+        "role": "base",
+        "ml": 45
+      },
+      {
+        "ingredient": "lemon_juice",
+        "role": "citrus",
+        "ml": 15
+      },
+      {
+        "ingredient": "cointreau",
+        "role": "sweetener",
+        "ml": 10
+      },
+      {
+        "ingredient": "maraschino",
+        "role": "accent",
+        "ml": 5
+      },
+      {
+        "ingredient": "angostura_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "lemon_twist"
+    ]
+  },
+  "mezcal_sour": {
+    "method": "shaken",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "mezcal",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "lime_juice",
+        "role": "citrus",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "simple_syrup",
+        "role": "sweetener",
+        "ml": 15
+      }
+    ],
+    "garnish": []
+  },
+  "tequila_sour": {
+    "method": "shaken",
+    "served": "either",
+    "components": [
+      {
+        "ingredient": "tequila_blanco",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "lemon_juice",
+        "role": "citrus",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "simple_syrup",
+        "role": "sweetener",
+        "ml": 15
+      }
+    ],
+    "garnish": []
+  },
+  "french_75": {
+    "method": "shaken",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "gin",
+        "role": "base",
+        "ml": 45
+      },
+      {
+        "ingredient": "lemon_juice",
+        "role": "citrus",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "simple_syrup",
+        "role": "sweetener",
+        "ml": 15
+      },
+      {
+        "ingredient": "prosecco",
+        "role": "accent",
+        "ml": 90
+      }
+    ],
+    "garnish": [
+      "lemon_twist"
+    ]
+  },
+  "southside": {
+    "method": "shaken",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "gin",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "lime_juice",
+        "role": "citrus",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "simple_syrup",
+        "role": "sweetener",
+        "ml": 15
+      }
+    ],
+    "garnish": [
+      "mint_sprig"
+    ]
+  },
+  "army_navy": {
+    "method": "shaken",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "gin",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "lemon_juice",
+        "role": "citrus",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "orgeat",
+        "role": "sweetener",
+        "ml": 15
+      },
+      {
+        "ingredient": "angostura_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "lemon_twist"
+    ]
+  },
+  "paradise": {
+    "method": "shaken",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "gin",
+        "role": "base",
+        "ml": 45
+      },
+      {
+        "ingredient": "apricot_liqueur",
+        "role": "sweetener",
+        "ml": 22
+      },
+      {
+        "ingredient": "orange_juice",
+        "role": "citrus",
+        "ml": 15
+      },
+      {
+        "ingredient": "lemon_juice",
+        "role": "citrus",
+        "ml": 7.5
+      }
+    ],
+    "garnish": []
+  },
+  "saturn": {
+    "method": "shaken",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "gin",
+        "role": "base",
+        "ml": 45
+      },
+      {
+        "ingredient": "lemon_juice",
+        "role": "citrus",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "falernum",
+        "role": "sweetener",
+        "ml": 15
+      },
+      {
+        "ingredient": "orgeat",
+        "role": "sweetener",
+        "ml": 7.5
+      }
+    ],
+    "garnish": []
+  },
+  "industry_sour": {
+    "method": "shaken",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "fernet_branca",
+        "role": "base",
+        "ml": 30
+      },
+      {
+        "ingredient": "green_chartreuse",
+        "role": "base",
+        "ml": 30
+      },
+      {
+        "ingredient": "lime_juice",
+        "role": "citrus",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "simple_syrup",
+        "role": "sweetener",
+        "ml": 15
+      }
+    ],
+    "garnish": []
+  },
+  "division_bell": {
+    "method": "shaken",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "mezcal",
+        "role": "base",
+        "ml": 30
+      },
+      {
+        "ingredient": "aperol",
+        "role": "modifier",
+        "ml": 22
+      },
+      {
+        "ingredient": "maraschino",
+        "role": "accent",
+        "ml": 15
+      },
+      {
+        "ingredient": "lime_juice",
+        "role": "citrus",
+        "ml": 22
+      }
+    ],
+    "garnish": []
+  },
+  "el_diablo": {
+    "method": "built",
+    "served": "on_ice",
+    "components": [
+      {
+        "ingredient": "tequila_blanco",
+        "role": "base",
+        "ml": 45
+      },
+      {
+        "ingredient": "lime_juice",
+        "role": "citrus",
+        "ml": 15
+      },
+      {
+        "ingredient": "creme_de_cassis",
+        "role": "sweetener",
+        "ml": 15
+      },
+      {
+        "ingredient": "ginger_beer",
+        "role": "accent",
+        "ml": 90
+      }
+    ],
+    "garnish": [
+      "lime_wheel"
+    ]
+  },
+  "trinidad_sour": {
+    "method": "shaken",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "angostura_bitters",
+        "role": "base",
+        "ml": 45
+      },
+      {
+        "ingredient": "orgeat",
+        "role": "sweetener",
+        "ml": 30
+      },
+      {
+        "ingredient": "lemon_juice",
+        "role": "citrus",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "rye_whiskey",
+        "role": "accent",
+        "ml": 15
+      }
+    ],
+    "garnish": []
+  },
+  "jungle_bird": {
+    "method": "shaken",
+    "served": "on_ice",
+    "components": [
+      {
+        "ingredient": "dark_rum",
+        "role": "base",
+        "ml": 45
+      },
+      {
+        "ingredient": "campari",
+        "role": "modifier",
+        "ml": 22
+      },
+      {
+        "ingredient": "pineapple_juice",
+        "role": "citrus",
+        "ml": 45
+      },
+      {
+        "ingredient": "lime_juice",
+        "role": "citrus",
+        "ml": 15
+      },
+      {
+        "ingredient": "demerara_syrup",
+        "role": "sweetener",
+        "ml": 15
+      }
+    ],
+    "garnish": []
+  },
+  "paloma": {
+    "method": "built",
+    "served": "on_ice",
+    "components": [
+      {
+        "ingredient": "tequila_blanco",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "lime_juice",
+        "role": "citrus",
+        "ml": 15
+      },
+      {
+        "ingredient": "grapefruit_juice",
+        "role": "citrus",
+        "ml": 45
+      },
+      {
+        "ingredient": "simple_syrup",
+        "role": "sweetener",
+        "ml": 10
+      }
+    ],
+    "garnish": [
+      "lime_wheel"
+    ]
+  },
+  "mai_tai": {
+    "method": "shaken",
+    "served": "on_ice",
+    "components": [
+      {
+        "ingredient": "aged_rum",
+        "role": "base",
+        "ml": 45
+      },
+      {
+        "ingredient": "overproof_rum",
+        "role": "base",
+        "ml": 15
+      },
+      {
+        "ingredient": "lime_juice",
+        "role": "citrus",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "curacao",
+        "role": "sweetener",
+        "ml": 15
+      },
+      {
+        "ingredient": "orgeat",
+        "role": "sweetener",
+        "ml": 15
+      }
+    ],
+    "garnish": [
+      "lime_wheel"
+    ]
+  },
+  "chartreuse_swizzle": {
+    "method": "built",
+    "served": "on_ice",
+    "components": [
+      {
+        "ingredient": "green_chartreuse",
+        "role": "base",
+        "ml": 45
+      },
+      {
+        "ingredient": "pineapple_juice",
+        "role": "citrus",
+        "ml": 30
+      },
+      {
+        "ingredient": "lime_juice",
+        "role": "citrus",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "falernum",
+        "role": "sweetener",
+        "ml": 15
+      }
+    ],
+    "garnish": []
+  },
+  "corn_n_oil": {
+    "method": "built",
+    "served": "on_ice",
+    "components": [
+      {
+        "ingredient": "dark_rum",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "falernum",
+        "role": "modifier",
+        "ml": 22
+      },
+      {
+        "ingredient": "lime_juice",
+        "role": "citrus",
+        "ml": 15
+      },
+      {
+        "ingredient": "angostura_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "lime_wheel"
+    ]
+  },
+  "planter_punch": {
+    "method": "shaken",
+    "served": "on_ice",
+    "components": [
+      {
+        "ingredient": "dark_rum",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "lime_juice",
+        "role": "citrus",
+        "ml": 30
+      },
+      {
+        "ingredient": "simple_syrup",
+        "role": "sweetener",
+        "ml": 15
+      },
+      {
+        "ingredient": "angostura_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": []
+  },
+  "lion_tail": {
+    "method": "shaken",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "bourbon",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "lime_juice",
+        "role": "citrus",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "allspice_dram",
+        "role": "accent",
+        "ml": 15
+      },
+      {
+        "ingredient": "simple_syrup",
+        "role": "sweetener",
+        "ml": 7.5
+      },
+      {
+        "ingredient": "angostura_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": []
+  },
+  "singapore_sling": {
+    "method": "shaken",
+    "served": "on_ice",
+    "components": [
+      {
+        "ingredient": "gin",
+        "role": "base",
+        "ml": 45
+      },
+      {
+        "ingredient": "lemon_juice",
+        "role": "citrus",
+        "ml": 15
+      },
+      {
+        "ingredient": "cherry_heering",
+        "role": "sweetener",
+        "ml": 15
+      },
+      {
+        "ingredient": "cointreau",
+        "role": "accent",
+        "ml": 7.5
+      },
+      {
+        "ingredient": "benedictine",
+        "role": "accent",
+        "ml": 7.5
+      },
+      {
+        "ingredient": "angostura_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "cherry"
+    ]
+  },
+  "mojito": {
+    "method": "built",
+    "served": "on_ice",
+    "components": [
+      {
+        "ingredient": "white_rum",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "lime_juice",
+        "role": "citrus",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "simple_syrup",
+        "role": "sweetener",
+        "ml": 15
+      }
+    ],
+    "garnish": [
+      "mint_sprig"
+    ]
+  },
+  "mint_julep": {
+    "method": "built",
+    "served": "on_ice",
+    "components": [
+      {
+        "ingredient": "bourbon",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "simple_syrup",
+        "role": "sweetener",
+        "ml": 10
+      }
+    ],
+    "garnish": [
+      "mint_sprig"
+    ]
+  },
+  "aperol_spritz": {
+    "method": "built",
+    "served": "on_ice",
+    "components": [
+      {
+        "ingredient": "aperol",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "prosecco",
+        "role": "modifier",
+        "ml": 90
+      },
+      {
+        "ingredient": "sparkling_water",
+        "role": "accent",
+        "ml": 60
+      }
+    ],
+    "garnish": [
+      "orange_twist"
+    ]
+  },
+  "dark_and_stormy": {
+    "method": "built",
+    "served": "on_ice",
+    "components": [
+      {
+        "ingredient": "dark_rum",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "lime_juice",
+        "role": "citrus",
+        "ml": 15
+      },
+      {
+        "ingredient": "ginger_beer",
+        "role": "accent",
+        "ml": 120
+      }
+    ],
+    "garnish": [
+      "lime_wheel"
+    ]
+  },
+  "scotch_old_fashioned": {
+    "method": "built",
+    "served": "on_ice",
+    "components": [
+      {
+        "ingredient": "scotch",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "demerara_syrup",
+        "role": "sweetener",
+        "ml": 7.5
+      },
+      {
+        "ingredient": "angostura_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "orange_twist"
+    ]
+  },
+  "irish_old_fashioned": {
+    "method": "built",
+    "served": "on_ice",
+    "components": [
+      {
+        "ingredient": "irish_whiskey",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "demerara_syrup",
+        "role": "sweetener",
+        "ml": 7.5
+      },
+      {
+        "ingredient": "angostura_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "orange_twist"
+    ]
+  },
+  "tequila_old_fashioned": {
+    "method": "built",
+    "served": "on_ice",
+    "components": [
+      {
+        "ingredient": "tequila_reposado",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "agave_syrup",
+        "role": "sweetener",
+        "ml": 7.5
+      },
+      {
+        "ingredient": "angostura_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "orange_twist"
+    ]
+  },
+  "perfect_manhattan": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "rye_whiskey",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "sweet_vermouth",
+        "role": "modifier",
+        "ml": 15
+      },
+      {
+        "ingredient": "dry_vermouth",
+        "role": "modifier",
+        "ml": 15
+      },
+      {
+        "ingredient": "angostura_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "cherry"
+    ]
+  },
+  "dry_manhattan": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "rye_whiskey",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "dry_vermouth",
+        "role": "modifier",
+        "ml": 30
+      },
+      {
+        "ingredient": "angostura_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "lemon_twist"
+    ]
+  },
+  "fifty_fifty_martini": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "gin",
+        "role": "base",
+        "ml": 45
+      },
+      {
+        "ingredient": "dry_vermouth",
+        "role": "modifier",
+        "ml": 45
+      },
+      {
+        "ingredient": "orange_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "lemon_twist"
+    ]
+  },
+  "vesper": {
+    "method": "shaken",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "gin",
+        "role": "base",
+        "ml": 45
+      },
+      {
+        "ingredient": "vodka",
+        "role": "base",
+        "ml": 15
+      },
+      {
+        "ingredient": "lillet_blanc",
+        "role": "modifier",
+        "ml": 7.5
+      }
+    ],
+    "garnish": [
+      "lemon_twist"
+    ]
+  },
+  "manhattan_cognac": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "cognac",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "sweet_vermouth",
+        "role": "modifier",
+        "ml": 30
+      },
+      {
+        "ingredient": "angostura_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "cherry"
+    ]
+  },
+  "blood_and_sand": {
+    "method": "shaken",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "scotch",
+        "role": "base",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "cherry_heering",
+        "role": "sweetener",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "sweet_vermouth",
+        "role": "modifier",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "orange_juice",
+        "role": "citrus",
+        "ml": 22.5
+      }
+    ],
+    "garnish": [
+      "cherry"
+    ]
+  },
+  "pegu_club": {
+    "method": "shaken",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "gin",
+        "role": "base",
+        "ml": 45
+      },
+      {
+        "ingredient": "curacao",
+        "role": "accent",
+        "ml": 15
+      },
+      {
+        "ingredient": "lime_juice",
+        "role": "citrus",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "angostura_bitters",
+        "role": "seasoning",
+        "ml": null
+      },
+      {
+        "ingredient": "orange_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "lime_wheel"
+    ]
+  },
+  "cardinale": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "gin",
+        "role": "base",
+        "ml": 40
+      },
+      {
+        "ingredient": "dry_vermouth",
+        "role": "modifier",
+        "ml": 20
+      },
+      {
+        "ingredient": "campari",
+        "role": "accent",
+        "ml": 10
+      }
+    ],
+    "garnish": [
+      "lemon_twist"
+    ]
+  },
+  "twentieth_century": {
+    "method": "shaken",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "gin",
+        "role": "base",
+        "ml": 45
+      },
+      {
+        "ingredient": "lillet_blanc",
+        "role": "modifier",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "white_creme_de_cacao",
+        "role": "sweetener",
+        "ml": 15
+      },
+      {
+        "ingredient": "lemon_juice",
+        "role": "citrus",
+        "ml": 22.5
+      }
+    ],
+    "garnish": [
+      "lemon_twist"
+    ]
+  },
+  "bamboo": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "fino_sherry",
+        "role": "base",
+        "ml": 45
+      },
+      {
+        "ingredient": "dry_vermouth",
+        "role": "modifier",
+        "ml": 45
+      },
+      {
+        "ingredient": "orange_bitters",
+        "role": "seasoning",
+        "ml": null
+      },
+      {
+        "ingredient": "angostura_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "lemon_twist"
+    ]
+  },
+  "improved_whiskey_cocktail": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "rye_whiskey",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "maraschino",
+        "role": "accent",
+        "ml": 7.5
+      },
+      {
+        "ingredient": "simple_syrup",
+        "role": "sweetener",
+        "ml": 7.5
+      },
+      {
+        "ingredient": "peychauds_bitters",
+        "role": "seasoning",
+        "ml": null
+      },
+      {
+        "ingredient": "angostura_bitters",
+        "role": "seasoning",
+        "ml": null
+      },
+      {
+        "ingredient": "absinthe",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "lemon_twist"
+    ]
+  },
+  "widows_kiss": {
+    "method": "stirred",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "calvados",
+        "role": "base",
+        "ml": 45
+      },
+      {
+        "ingredient": "yellow_chartreuse",
+        "role": "modifier",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "benedictine",
+        "role": "modifier",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "angostura_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": []
+  },
+  "gin_rickey": {
+    "method": "built",
+    "served": "on_ice",
+    "components": [
+      {
+        "ingredient": "gin",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "lime_juice",
+        "role": "citrus",
+        "ml": 15
+      },
+      {
+        "ingredient": "sparkling_water",
+        "role": "accent",
+        "ml": 120
+      }
+    ],
+    "garnish": [
+      "lime_wheel"
+    ]
+  },
+  "horses_neck": {
+    "method": "built",
+    "served": "on_ice",
+    "components": [
+      {
+        "ingredient": "bourbon",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "ginger_ale",
+        "role": "accent",
+        "ml": 120
+      },
+      {
+        "ingredient": "angostura_bitters",
+        "role": "seasoning",
+        "ml": null
+      }
+    ],
+    "garnish": [
+      "lemon_twist"
+    ]
+  },
+  "floradora": {
+    "method": "built",
+    "served": "on_ice",
+    "components": [
+      {
+        "ingredient": "gin",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "raspberry_syrup",
+        "role": "sweetener",
+        "ml": 15
+      },
+      {
+        "ingredient": "lime_juice",
+        "role": "citrus",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "ginger_ale",
+        "role": "accent",
+        "ml": 90
+      }
+    ],
+    "garnish": []
+  },
+  "sherry_cobbler": {
+    "method": "shaken",
+    "served": "on_ice",
+    "components": [
+      {
+        "ingredient": "amontillado_sherry",
+        "role": "base",
+        "ml": 90
+      },
+      {
+        "ingredient": "simple_syrup",
+        "role": "sweetener",
+        "ml": 15
+      },
+      {
+        "ingredient": "orange_juice",
+        "role": "citrus",
+        "ml": 7.5
+      },
+      {
+        "ingredient": "lemon_juice",
+        "role": "citrus",
+        "ml": 7.5
+      }
+    ],
+    "garnish": [
+      "orange_twist"
+    ]
+  },
+  "dons_special_daiquiri": {
+    "method": "shaken",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "aged_rum",
+        "role": "base",
+        "ml": 30
+      },
+      {
+        "ingredient": "white_rum",
+        "role": "base",
+        "ml": 30
+      },
+      {
+        "ingredient": "passion_fruit_syrup",
+        "role": "sweetener",
+        "ml": 15
+      },
+      {
+        "ingredient": "lime_juice",
+        "role": "citrus",
+        "ml": 22.5
+      },
+      {
+        "ingredient": "honey_syrup",
+        "role": "sweetener",
+        "ml": 7.5
+      }
+    ],
+    "garnish": []
+  },
+  "garibaldi": {
+    "method": "built",
+    "served": "on_ice",
+    "components": [
+      {
+        "ingredient": "campari",
+        "role": "base",
+        "ml": 60
+      },
+      {
+        "ingredient": "orange_juice",
+        "role": "citrus",
+        "ml": 120
+      }
+    ],
+    "garnish": [
+      "orange_twist"
+    ]
+  },
+  "brandy_alexander": {
+    "method": "shaken",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "cognac",
+        "role": "base",
+        "ml": 30
+      },
+      {
+        "ingredient": "dark_creme_de_cacao",
+        "role": "sweetener",
+        "ml": 30
+      },
+      {
+        "ingredient": "heavy_cream",
+        "role": "modifier",
+        "ml": 30
+      }
+    ],
+    "garnish": []
+  },
+  "porto_flip": {
+    "method": "shaken",
+    "served": "up",
+    "components": [
+      {
+        "ingredient": "ruby_port",
+        "role": "base",
+        "ml": 45
+      },
+      {
+        "ingredient": "cognac",
+        "role": "base",
+        "ml": 15
+      },
+      {
+        "ingredient": "egg_yolk",
+        "role": "modifier",
+        "ml": 30
+      }
+    ],
+    "garnish": []
+  }
+}

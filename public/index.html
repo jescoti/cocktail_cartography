@@ -78,17 +78,6 @@
       position: relative;
     }
 
-    /* Art Deco chevron pattern at top of sidebar */
-    #sidebar::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(135deg, transparent 25%, var(--deco-gold) 25%, var(--deco-gold) 50%, transparent 50%, transparent 75%, var(--deco-gold) 75%, var(--deco-gold));
-      background-size: 8px 8px;
-    }
 
     /* ── Resize handle ────────────────────────────────────────── */
     #resize-handle {
@@ -606,16 +595,6 @@
       border-left: 2px solid var(--border-primary);
       position: relative;
     }
-    #ingredient-panel::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(135deg, transparent 25%, var(--deco-gold) 25%, var(--deco-gold) 50%, transparent 50%, transparent 75%, var(--deco-gold) 75%, var(--deco-gold));
-      background-size: 8px 8px;
-    }
     #ingredient-panel-header {
       padding: 20px 18px 12px;
       flex-shrink: 0;
@@ -800,9 +779,29 @@
       flex-shrink: 0;
       border: 1px solid rgba(245, 245, 220, 0.2);
     }
+    /* ── Top decoration ─────────────────────────────────────────── */
+    .top-decoration {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg,
+        transparent 0%,
+        transparent 15%,
+        var(--deco-gold) 50%,
+        transparent 85%,
+        transparent 100%
+      );
+      opacity: 0.6;
+      z-index: 10000;
+      pointer-events: none;
+      box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+    }
   </style>
 </head>
 <body>
+<div class="top-decoration"></div>
 
 <!-- ── SIDEBAR ──────────────────────────────────────────────────────────── -->
 <div id="sidebar">
