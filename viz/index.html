@@ -463,7 +463,6 @@
       transition: opacity 0.2s ease;
       z-index: 100;
       box-shadow: 0 12px 40px rgba(0,0,0,0.7), 0 0 20px rgba(212, 175, 55, 0.2);
-      position: relative;
     }
     /* Art Deco corner accents */
     #tooltip::before,
@@ -828,12 +827,12 @@
       <!-- α/β slider — inline after Blend+Structure -->
       <div id="alpha-row" class="slider-drawer">
         <div id="alpha-labels">
-          <span>← More flavor</span>
-          <span>More structure →</span>
+          <span>← How it's made</span>
+          <span>How it tastes →</span>
         </div>
         <div id="alpha-slider-row">
           <button class="alpha-step-btn" id="alpha-dec" title="More structure">‹</button>
-          <input id="alpha-slider" type="range" min="0" max="20" step="1" value="10" />
+          <input id="alpha-slider" type="range" min="0" max="20" step="1" value="10">
           <button class="alpha-step-btn" id="alpha-inc" title="More flavor">›</button>
         </div>
         <div id="alpha-value">α = 0.50 (balanced)</div>
@@ -1540,7 +1539,7 @@ function setAlpha(idx) {
   document.getElementById("alpha-slider").value = currentAlpha;
   const alpha = ALPHA_STEPS[currentAlpha];
   document.getElementById("alpha-value").textContent =
-    `α = ${alpha.toFixed(2)} (${alpha === 0.5 ? "balanced" : alpha < 0.5 ? "structure-heavy" : "flavor-heavy"})`;
+    `α = ${alpha.toFixed(2)} (${alpha === 0.5 ? "balanced" : alpha < 0.5 ? "more structure" : "more flavor"})`;
   if (DATA && currentStrategy === "blend_struct") redraw(true);
 }
 
@@ -1945,12 +1944,12 @@ function onIngredientChange() {
 // Fetch & init
 // ────────────────────────────────────────────────────────────────────────────
 
-d3.json("./data/embeddings.json").then(data => {
+d3.json("../data/embeddings.json").then(data => {
   DATA = data;
   document.getElementById("loading").style.display = "none";
 
   // We also need the taxonomy to build the ingredient panel
-  return d3.json("./data/taxonomy.json").then(taxonomy => {
+  return d3.json("../data/taxonomy.json").then(taxonomy => {
     DATA.taxonomy = taxonomy;
     resize();
     updateExplanation();
