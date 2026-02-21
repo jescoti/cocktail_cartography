@@ -78,17 +78,6 @@
       position: relative;
     }
 
-    /* Art Deco chevron pattern at top of sidebar */
-    #sidebar::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(135deg, transparent 25%, var(--deco-gold) 25%, var(--deco-gold) 50%, transparent 50%, transparent 75%, var(--deco-gold) 75%, var(--deco-gold));
-      background-size: 8px 8px;
-    }
 
     /* ── Resize handle ────────────────────────────────────────── */
     #resize-handle {
@@ -467,7 +456,7 @@
       display: flex;
       align-items: flex-start;
       gap: 24px;
-      padding: 12px 20px 16px;
+      padding: 16px 20px 20px;
       flex-wrap: wrap;
     }
     .bp-section {
@@ -1023,6 +1012,7 @@
         </div>
       </div>
       <div class="bp-section">
+        <label class="bp-label">Display</label>
         <label class="toggle-row">
           <input id="show-labels" type="checkbox">
           <span>Show names</span>

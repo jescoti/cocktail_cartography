@@ -266,56 +266,65 @@ me a lot of years... [personal story continues]
 
 ## Part 5: Implementation Steps
 
-### Phase 1: Critical Fixes (Do First)
-1. **Fix tooltip/cocktail info bug** in viz/index.html
-   - **Critical**: Cocktail information not showing on hover or click
-   - Debug event handlers for mouseover/click events
-   - Check tooltip display logic and CSS
-   - Ensure both hover preview and click-to-pin functionality work
-   - Test on different browsers
+### Phase 1: Critical Fixes (COMPLETED ✅)
+1. **✅ Fix tooltip/cocktail info bug** in viz/index.html
+   - Fixed by other session
+   - Cocktail information now works on hover and click
 
-2. **Fix alpha slider bug** in viz/index.html
-   - Swap labels to "How it's made" ← → "How it tastes"
-   - Fix status text to match
+2. **✅ Fix alpha slider bug** in viz/index.html
+   - Labels corrected: "How it's made" ← → "How it tastes"
+   - Status text now matches slider position
 
-### Phase 2: Strategy Simplification
-2. **Remove redundant strategies** from viz/index.html
+### Phase 2: Strategy Simplification (COMPLETED ✅)
+1. **✅ Remove redundant strategies** from viz/index.html
    - Remove "blend" strategy option
    - Remove "perceptual" strategy option
 
-3. **Rename remaining strategies**
-   - "tau" → "perceptual_blend"
-   - "blend_struct" → "taste_structure"
-   - "role_slot" → "recipe_grammar"
+2. **✅ Rename remaining strategies**
+   - "tau" → "Perceptual Blend"
+   - "blend_struct" → "Taste + Structure"
+   - "role_slot" → "Recipe Grammar"
 
-4. **Update slider labels**
+3. **✅ Update slider labels**
    - Tau: "Intense wins" ← → "By volume"
    - Alpha: "How it's made" ← → "How it tastes"
 
-### Phase 3: UI Reorganization
-5. **Implement collapsible strategy sections**
+### Phase 3: UI Reorganization (COMPLETED ✅)
+1. **✅ Implement collapsible strategy sections**
    - Add expand/collapse functionality
    - Show only active strategy details
    - Animate transitions
 
-6. **Move display controls to bottom**
-   - Create fixed bottom panel
-   - Move color, highlight, and label controls
-   - Implement collapse/expand for panel
+2. **✅ Move display controls to bottom**
+   - Created collapsible bottom panel
+   - Moved color, highlight, and label controls
+   - Fixed alignment issue with "Show names" label
 
-### Phase 4: About Page
-7. **Create about.html**
+### Phase 4: About Page (COMPLETED ✅)
+1. **✅ Create about.html**
    - Set up page structure
    - Implement reader selection logic
    - Load content from About-*.md files
    - Style to match main viz
 
-8. **Add About link** to main viz
-   - Place in sidebar or header
-   - Style consistently
+2. **✅ Add About link** to main viz
+   - Added link in sidebar
+   - Styled consistently with Art Deco theme
 
-### Phase 5: Cleanup
-9. **Remove old README files**
+### Phase 5: Additional Fixes (COMPLETED ✅)
+1. **✅ Remove crosshatch decorations from panels**
+   - Removed distracting pattern from top of sidebar
+
+2. **✅ Redesign About page scrolling**
+   - "Why this exists" now scrolls with content
+   - "I AM..." section becomes sticky after scrolling
+   - Only title and "Back to Map" stay fixed at top
+
+3. **✅ Remove deployment info from About content**
+   - Removed "Want to Try It?" section
+   - Added simple GitHub link at bottom
+
+### Phase 6: Cleanup (NOT NEEDED)
    - Delete README_CURIOUS.md
    - Delete README_COCKTAIL_NERD.md
    - Delete README_DATA_NERD.md

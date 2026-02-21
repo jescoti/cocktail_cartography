@@ -1,557 +1,669 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About - Cocktail Cartography</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — Cocktail Cartography</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <style>
+    /* ── Art Deco Design System ─────────────────────────────────── */
     :root {
-      --deco-black: #1a1a1d;
-      --deco-charcoal: #2d2d30;
-      --deco-gold: #D4AF37;
-      --deco-gold-dark: #B8941E;
-      --text-primary: #F5F5DC;
-      --text-primary-hover: #E8E8CF;
-      --text-secondary: #C5C5B0;
-      --text-tertiary: #9A9A88;
-      --text-muted: #6B6B60;
-      --border-primary: #D4AF37;
-      --border-secondary: #4a4a3d;
-      --bg-panel: #1a1a1d;
-      --bg-panel-lighter: #2d2d30;
+      --deco-black: #0f0f12;
+      --deco-charcoal: #1a1a1d;
+      --deco-panel: #16161a;
+      --deco-gold: #d4af37;
+      --deco-gold-dark: #b8941e;
+      --deco-gold-light: #e6c860;
+      --deco-cream: #faf3e0;
+      --deco-cream-dark: #e8e0c8;
+      --deco-cream-muted: #c5b898;
+      --text-primary: #faf3e0;
+      --text-secondary: #c5b898;
+      --text-muted: #8a8070;
+      --border-gold: #d4af37;
+      --border-dim: #3a3528;
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    /* ── Reset & base ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      scroll-behavior: smooth;
     }
 
     body {
       font-family: "Futura", "Century Gothic", "Avenir Next", "Helvetica Neue", Arial, sans-serif;
-      line-height: 1.6;
-      color: var(--text-secondary);
+      font-size: 16px;
+      line-height: 1.7;
       background: var(--deco-black);
-      padding: 0;
-      margin: 0;
+      color: var(--text-primary);
+      letter-spacing: 0.01em;
+      min-height: 100vh;
     }
 
-    .container {
-      max-width: 900px;
+    /* ── Art Deco scrollbars ───────────────────────────────────── */
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--deco-gold) transparent;
+    }
+    *::-webkit-scrollbar { width: 8px; }
+    *::-webkit-scrollbar-track { background: transparent; }
+    *::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, var(--deco-gold) 0%, var(--deco-gold-dark) 100%);
+      border-radius: 4px;
+    }
+    *::-webkit-scrollbar-thumb:hover {
+      background: var(--deco-gold);
+      box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+    }
+
+    /* ── Fixed Header (minimal) ──────────────────────────────── */
+    #main-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: var(--deco-black);
+      border-bottom: 2px solid var(--border-gold);
+      padding: 20px 0;
+    }
+
+    #main-header::after {
+      content: "";
+      position: absolute;
+      bottom: -6px;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(212, 175, 55, 0.15) 20%,
+        rgba(212, 175, 55, 0.3) 50%,
+        rgba(212, 175, 55, 0.15) 80%,
+        transparent 100%
+      );
+    }
+
+    .header-content {
+      max-width: 860px;
       margin: 0 auto;
-      padding: 40px 30px;
+      padding: 0 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    h1 {
-      font-size: 2.5em;
+    .header-title {
+      font-size: 1.4rem;
       font-weight: 300;
       letter-spacing: 0.15em;
       text-transform: uppercase;
       color: var(--deco-gold);
-      margin-bottom: 0.5em;
-      border-bottom: 3px solid var(--deco-gold);
-      padding-bottom: 0.3em;
     }
 
-    h2 {
-      font-size: 1.4em;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--deco-gold);
-      margin-top: 2em;
-      margin-bottom: 0.8em;
-      border-bottom: 2px solid var(--border-secondary);
-      padding-bottom: 0.4em;
-    }
-
-    h3 {
-      font-size: 1.1em;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      color: var(--text-primary);
-      margin-top: 1.5em;
-      margin-bottom: 0.6em;
-    }
-
-    p {
-      margin: 1em 0;
-      color: var(--text-secondary);
-      font-size: 14px;
-      letter-spacing: 0.01em;
-    }
-
-    .lead {
-      font-size: 1.15em;
-      color: var(--text-primary);
-      margin-bottom: 1.5em;
-      line-height: 1.7;
-    }
-
-    ul, ol {
-      margin: 1em 0 1em 2em;
-      color: var(--text-secondary);
-    }
-
-    li {
-      margin: 0.6em 0;
-      line-height: 1.6;
-    }
-
-    strong {
-      color: var(--text-primary);
-      font-weight: 600;
-    }
-
-    em {
-      color: var(--text-primary);
-      font-style: italic;
-    }
-
-    code {
-      background: var(--bg-panel-lighter);
-      padding: 3px 8px;
-      border-radius: 2px;
-      font-family: "Monaco", "Courier New", monospace;
-      font-size: 0.9em;
-      color: var(--deco-gold);
-      border: 1px solid var(--border-secondary);
-    }
-
-    pre {
-      background: var(--bg-panel-lighter);
-      color: var(--text-primary);
-      padding: 18px;
-      border-radius: 2px;
-      overflow-x: auto;
-      line-height: 1.5;
-      border: 2px solid var(--border-secondary);
-      margin: 1.5em 0;
-    }
-
-    pre code {
-      background: none;
-      padding: 0;
-      color: var(--text-primary);
-      border: none;
-    }
-
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      margin: 1.5em 0;
-      border: 2px solid var(--border-secondary);
-    }
-
-    th, td {
-      border: 1px solid var(--border-secondary);
-      padding: 12px 14px;
-      text-align: left;
-    }
-
-    th {
-      background: var(--bg-panel-lighter);
-      color: var(--deco-gold);
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      font-size: 12px;
-    }
-
-    td {
-      color: var(--text-secondary);
-    }
-
-    tr:nth-child(even) td {
-      background: rgba(45, 45, 48, 0.3);
-    }
-
-    hr {
-      border: none;
-      border-top: 2px solid var(--border-secondary);
-      margin: 2.5em 0;
-    }
-
-    .about-footer {
-      font-style: italic;
-      color: var(--text-muted);
-      margin-top: 3em;
-      padding-top: 2em;
-      border-top: 1px solid var(--border-secondary);
-    }
-
-    /* Back to viz link */
     .back-link {
-      display: inline-block;
-      margin-bottom: 30px;
-      color: var(--deco-gold);
+      color: var(--deco-cream);
       text-decoration: none;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-size: 12px;
-      padding: 10px 16px;
-      border: 2px solid var(--border-secondary);
-      background: var(--bg-panel-lighter);
-      transition: all 0.2s ease;
+      font-size: 0.9rem;
+      padding: 8px 16px;
+      border: 1px solid var(--border-dim);
+      border-radius: 3px;
+      transition: all 0.25s ease;
+      background: rgba(22, 22, 26, 0.5);
     }
-
     .back-link:hover {
       border-color: var(--deco-gold);
-      box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
-      background: var(--deco-charcoal);
-    }
-
-    /* Nerd Toggle UI */
-    .nerd-toggle-container {
-      position: fixed;
-      top: 30px;
-      right: 30px;
-      z-index: 1000;
-    }
-
-    .talk-nerdy-btn {
-      background: var(--bg-panel-lighter);
       color: var(--deco-gold);
-      border: 2px solid var(--deco-gold);
-      padding: 12px 24px;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      cursor: pointer;
-      box-shadow: 0 0 8px rgba(212, 175, 55, 0.2);
-      transition: all 0.2s ease;
-      font-family: inherit;
+      background: rgba(212, 175, 55, 0.08);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(212, 175, 55, 0.15);
     }
 
-    .talk-nerdy-btn:hover {
-      background: var(--deco-gold);
-      color: var(--deco-black);
-      box-shadow: 0 0 12px rgba(212, 175, 55, 0.5);
+    /* ── Scrollable content area ────────────────────────────── */
+    #content-wrapper {
+      padding-top: 80px; /* Space for fixed header */
+      max-width: 860px;
+      margin: 0 auto;
+      padding-left: 32px;
+      padding-right: 32px;
     }
 
-    .talk-nerdy-btn:active {
-      transform: scale(0.98);
+    /* ── Why section (scrollable) ─────────────────────────────── */
+    .why-section {
+      padding: 40px 0;
     }
 
-    .nerd-modal {
-      display: none;
-      position: fixed;
-      top: 90px;
-      right: 30px;
-      background: var(--bg-panel-lighter);
-      border: 3px solid var(--deco-gold);
-      padding: 20px;
-      min-width: 220px;
-      box-shadow:
-        0 12px 40px rgba(0, 0, 0, 0.7),
-        0 0 20px rgba(212, 175, 55, 0.2);
-      animation: slideIn 0.3s ease;
-    }
-
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .nerd-modal.visible {
-      display: block;
-    }
-
-    .nerd-modal h3 {
-      margin-top: 0;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
+    .why-section h2 {
+      font-size: 1.8rem;
+      font-weight: 300;
+      letter-spacing: 0.08em;
       color: var(--deco-gold);
-      margin-bottom: 16px;
-      padding-bottom: 12px;
-      border-bottom: 2px solid var(--border-secondary);
+      margin-bottom: 24px;
+      text-transform: uppercase;
     }
 
-    .nerd-option {
+    .why-section p {
+      margin-bottom: 20px;
+      color: var(--deco-cream);
+      line-height: 1.8;
+    }
+
+    /* ── Sticky reader selection ─────────────────────────────── */
+    #reader-wrapper {
+      position: sticky;
+      top: 70px; /* Below main header */
+      z-index: 90;
+      background: var(--deco-black);
+      padding: 16px 0;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border-dim);
+    }
+
+    .reader-selection {
+      background: var(--deco-panel);
+      border: 1px solid var(--border-dim);
+      border-radius: 3px;
+      padding: 14px 20px;
       display: flex;
       align-items: center;
-      padding: 10px 12px;
-      margin: 6px 0;
+      gap: 20px;
+    }
+
+    .reader-label {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-style: italic;
+    }
+
+    .reader-options {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .reader-option {
+      display: flex;
+      align-items: center;
+      gap: 7px;
       cursor: pointer;
-      transition: all 0.2s ease;
-      border: 2px solid transparent;
-      background: var(--bg-panel);
+      user-select: none;
+      font-size: 0.88rem;
+      color: var(--deco-cream);
+      transition: color 0.2s ease;
+    }
+    .reader-option:hover {
+      color: var(--deco-gold);
     }
 
-    .nerd-option:hover {
-      background: var(--deco-charcoal);
-      border-color: var(--border-secondary);
+    .option-separator {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      opacity: 0.5;
     }
 
-    .nerd-option.active {
-      background: var(--deco-charcoal);
-      border-color: var(--deco-gold);
+    /* Custom radio/checkbox styling */
+    .reader-option input[type="radio"],
+    .reader-option input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid var(--border-dim);
+      background: var(--deco-black);
+      cursor: pointer;
       position: relative;
+      flex-shrink: 0;
+      transition: all 0.25s ease;
     }
-
-    .nerd-option.active::before {
+    .reader-option input[type="radio"] {
+      border-radius: 50%;
+    }
+    .reader-option input[type="checkbox"] {
+      border-radius: 2px;
+    }
+    .reader-option input:checked {
+      border-color: var(--deco-gold);
+      background: var(--deco-gold);
+    }
+    .reader-option input[type="radio"]:checked::after {
       content: "";
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 4px;
-      height: 100%;
-      background: var(--deco-gold);
-    }
-
-    .nerd-radio {
-      width: 18px;
-      height: 18px;
+      top: 50%;
+      left: 50%;
+      width: 6px;
+      height: 6px;
+      background: var(--deco-black);
       border-radius: 50%;
-      border: 2px solid var(--border-secondary);
-      margin-right: 12px;
-      position: relative;
-      transition: all 0.2s ease;
+      transform: translate(-50%, -50%);
     }
-
-    .nerd-option.active .nerd-radio {
-      border-color: var(--deco-gold);
-    }
-
-    .nerd-option.active .nerd-radio::after {
-      content: '';
+    .reader-option input[type="checkbox"]:checked::after {
+      content: "✓";
       position: absolute;
-      width: 8px;
-      height: 8px;
-      background: var(--deco-gold);
-      border-radius: 50%;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
+      color: var(--deco-black);
+      font-size: 10px;
+      font-weight: bold;
     }
 
-    .nerd-label {
-      font-weight: 500;
-      color: var(--text-secondary);
-      font-size: 13px;
-      letter-spacing: 0.02em;
+    /* ── Art Deco divider ────────────────────────────────────── */
+    .deco-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 30px 0;
+      opacity: 0.4;
+    }
+    .deco-divider .line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        var(--border-gold) 50%,
+        transparent 100%
+      );
+    }
+    .deco-divider .diamond {
+      width: 8px;
+      height: 8px;
+      background: var(--deco-gold);
+      transform: rotate(45deg);
     }
 
-    .nerd-option.active .nerd-label {
-      color: var(--text-primary);
+    /* ── Dynamic content ──────────────────────────────────────── */
+    #content-area {
+      padding: 20px 0 60px;
+      min-height: 400px;
     }
 
-    .about-content {
-      display: none;
+    .loading {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+      font-style: italic;
     }
 
-    .about-content.visible {
-      display: block;
+    /* ── Markdown content styling ────────────────────────────── */
+    .markdown-content {
       animation: fadeIn 0.4s ease;
     }
 
     @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Mobile responsiveness */
-    @media (max-width: 768px) {
-      .container {
-        padding: 30px 20px;
-      }
-
-      .nerd-toggle-container {
-        position: static;
-        margin-bottom: 20px;
-        text-align: center;
-      }
-
-      .nerd-modal {
-        position: static;
-        margin-top: 15px;
-        width: 100%;
-      }
-
-      h1 {
-        font-size: 2em;
-        letter-spacing: 0.1em;
-      }
-
-      h2 {
-        font-size: 1.2em;
-        letter-spacing: 0.08em;
-      }
+    .markdown-content h1 {
+      font-size: 2rem;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      margin: 36px 0 20px;
+      color: var(--deco-gold);
+      text-transform: uppercase;
+      border-bottom: 2px solid var(--border-dim);
+      padding-bottom: 12px;
     }
 
-    /* Top decoration */
-    .chevron-decoration {
-      height: 6px;
-      background: linear-gradient(90deg,
+    .markdown-content h2 {
+      font-size: 1.4rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      margin: 30px 0 16px;
+      color: var(--deco-gold-light);
+    }
+
+    .markdown-content h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      margin: 24px 0 12px;
+      color: var(--deco-cream);
+    }
+
+    .markdown-content p {
+      margin-bottom: 20px;
+      line-height: 1.8;
+    }
+
+    .markdown-content ul,
+    .markdown-content ol {
+      margin: 16px 0 20px 24px;
+    }
+
+    .markdown-content li {
+      margin-bottom: 8px;
+      line-height: 1.7;
+    }
+
+    .markdown-content code {
+      background: rgba(212, 175, 55, 0.08);
+      color: var(--deco-gold-light);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 0.9em;
+      border: 1px solid rgba(212, 175, 55, 0.2);
+    }
+
+    .markdown-content pre {
+      background: var(--deco-panel);
+      border: 1px solid var(--border-dim);
+      border-radius: 3px;
+      padding: 16px;
+      overflow-x: auto;
+      margin: 20px 0;
+    }
+
+    .markdown-content pre code {
+      background: none;
+      border: none;
+      padding: 0;
+      color: var(--deco-cream);
+    }
+
+    .markdown-content blockquote {
+      border-left: 3px solid var(--deco-gold);
+      margin: 20px 0;
+      padding-left: 20px;
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+
+    .markdown-content strong {
+      color: var(--deco-cream);
+      font-weight: 600;
+    }
+
+    .markdown-content em {
+      color: var(--deco-cream-muted);
+    }
+
+    .markdown-content hr {
+      border: none;
+      height: 1px;
+      background: linear-gradient(
+        90deg,
         transparent 0%,
-        transparent 15%,
-        var(--deco-gold) 50%,
-        transparent 85%,
+        var(--border-gold) 20%,
+        var(--border-gold) 80%,
         transparent 100%
       );
-      margin-bottom: 40px;
-      opacity: 0.6;
-      box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+      margin: 32px 0;
+      opacity: 0.3;
+    }
+
+    .markdown-content a {
+      color: var(--deco-gold);
+      text-decoration: none;
+      border-bottom: 1px dotted var(--deco-gold);
+      transition: all 0.2s ease;
+    }
+    .markdown-content a:hover {
+      color: var(--deco-gold-light);
+      border-bottom-style: solid;
+    }
+
+    /* ── Footer link to repo ──────────────────────────────────── */
+    .footer-link {
+      text-align: center;
+      padding: 40px 0;
+      border-top: 1px solid var(--border-dim);
+      margin-top: 60px;
+    }
+
+    .footer-link a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s ease;
+    }
+    .footer-link a:hover {
+      color: var(--deco-gold);
+    }
+
+    /* ── Responsive ───────────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .header-content,
+      #content-wrapper {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+
+      .header-title {
+        font-size: 1.1rem;
+      }
+
+      .reader-selection {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .reader-options {
+        flex-wrap: wrap;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="chevron-decoration"></div>
+  <!-- ═══ Fixed Minimal Header ═══════════════════════════════════ -->
+  <header id="main-header">
+    <div class="header-content">
+      <div class="header-title">Cocktail Cartography</div>
+      <a href="index.html" class="back-link">&larr; Back to Map</a>
+    </div>
+  </header>
 
-  <div class="container">
-    <a href="index.html" class="back-link">← Back to Visualization</a>
+  <!-- ═══ Content Wrapper ═════════════════════════════════════════ -->
+  <div id="content-wrapper">
+    <!-- Why This Exists Section (scrollable) -->
+    <div class="why-section">
+      <h2>Why this exists</h2>
+      <p>
+        One thing I love about cocktails is their variety. So it took me a lot
+        of years and lot "I ordered this so I guess I'll drink it..." moments
+        to figure out what I actually enjoy. Every now and then, you meet a
+        great bartender who knows the territory and happens to have the time to
+        really understand what you might like (Cecily at ABV 10 years ago,
+        stands out in mind). But if you're not lucky enough to run into your
+        own Cecily, and especially if you don't exactly speak the local
+        language of spirits yet, this page is here to help you learn the
+        territory, and hopefully find your next favorite by starting with the
+        familiar, and moving into similar territory.
+      </p>
+      <p>
+        But then I went down a rabbit hole trying to figure out how to define
+        "similar." I started quantifying ingredients across taste components,
+        and that was straightforward, if painstaking. I wound up with 15
+        dimensions for each ingredient (sweet, bitter, saline, acid, herbal,
+        spice, citrus, floral, fruit, smoke, oak, grain, vegetal, nutty, anise).
+      </p>
+      <p>
+        Then you have to make a cocktail, and that gets complicated. A Negroni
+        and a Martinez have very similar recipes (gin, sweet vermouth, and then
+        Campari or maraschino liqueur, respectively), but the Campari adds a
+        punch of bitterness that makes them quite different. A margarita and a
+        gin gimlet come from different worlds, but they're both citrus-forward
+        cocktails with a sweet and sour balance. How do we map that out?
+      </p>
+      <p>
+        In the end, I decided... not to decide. Instead, I built this tool to
+        explore the territory, and see how different ways of thinking about
+        cocktails can lead to different insights, and hopefully find some new
+        favorites.
+      </p>
+    </div>
 
-    <div class="nerd-toggle-container">
-      <button class="talk-nerdy-btn" id="toggleBtn">
-        Talk nerdy to me
-      </button>
-      <div class="nerd-modal" id="nerdModal">
-        <h3>Choose your nerdiness:</h3>
-        <div class="nerd-option active" data-level="curious">
-          <div class="nerd-radio"></div>
-          <div class="nerd-label">Just curious</div>
-        </div>
-        <div class="nerd-option" data-level="cocktail">
-          <div class="nerd-radio"></div>
-          <div class="nerd-label">Cocktail nerd</div>
-        </div>
-        <div class="nerd-option" data-level="data">
-          <div class="nerd-radio"></div>
-          <div class="nerd-label">Data nerd</div>
+    <!-- Sticky Reader Selection -->
+    <div id="reader-wrapper">
+      <div class="reader-selection">
+        <div class="reader-label">I am...</div>
+        <div class="reader-options">
+          <label class="reader-option">
+            <input type="radio" name="reader-curious" id="opt-curious" checked />
+            <span>Curious</span>
+          </label>
+          <span class="option-separator">or</span>
+          <label class="reader-option">
+            <input type="checkbox" id="opt-cocktail" />
+            <span>a cocktail nerd</span>
+          </label>
+          <label class="reader-option">
+            <input type="checkbox" id="opt-data" />
+            <span>a data nerd</span>
+          </label>
         </div>
       </div>
     </div>
 
-    <div id="contentContainer">
-      <!-- Content will be loaded here -->
+    <div class="deco-divider">
+      <span class="line"></span>
+      <span class="diamond"></span>
+      <span class="line"></span>
+    </div>
+
+    <!-- Dynamic Content Area -->
+    <main id="content-area">
+      <div class="loading">Loading...</div>
+    </main>
+
+    <!-- Footer with repo link -->
+    <div class="footer-link">
+      <a href="https://github.com/cotarijo/cocktail_cartography" target="_blank">
+        View on GitHub
+      </a>
     </div>
   </div>
 
+  <!-- ═══ Scripts ════════════════════════════════════════════════ -->
   <script>
-    // State management
-    let currentLevel = 'curious';
-    let modalVisible = false;
-    let contentCache = {};
+    (function () {
+      "use strict";
 
-    // DOM elements
-    const toggleBtn = document.getElementById('toggleBtn');
-    const nerdModal = document.getElementById('nerdModal');
-    const contentContainer = document.getElementById('contentContainer');
-    const nerdOptions = document.querySelectorAll('.nerd-option');
+      // ── Elements ────────────────────────────────────────────────
+      const contentArea  = document.getElementById("content-area");
+      const optCurious   = document.getElementById("opt-curious");
+      const optCocktail  = document.getElementById("opt-cocktail");
+      const optData      = document.getElementById("opt-data");
 
-    // Toggle modal visibility
-    toggleBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      modalVisible = !modalVisible;
-      nerdModal.classList.toggle('visible', modalVisible);
-    });
-
-    // Close modal when clicking outside
-    document.addEventListener('click', (e) => {
-      if (modalVisible && !nerdModal.contains(e.target) && e.target !== toggleBtn) {
-        modalVisible = false;
-        nerdModal.classList.remove('visible');
-      }
-    });
-
-    // Handle nerd level selection
-    nerdOptions.forEach(option => {
-      option.addEventListener('click', async () => {
-        const level = option.dataset.level;
-        if (level !== currentLevel) {
-          currentLevel = level;
-          updateActiveOption();
-          await loadContent(level);
-          modalVisible = false;
-          nerdModal.classList.remove('visible');
-        }
+      // ── Configure marked.js ─────────────────────────────────────
+      marked.setOptions({
+        breaks: false,
+        gfm: true,
+        headerIds: true,
+        mangle: false
       });
-    });
 
-    // Update active option styling
-    function updateActiveOption() {
-      nerdOptions.forEach(opt => {
-        opt.classList.toggle('active', opt.dataset.level === currentLevel);
-      });
-    }
+      // ── Content cache ────────────────────────────────────────────
+      const contentCache = {};
 
-    // Load content for a specific nerd level
-    async function loadContent(level) {
-      // Check cache first
-      if (contentCache[level]) {
-        displayContent(contentCache[level]);
-        return;
-      }
+      // ── Load content from markdown file ─────────────────────────
+      async function loadContent(fileName) {
+        const path = `About-${fileName}.md`;
 
-      // Fetch content
-      try {
-        const response = await fetch(`about_${level}.html`);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const html = await response.text();
-        contentCache[level] = html;
-        displayContent(html);
-      } catch (error) {
-        console.error('Error loading content:', error);
-        contentContainer.innerHTML = '<p style="color: var(--text-primary);">Error loading content: ' + error.message + '<br>Tried to load: about_' + level + '.html</p>';
-      }
-    }
-
-    // Display content with fade animation
-    function displayContent(html) {
-      // Remove existing content
-      const oldContent = contentContainer.querySelector('.about-content');
-      if (oldContent) {
-        oldContent.classList.remove('visible');
-        setTimeout(() => {
-          contentContainer.innerHTML = html;
-          const newContent = contentContainer.querySelector('.about-content');
-          if (newContent) {
-            setTimeout(() => newContent.classList.add('visible'), 10);
+        try {
+          const response = await fetch(path);
+          if (!response.ok) {
+            throw new Error(`Failed to load ${path}`);
           }
-        }, 200);
-      } else {
-        contentContainer.innerHTML = html;
-        const newContent = contentContainer.querySelector('.about-content');
-        if (newContent) {
-          setTimeout(() => newContent.classList.add('visible'), 10);
+          const markdown = await response.text();
+
+          // Skip the header part (title and "Why this exists" section)
+          // since we're displaying that separately
+          const lines = markdown.split('\n');
+          let contentStart = 0;
+          let foundSeparator = false;
+
+          for (let i = 0; i < lines.length; i++) {
+            if (lines[i].startsWith('---') && i > 0) {
+              if (foundSeparator) {
+                contentStart = i + 1;
+                break;
+              }
+              foundSeparator = true;
+            }
+          }
+
+          const contentOnly = lines.slice(contentStart).join('\n');
+          return marked.parse(contentOnly);
+        } catch (error) {
+          console.error('Error loading content:', error);
+          return `<p style="color: var(--text-muted);">Unable to load content. Please try refreshing.</p>`;
         }
       }
-    }
 
-    // Load initial content
-    loadContent(currentLevel);
+      // ── Display content ──────────────────────────────────────────
+      async function displayContent() {
+        let key;
 
-    // Load content from URL hash if present
-    const hash = window.location.hash.slice(1);
-    if (hash && ['curious', 'cocktail', 'data'].includes(hash)) {
-      currentLevel = hash;
-      updateActiveOption();
-      loadContent(currentLevel);
-    }
+        if (optCurious.checked) {
+          key = 'CURIOUS';
+        } else {
+          const parts = [];
+          if (optCocktail.checked) parts.push('COCKTAIL');
+          if (optData.checked) parts.push('DATA');
 
-    // Update URL hash when level changes
-    nerdOptions.forEach(option => {
-      const origClick = option.onclick;
-      option.addEventListener('click', () => {
-        window.location.hash = option.dataset.level;
+          if (parts.length === 0) {
+            // Nothing selected, default to curious
+            optCurious.checked = true;
+            key = 'CURIOUS';
+          } else if (parts.length === 2) {
+            // Both nerds selected
+            key = 'COCKTAIL_DATA_NERD';
+          } else {
+            key = parts[0] + '_NERD';
+          }
+        }
+
+        // Show loading if not cached
+        if (!contentCache[key]) {
+          contentArea.innerHTML = '<div class="loading">Loading...</div>';
+        }
+
+        // Load and cache content
+        if (!contentCache[key]) {
+          contentCache[key] = await loadContent(key);
+        }
+
+        // Display with fade animation
+        const html = contentCache[key];
+        contentArea.innerHTML =
+          '<div class="markdown-content">' + html + "</div>";
+      }
+
+      // ── Event handlers ───────────────────────────────────────────
+      optCurious.addEventListener("change", function () {
+        if (this.checked) {
+          optCocktail.checked = false;
+          optData.checked = false;
+          displayContent();
+        }
       });
-    });
+
+      optCocktail.addEventListener("change", function () {
+        if (this.checked) {
+          optCurious.checked = false;
+        }
+        displayContent();
+      });
+
+      optData.addEventListener("change", function () {
+        if (this.checked) {
+          optCurious.checked = false;
+        }
+        displayContent();
+      });
+
+      // ── Initial load ─────────────────────────────────────────────
+      displayContent();
+    })();
   </script>
 </body>
 </html>
