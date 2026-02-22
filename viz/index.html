@@ -690,14 +690,7 @@
       position: relative;
     }
     #ingredient-panel::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(135deg, transparent 25%, var(--deco-gold) 25%, var(--deco-gold) 50%, transparent 50%, transparent 75%, var(--deco-gold) 75%, var(--deco-gold));
-      background-size: 8px 8px;
+      display: none;
     }
     #ingredient-panel-header {
       padding: 20px 18px 12px;
@@ -1181,8 +1174,18 @@ function getPoints() {
 function getNeighbors(name) {
   const key = getStrategyKey();
   if (currentStrategy === "tau") {
-    // Tau strategies don't have precomputed neighbors
-    return [];
+    // Compute neighbors from 2D embedding distances
+    const emb = DATA.strategies.tau[key]?.embedding;
+    if (!emb || !emb[name]) return [];
+    const pt = emb[name];
+    return Object.entries(emb)
+      .filter(([n]) => n !== name)
+      .map(([n, p]) => ({
+        name: n,
+        distance: Math.sqrt((p.x - pt.x) ** 2 + (p.y - pt.y) ** 2)
+      }))
+      .sort((a, b) => a.distance - b.distance)
+      .slice(0, 5);
   }
   return (DATA.strategies[key].neighbors || {})[name] || [];
 }
