@@ -572,15 +572,45 @@
     #tooltip.pinned { pointer-events: all; }
     #tooltip.visible { opacity: 1; }
 
+    .tt-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+      padding-bottom: 6px;
+      margin-bottom: 6px;
+    }
     .tt-name {
       font-size: 15px;
       font-weight: 600;
       color: var(--deco-gold);
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      margin-bottom: 6px;
-      border-bottom: 1px solid rgba(212, 175, 55, 0.3);
-      padding-bottom: 6px;
+      flex: 1;
+    }
+    .tt-star {
+      background: none;
+      border: 1px solid var(--deco-gold);
+      color: var(--deco-gold);
+      font-size: 18px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      line-height: 1;
+    }
+    .tt-star:hover {
+      background: rgba(212, 175, 55, 0.1);
+      transform: scale(1.1);
+    }
+    .tt-star.starred {
+      background: var(--deco-gold);
+      color: var(--deco-black);
     }
     .tt-meta {
       font-size: 11px;
@@ -961,7 +991,10 @@
   <div id="chart">
     <svg id="scatter"></svg>
     <div id="tooltip">
-      <div class="tt-name" id="tt-name"></div>
+      <div class="tt-header">
+        <div class="tt-name" id="tt-name"></div>
+        <button class="tt-star" id="tt-star" title="Star this cocktail">☆</button>
+      </div>
       <div class="tt-meta" id="tt-meta"></div>
       <table class="tt-components" id="tt-components"></table>
       <div class="tt-garnish" id="tt-garnish"></div>
@@ -1063,27 +1096,28 @@ one has no citrus slot, the other has no modifying slot.<br><br>
 not just overall flavor.`
 };
 
+// Colorblind-friendly palette (Okabe-Ito with adjustments for black background)
 const CATEGORICAL_PALETTES = {
   base_spirit: {
-    whiskey: "#f97316",
-    gin:     "#22d3ee",
-    agave:   "#4ade80",
-    rum:     "#a78bfa",
-    brandy:  "#fb7185",
-    vodka:   "#fbbf24",
-    mixed:   "#94a3b8",
-    other:   "#52525b",
+    whiskey: "#CC79A7", // Reddish purple (distinguishable)
+    gin:     "#56B4E9", // Sky blue (highly visible)
+    agave:   "#009E73", // Bluish green (good contrast)
+    rum:     "#F0E442", // Yellow (bright on black)
+    brandy:  "#E69F00", // Orange (warm, visible)
+    vodka:   "#0072B2", // Blue (deep, clear)
+    mixed:   "#999999", // Gray (neutral)
+    other:   "#666666", // Darker gray
   },
   family: {
-    sour:           "#22d3ee",
-    spirit_forward: "#f97316",
-    built:          "#4ade80",
-    other:          "#94a3b8",
+    sour:           "#56B4E9", // Sky blue
+    spirit_forward: "#E69F00", // Orange
+    built:          "#009E73", // Bluish green
+    other:          "#999999", // Gray
   },
   served: {
-    up:     "#f97316",
-    on_ice: "#22d3ee",
-    either: "#a78bfa",
+    up:     "#E69F00", // Orange
+    on_ice: "#56B4E9", // Sky blue
+    either: "#CC79A7", // Reddish purple
   },
   dominant_flavor: {
     sweet:  "#f97316",
@@ -1096,7 +1130,8 @@ const CATEGORICAL_PALETTES = {
   },
 };
 
-const SEQUENTIAL_COLOR = d3.scaleSequential(d3.interpolatePlasma).domain([0, 1]);
+// Use Viridis for better colorblind accessibility
+const SEQUENTIAL_COLOR = d3.scaleSequential(d3.interpolateViridis).domain([0, 1]);
 
 // 21 steps: 0.00, 0.05, 0.10, … 1.00
 const ALPHA_STEPS = Array.from({length: 21}, (_, i) => Math.round(i * 5) / 100);
@@ -1127,6 +1162,8 @@ let pinnedName      = null;
 // Set of ingredient names the user has checked (i.e. "I have this")
 // null = not yet initialised (before data loads)
 let checkedIngredients = null;
+// Starred cocktails - stored in localStorage
+let starredCocktails = new Set();
 
 // ────────────────────────────────────────────────────────────────────────────
 // SVG setup
@@ -1250,6 +1287,44 @@ function colorFor(name, recipe) {
 }
 
 // ────────────────────────────────────────────────────────────────────────────
+// Star functionality
+// ────────────────────────────────────────────────────────────────────────────
+function loadStarredCocktails() {
+  try {
+    const stored = localStorage.getItem('starredCocktails');
+    if (stored) {
+      starredCocktails = new Set(JSON.parse(stored));
+    }
+  } catch (e) {
+    console.warn('Failed to load starred cocktails:', e);
+  }
+}
+
+function saveStarredCocktails() {
+  try {
+    localStorage.setItem('starredCocktails', JSON.stringify(Array.from(starredCocktails)));
+  } catch (e) {
+    console.warn('Failed to save starred cocktails:', e);
+  }
+}
+
+function toggleStar(name) {
+  if (starredCocktails.has(name)) {
+    starredCocktails.delete(name);
+  } else {
+    starredCocktails.add(name);
+  }
+  saveStarredCocktails();
+  redraw(false); // Redraw to update outlines
+
+  // Update star button if tooltip is showing this cocktail
+  if (pinnedName === name || ttName.textContent === name.replace(/_/g, " ").toUpperCase()) {
+    ttStar.innerHTML = starredCocktails.has(name) ? "★" : "☆";
+    ttStar.classList.toggle("starred", starredCocktails.has(name));
+  }
+}
+
+// ────────────────────────────────────────────────────────────────────────────
 // Shape generators
 // ────────────────────────────────────────────────────────────────────────────
 
@@ -1325,12 +1400,12 @@ function redraw(animate = false) {
   // UPDATE (shape already exists)
   const all = enter.merge(dotSel);
 
-  // Color & opacity (instant)
+  // Color & opacity (instant) - with gold outline for starred items
   all.selectAll("circle,rect,polygon")
     .attr("fill", d => colorFor(d.name, d.recipe))
     .attr("fill-opacity", 0.9)
-    .attr("stroke", "#0f0f12")
-    .attr("stroke-width", 0.5);
+    .attr("stroke", d => starredCocktails.has(d.name) ? "#d4af37" : "#0f0f12")
+    .attr("stroke-width", d => starredCocktails.has(d.name) ? 2.5 : 0.5);
 
   // Dim non-highlighted families OR unmakeable cocktails
   all.classed("dimmed", d =>
@@ -1434,6 +1509,7 @@ function drawLabels(data) {
 
 const tooltip    = document.getElementById("tooltip");
 const ttName     = document.getElementById("tt-name");
+const ttStar     = document.getElementById("tt-star");
 const ttMeta     = document.getElementById("tt-meta");
 const ttComps    = document.getElementById("tt-components");
 const ttGarnish  = document.getElementById("tt-garnish");
@@ -1441,6 +1517,12 @@ const ttNeighbors = document.getElementById("tt-neighbors");
 
 function showTooltip(name, recipe, event) {
   ttName.textContent = name.replace(/_/g, " ").toUpperCase();
+
+  // Update star button
+  ttStar.innerHTML = starredCocktails.has(name) ? "★" : "☆";
+  ttStar.classList.toggle("starred", starredCocktails.has(name));
+  ttStar.onclick = () => toggleStar(name);
+
   ttMeta.textContent = `${recipe.method} · served ${(recipe.served||"").replace(/_/," ")}`;
 
   // Components table
@@ -2017,6 +2099,9 @@ function onIngredientChange() {
 d3.json("../data/embeddings.json").then(data => {
   DATA = data;
   document.getElementById("loading").style.display = "none";
+
+  // Load starred cocktails from localStorage
+  loadStarredCocktails();
 
   // We also need the taxonomy to build the ingredient panel
   return d3.json("../data/taxonomy.json").then(taxonomy => {
