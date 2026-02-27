@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cocktail Clustering Analysis - Complete Story</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.3em;
+            opacity: 0.9;
+        }
+
+        .toc {
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            border: 1px solid #333;
+        }
+
+        .toc h2 {
+            color: #4a9eff;
+            margin-bottom: 20px;
+        }
+
+        .toc ul {
+            list-style: none;
+            margin-left: 20px;
+        }
+
+        .toc li {
+            margin: 10px 0;
+        }
+
+        .toc a {
+            color: #6ab7ff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .toc a:hover {
+            color: #90caf9;
+        }
+
+        section {
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 40px;
+            margin-bottom: 30px;
+            border: 1px solid #2a2a2a;
+        }
+
+        h2 {
+            color: #4a9eff;
+            font-size: 2em;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #2a2a2a;
+        }
+
+        h3 {
+            color: #64b5f6;
+            font-size: 1.4em;
+            margin: 25px 0 15px 0;
+        }
+
+        .key-finding {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 20%);
+            border-left: 4px solid #4a9eff;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 8px;
+        }
+
+        .cluster-showcase {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .cluster-card {
+            background: #0f0f0f;
+            border: 1px solid #2a2a2a;
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cluster-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4a9eff, #64b5f6);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .cluster-card:hover {
+            transform: translateY(-3px);
+            border-color: #4a9eff;
+        }
+
+        .cluster-card:hover::before {
+            opacity: 1;
+        }
+
+        .cluster-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #4a9eff;
+            margin-bottom: 10px;
+        }
+
+        .cluster-stat {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            padding: 8px 0;
+            border-bottom: 1px solid #1a1a1a;
+        }
+
+        .cluster-stat:last-child {
+            border-bottom: none;
+        }
+
+        .stat-label {
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        .stat-value {
+            color: #e0e0e0;
+            font-weight: 500;
+        }
+
+        .cocktail-list {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #2a2a2a;
+        }
+
+        .cocktail-tag {
+            display: inline-block;
+            background: #2a2a2a;
+            color: #90caf9;
+            padding: 4px 10px;
+            border-radius: 15px;
+            margin: 3px;
+            font-size: 0.85em;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .comparison-box {
+            background: #0f0f0f;
+            padding: 25px;
+            border-radius: 10px;
+            border: 1px solid #2a2a2a;
+        }
+
+        .comparison-box h4 {
+            color: #64b5f6;
+            margin-bottom: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #2a2a2a;
+        }
+
+        th {
+            background: #0f0f0f;
+            color: #4a9eff;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: #0f0f0f;
+        }
+
+        .spectrum-viz {
+            background: #0f0f0f;
+            padding: 30px;
+            border-radius: 10px;
+            margin: 30px 0;
+        }
+
+        .spectrum-line {
+            display: flex;
+            align-items: center;
+            position: relative;
+            height: 80px;
+            margin: 40px 0;
+        }
+
+        .spectrum-point {
+            position: absolute;
+            transform: translateX(-50%);
+            text-align: center;
+        }
+
+        .spectrum-dot {
+            width: 12px;
+            height: 12px;
+            background: #4a9eff;
+            border-radius: 50%;
+            margin: 0 auto 8px;
+        }
+
+        .spectrum-label {
+            font-size: 0.9em;
+            color: #90caf9;
+        }
+
+        .spectrum-desc {
+            font-size: 0.75em;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .recommendation-card {
+            background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+        }
+
+        .recommendation-card h3 {
+            color: #fff;
+            margin-bottom: 15px;
+        }
+
+        .rec-item {
+            margin: 10px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .rec-item::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: #81c784;
+            font-weight: bold;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #b71c1c 0%, #c62828 100%);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .insight-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .insight-card {
+            background: #0f0f0f;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 3px solid #4a9eff;
+        }
+
+        .insight-title {
+            color: #64b5f6;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .code-block {
+            background: #0a0a0a;
+            border: 1px solid #2a2a2a;
+            border-radius: 6px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px;
+            margin-top: 60px;
+            border-top: 1px solid #2a2a2a;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🍸 Cocktail Clustering Analysis</h1>
+        <div class="subtitle">Understanding the hidden patterns in cocktail similarity</div>
+    </header>
+
+    <div class="container">
+        <!-- Table of Contents -->
+        <section class="toc">
+            <h2>📑 Table of Contents</h2>
+            <ul>
+                <li><a href="#summary">Executive Summary</a></li>
+                <li><a href="#problem">The Problem We're Solving</a></li>
+                <li><a href="#alpha-analysis">Alpha Spectrum Analysis</a></li>
+                <li><a href="#key-finding">Key Finding: Alpha=0 with K=8</a></li>
+                <li><a href="#comparison">Blend vs Alpha=0 Comparison</a></li>
+                <li><a href="#tau-spectrum">Tau Spectrum & Whiskey Sour Island</a></li>
+                <li><a href="#recommendations">Interface Recommendations</a></li>
+                <li><a href="#innovation">Innovation Opportunities</a></li>
+            </ul>
+        </section>
+
+        <!-- Executive Summary -->
+        <section id="summary">
+            <h2>📊 Executive Summary</h2>
+
+            <div class="key-finding">
+                <strong>The Bottom Line:</strong> The current 21-position slider is overwhelming and mostly redundant.
+                Our analysis reveals that only 5-6 positions provide genuinely different and useful perspectives on cocktail similarity.
+            </div>
+
+            <div class="insight-grid">
+                <div class="insight-card">
+                    <div class="insight-title">🎯 Optimal Clustering</div>
+                    Alpha=0 with K=8 provides the clearest, most interpretable clusters (silhouette score: 0.805)
+                </div>
+                <div class="insight-card">
+                    <div class="insight-title">🔄 Different Strategies</div>
+                    Blend and Alpha=0 cluster differently (only 17.88% similarity) - validating multiple views
+                </div>
+                <div class="insight-card">
+                    <div class="insight-title">🏝️ Unique Discovery</div>
+                    Tau=4.019 reveals "Whiskey Sour Island" - a distinct 5-cocktail cluster
+                </div>
+                <div class="insight-card">
+                    <div class="insight-title">✨ Simplification</div>
+                    Reduce from 21 slider positions to 5-6 meaningful radio buttons
+                </div>
+            </div>
+        </section>
+
+        <!-- The Problem -->
+        <section id="problem">
+            <h2>❓ The Problem We're Solving</h2>
+
+            <p>Users exploring the cocktail cartography visualization face:</p>
+            <ul style="margin: 20px 0; margin-left: 30px;">
+                <li><strong>Choice Paralysis:</strong> 21 slider positions without clear differentiation</li>
+                <li><strong>Unclear Purpose:</strong> What's the difference between position 7 and 8?</li>
+                <li><strong>Abstract Clustering:</strong> Dots on a map without names or explanations</li>
+                <li><strong>No Guidance:</strong> Which view should I use to find similar cocktails?</li>
+            </ul>
+
+            <div class="key-finding">
+                <strong>Our Goal:</strong> Identify which views actually matter, name the clusters clearly,
+                and simplify the interface to guide users to meaningful discoveries.
+            </div>
+        </section>
+
+        <!-- Alpha Spectrum Analysis -->
+        <section id="alpha-analysis">
+            <h2>🎚️ Alpha Spectrum Analysis</h2>
+
+            <p>The alpha parameter blends pure flavor (α=0) with recipe structure (α=1).</p>
+
+            <div class="spectrum-viz">
+                <h3>Alpha Spectrum Visualization</h3>
+                <div class="spectrum-line" style="background: linear-gradient(90deg, #1e3c72 0%, #666 50%, #2e7d32 100%); height: 4px; border-radius: 2px;">
+                    <div class="spectrum-point" style="left: 0%;">
+                        <div class="spectrum-dot"></div>
+                        <div class="spectrum-label">α=0</div>
+                        <div class="spectrum-desc">Pure Flavor</div>
+                    </div>
+                    <div class="spectrum-point" style="left: 55%;">
+                        <div class="spectrum-dot" style="background: #ffd700;"></div>
+                        <div class="spectrum-label">α=0.55</div>
+                        <div class="spectrum-desc">Convergence Point</div>
+                    </div>
+                    <div class="spectrum-point" style="left: 100%;">
+                        <div class="spectrum-dot"></div>
+                        <div class="spectrum-label">α=1.0</div>
+                        <div class="spectrum-desc">Pure Structure</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="comparison-grid">
+                <div class="comparison-box">
+                    <h4>α=0: Flavor-Based Clustering</h4>
+                    <ul>
+                        <li>Groups by what cocktails taste like</li>
+                        <li>8 distinct, well-separated clusters</li>
+                        <li>Manhattan and Martini group together (both spirit-forward, vermouth-based)</li>
+                        <li>Best for: "I like X, what else would I enjoy?"</li>
+                    </ul>
+                </div>
+                <div class="comparison-box">
+                    <h4>α=1: Structure-Based Clustering</h4>
+                    <ul>
+                        <li>Groups by how cocktails are made</li>
+                        <li>Stirred vs shaken vs built</li>
+                        <li>Recipe template matters more than ingredients</li>
+                        <li>Best for: "Show me cocktails made the same way"</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="key-finding">
+                <strong>Critical Insight:</strong> α=0.55 is the magic convergence point where k-means finds 3 clusters
+                but mean shift finds 4 - suggesting this is where flavor and structure naturally balance.
+            </div>
+        </section>
+
+        <!-- Key Finding: Alpha=0 K=8 -->
+        <section id="key-finding">
+            <h2>🏆 Key Finding: Alpha=0 with K=8 Clusters</h2>
+
+            <p>This configuration produces the most useful clustering for cocktail discovery, with a silhouette score of 0.805 (excellent separation).</p>
+
+            <div class="cluster-showcase">
+                <div class="cluster-card">
+                    <div class="cluster-title">Cluster 1: Martini-Manhattan Axis</div>
+                    <div class="cluster-stat">
+                        <span class="stat-label">Size:</span>
+                        <span class="stat-value">24 cocktails</span>
+                    </div>
+                    <div class="cluster-stat">
+                        <span class="stat-label">Method:</span>
+                        <span class="stat-value">91% stirred</span>
+                    </div>
+                    <div class="cluster-stat">
+                        <span class="stat-label">Key trait:</span>
+                        <span class="stat-value">79% contain vermouth</span>
+                    </div>
+                    <div class="cocktail-list">
+                        <span class="cocktail-tag">martinez</span>
+                        <span class="cocktail-tag">martini</span>
+                        <span class="cocktail-tag">manhattan</span>
+                        <span class="cocktail-tag">rob_roy</span>
+                        <span class="cocktail-tag">perfect_manhattan</span>
+                    </div>
+                </div>
+
+                <div class="cluster-card">
+                    <div class="cluster-title">Cluster 2: Citrus Forward Sours</div>
+                    <div class="cluster-stat">
+                        <span class="stat-label">Size:</span>
+                        <span class="stat-value">18 cocktails</span>
+                    </div>
+                    <div class="cluster-stat">
+                        <span class="stat-label">Method:</span>
+                        <span class="stat-value">100% shaken</span>
+                    </div>
+                    <div class="cluster-stat">
+                        <span class="stat-label">Key trait:</span>
+                        <span class="stat-value">105% citrus (some have multiple)</span>
+                    </div>
+                    <div class="cocktail-list">
+                        <span class="cocktail-tag">daiquiri</span>
+                        <span class="cocktail-tag">gimlet</span>
+                        <span class="cocktail-tag">aviation</span>
+                        <span class="cocktail-tag">white_lady</span>
+                        <span class="cocktail-tag">sidecar</span>
+                    </div>
+                </div>
+
+                <div class="cluster-card">
+                    <div class="cluster-title">Cluster 3: Bitter & Built</div>
+                    <div class="cluster-stat">
+                        <span class="stat-label">Size:</span>
+                        <span class="stat-value">18 cocktails</span>
+                    </div>
+                    <div class="cluster-stat">
+                        <span class="stat-label">Method:</span>
+                        <span class="stat-value">61% built</span>
+                    </div>
+                    <div class="cluster-stat">
+                        <span class="stat-label">Key trait:</span>
+                        <span class="stat-value">Bitter components</span>
+                    </div>
+                    <div class="cocktail-list">
+                        <span class="cocktail-tag">negroni</span>
+                        <span class="cocktail-tag">americano</span>
+                        <span class="cocktail-tag">aperol_spritz</span>
+                        <span class="cocktail-tag">jungle_bird</span>
+                        <span class="cocktail-tag">penicillin</span>
+                    </div>
+                </div>
+
+                <div class="cluster-card">
+                    <div class="cluster-title">Cluster 4: Old Fashioned Family</div>
+                    <div class="cluster-stat">
+                        <span class="stat-label">Size:</span>
+                        <span class="stat-value">11 cocktails</span>
+                    </div>
+                    <div class="cluster-stat">
+                        <span class="stat-label">Method:</span>
+                        <span class="stat-value">63% built</span>
+                    </div>
+                    <div class="cluster-stat">
+                        <span class="stat-label">Key trait:</span>
+                        <span class="stat-value">100% contain bitters</span>
+                    </div>
+                    <div class="cocktail-list">
+                        <span class="cocktail-tag">old_fashioned</span>
+                        <span class="cocktail-tag">oaxaca_old_fashioned</span>
+                        <span class="cocktail-tag">rum_old_fashioned</span>
+                        <span class="cocktail-tag">scotch_old_fashioned</span>
+                        <span class="cocktail-tag">irish_old_fashioned</span>
+                    </div>
+                </div>
+
+                <div class="cluster-card">
+                    <div class="cluster-title">Cluster 5: Tequila & Whiskey Sours</div>
+                    <div class="cluster-stat">
+                        <span class="stat-label">Size:</span>
+                        <span class="stat-value">5 cocktails</span>
+                    </div>
+                    <div class="cluster-stat">
+                        <span class="stat-label">Method:</span>
+                        <span class="stat-value">80% shaken</span>
+                    </div>
+                    <div class="cluster-stat">
+                        <span class="stat-label">Key trait:</span>
+                        <span class="stat-value">Agave & whiskey bases</span>
+                    </div>
+                    <div class="cocktail-list">
+                        <span class="cocktail-tag">margarita</span>
+                        <span class="cocktail-tag">tommys_margarita</span>
+                        <span class="cocktail-tag">whiskey_sour</span>
+                        <span class="cocktail-tag">boulevardier</span>
+                        <span class="cocktail-tag">tequila_sour</span>
+                    </div>
+                </div>
+
+                <div class="cluster-card">
+                    <div class="cluster-title">Cluster 6: Cognac-Gin Classics</div>
+                    <div class="cluster-stat">
+                        <span class="stat-label">Size:</span>
+                        <span class="stat-value">9 cocktails</span>
+                    </div>
+                    <div class="cluster-stat">
+                        <span class="stat-label">Method:</span>
+                        <span class="stat-value">66% shaken</span>
+                    </div>
+                    <div class="cluster-stat">
+                        <span class="stat-label">Key trait:</span>
+                        <span class="stat-value">88% contain bitters</span>
+                    </div>
+                    <div class="cocktail-list">
+                        <span class="cocktail-tag">bijou</span>
+                        <span class="cocktail-tag">tipperary</span>
+                        <span class="cocktail-tag">corpse_reviver_2</span>
+                        <span class="cocktail-tag">brandy_crusta</span>
+                        <span class="cocktail-tag">pisco_sour</span>
+                    </div>
+                </div>
+
+                <div class="cluster-card">
+                    <div class="cluster-title">Cluster 7: Equal Parts Sours</div>
+                    <div class="cluster-stat">
+                        <span class="stat-label">Size:</span>
+                        <span class="stat-value">9 cocktails</span>
+                    </div>
+                    <div class="cluster-stat">
+                        <span class="stat-label">Method:</span>
+                        <span class="stat-value">55% stirred</span>
+                    </div>
+                    <div class="cluster-stat">
+                        <span class="stat-label">Key trait:</span>
+                        <span class="stat-value">Equal proportions</span>
+                    </div>
+                    <div class="cocktail-list">
+                        <span class="cocktail-tag">last_word</span>
+                        <span class="cocktail-tag">final_ward</span>
+                        <span class="cocktail-tag">naked_and_famous</span>
+                        <span class="cocktail-tag">paper_plane</span>
+                        <span class="cocktail-tag">division_bell</span>
+                    </div>
+                </div>
+
+                <div class="cluster-card">
+                    <div class="cluster-title">Cluster 8: Vermouth Cocktails</div>
+                    <div class="cluster-stat">
+                        <span class="stat-label">Size:</span>
+                        <span class="stat-value">8 cocktails</span>
+                    </div>
+                    <div class="cluster-stat">
+                        <span class="stat-label">Method:</span>
+                        <span class="stat-value">87% stirred</span>
+                    </div>
+                    <div class="cluster-stat">
+                        <span class="stat-label">Key trait:</span>
+                        <span class="stat-value">75% vermouth-heavy</span>
+                    </div>
+                    <div class="cocktail-list">
+                        <span class="cocktail-tag">hanky_panky</span>
+                        <span class="cocktail-tag">brooklyn</span>
+                        <span class="cocktail-tag">bobby_burns</span>
+                        <span class="cocktail-tag">red_hook</span>
+                        <span class="cocktail-tag">el_presidente</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Comparison Section -->
+        <section id="comparison">
+            <h2>⚖️ Blend vs Alpha=0: Why Multiple Views Matter</h2>
+
+            <div class="warning-box">
+                <strong>Critical Finding:</strong> The "blend" strategy (pure ingredient overlap) produces only 3 clusters
+                with just 17.88% similarity to alpha=0's 8 clusters. They group cocktails completely differently!
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Aspect</th>
+                        <th>Blend Strategy</th>
+                        <th>Alpha=0 Strategy</th>
+                        <th>Implication</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Number of Clusters</td>
+                        <td>3 (too coarse)</td>
+                        <td>8 (optimal)</td>
+                        <td>Alpha=0 provides better granularity</td>
+                    </tr>
+                    <tr>
+                        <td>Manhattan & Martini</td>
+                        <td>Separated</td>
+                        <td>Together</td>
+                        <td>Alpha=0 recognizes spirit-forward kinship</td>
+                    </tr>
+                    <tr>
+                        <td>Whiskey Sour</td>
+                        <td>Lost in mega-cluster</td>
+                        <td>Clear sub-group</td>
+                        <td>Alpha=0 preserves important distinctions</td>
+                    </tr>
+                    <tr>
+                        <td>Jaccard Similarity</td>
+                        <td colspan="2">Only 17.88%</td>
+                        <td>Validates need for multiple perspectives</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="key-finding">
+                This low similarity proves that different vectorization strategies reveal genuinely different relationships
+                between cocktails - justifying multiple views (but not 21!).
+            </div>
+        </section>
+
+        <!-- Tau Spectrum -->
+        <section id="tau-spectrum">
+            <h2>📈 Tau Spectrum & The Whiskey Sour Island</h2>
+
+            <p>The tau parameter controls how ingredient volume influences clustering:</p>
+            <ul style="margin: 20px 0; margin-left: 30px;">
+                <li><strong>Low τ:</strong> Intensity matters (a dash of bitters = important)</li>
+                <li><strong>High τ:</strong> Volume matters (2oz bourbon > 2 dashes bitters)</li>
+            </ul>
+
+            <div class="spectrum-viz">
+                <h3>Tau Values Analyzed</h3>
+                <div class="spectrum-line" style="background: linear-gradient(90deg, #ff6b6b 0%, #ffd93d 50%, #6bcf7f 100%); height: 4px; border-radius: 2px;">
+                    <div class="spectrum-point" style="left: 5%;">
+                        <div class="spectrum-dot" style="background: #ff6b6b;"></div>
+                        <div class="spectrum-label">τ=0.14</div>
+                        <div class="spectrum-desc">Intensity focus</div>
+                    </div>
+                    <div class="spectrum-point" style="left: 20%;">
+                        <div class="spectrum-dot"></div>
+                        <div class="spectrum-label">τ=0.383</div>
+                        <div class="spectrum-desc">Balanced</div>
+                    </div>
+                    <div class="spectrum-point" style="left: 35%;">
+                        <div class="spectrum-dot"></div>
+                        <div class="spectrum-label">τ=0.75</div>
+                        <div class="spectrum-desc">Volume emerging</div>
+                    </div>
+                    <div class="spectrum-point" style="left: 50%;">
+                        <div class="spectrum-dot" style="background: #ffd700;"></div>
+                        <div class="spectrum-label">τ=4.019</div>
+                        <div class="spectrum-desc">WHISKEY SOUR ISLAND</div>
+                    </div>
+                    <div class="spectrum-point" style="left: 70%;">
+                        <div class="spectrum-dot"></div>
+                        <div class="spectrum-label">τ=15.4</div>
+                        <div class="spectrum-desc">Volume focus</div>
+                    </div>
+                    <div class="spectrum-point" style="left: 95%;">
+                        <div class="spectrum-dot" style="background: #6bcf7f;"></div>
+                        <div class="spectrum-label">τ=115.5</div>
+                        <div class="spectrum-desc">Extreme volume</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="key-finding">
+                <h3>🏝️ The Whiskey Sour Island Discovery</h3>
+                <p>At τ=4.019, something remarkable happens: five specific cocktails break away into their own cluster:</p>
+                <div style="text-align: center; margin: 20px 0;">
+                    <span class="cocktail-tag" style="font-size: 1.1em;">whiskey_sour</span>
+                    <span class="cocktail-tag" style="font-size: 1.1em;">gold_rush</span>
+                    <span class="cocktail-tag" style="font-size: 1.1em;">penicillin</span>
+                    <span class="cocktail-tag" style="font-size: 1.1em;">brown_derby</span>
+                    <span class="cocktail-tag" style="font-size: 1.1em;">lion_tail</span>
+                </div>
+                <p>This reveals how volume-weighted analysis groups cocktails by their proportional structures,
+                not just their ingredients.</p>
+            </div>
+        </section>
+
+        <!-- Recommendations -->
+        <section id="recommendations">
+            <h2>💡 Interface Recommendations</h2>
+
+            <div class="recommendation-card">
+                <h3>Simplify from 21 slider positions to 5-6 radio buttons:</h3>
+
+                <div class="rec-item">
+                    <strong>"Flavor Similarity" (α=0)</strong><br>
+                    Groups cocktails by what they taste like. Best for discovering new favorites.
+                </div>
+
+                <div class="rec-item">
+                    <strong>"Balanced View" (α=0.55)</strong><br>
+                    Balances flavor and structure. Good general-purpose clustering.
+                </div>
+
+                <div class="rec-item">
+                    <strong>"Recipe Structure" (α=1.0)</strong><br>
+                    Groups by how they're made. Good for bartenders learning techniques.
+                </div>
+
+                <div class="rec-item">
+                    <strong>"Intensity Focus" (τ=0.14)</strong><br>
+                    Emphasizes dominant flavors. Good for understanding flavor profiles.
+                </div>
+
+                <div class="rec-item">
+                    <strong>"Volume Focus" (τ=4.0)</strong><br>
+                    Groups by proportions. Reveals structural patterns like the Whiskey Sour Island.
+                </div>
+
+                <div class="rec-item">
+                    <strong>"Perceptual" (punch_weight=0.4)</strong><br>
+                    How cocktails actually taste, with "punchy" ingredients weighted appropriately.
+                </div>
+            </div>
+
+            <div class="recommendation-card">
+                <h3>Additional UI Improvements:</h3>
+
+                <div class="rec-item">
+                    <strong>Default to α=0 k=8</strong> - It's the most useful for cocktail discovery
+                </div>
+
+                <div class="rec-item">
+                    <strong>Name all clusters clearly</strong> - Replace IDs with descriptive names
+                </div>
+
+                <div class="rec-item">
+                    <strong>Add hover tooltips</strong> - Explain what makes each cluster unique
+                </div>
+
+                <div class="rec-item">
+                    <strong>Show cluster stats</strong> - "18 cocktails, 100% shaken, citrus-forward"
+                </div>
+
+                <div class="rec-item">
+                    <strong>Highlight edges</strong> - Mark cocktails that bridge categories for innovation
+                </div>
+            </div>
+        </section>
+
+        <!-- Innovation Opportunities -->
+        <section id="innovation">
+            <h2>🔮 Innovation Opportunities: Edge Cocktails</h2>
+
+            <p>These cocktails sit at cluster boundaries and demonstrate how to bridge categories creatively:</p>
+
+            <div class="insight-grid">
+                <div class="insight-card">
+                    <div class="insight-title">Paper Plane</div>
+                    Bridges equal-parts template with whiskey-forward cocktails.
+                    Shows how modern classics can honor tradition while innovating.
+                </div>
+
+                <div class="insight-card">
+                    <div class="insight-title">Division Bell</div>
+                    Connects mezcal territory with classic sour structure.
+                    Demonstrates how agave spirits can replace traditional bases.
+                </div>
+
+                <div class="insight-card">
+                    <div class="insight-title">Trinidad Sour</div>
+                    Inverts the bitter/base ratio completely.
+                    Proves that rules can be broken with delicious results.
+                </div>
+
+                <div class="insight-card">
+                    <div class="insight-title">Naked and Famous</div>
+                    Links mezcal with the Last Word template.
+                    Shows how templates can travel across spirit categories.
+                </div>
+
+                <div class="insight-card">
+                    <div class="insight-title">Penicillin</div>
+                    Sits between whiskey sours and smoky/medicinal drinks.
+                    Demonstrates layered complexity in familiar formats.
+                </div>
+
+                <div class="insight-card">
+                    <div class="insight-title">Boulevardier</div>
+                    Bridges Negroni template with whiskey base.
+                    Classic example of successful spirit substitution.
+                </div>
+            </div>
+
+            <div class="key-finding">
+                <strong>For Innovation:</strong> Look for cocktails that appear in different clusters across strategies.
+                These "travelers" reveal flexible templates and unexpected connections that can inspire new creations.
+            </div>
+        </section>
+
+        <!-- Conclusions -->
+        <section>
+            <h2>🎯 Conclusions & Next Steps</h2>
+
+            <div class="key-finding">
+                <h3>The Big Picture</h3>
+                <p>Cocktail similarity is inherently multi-dimensional. No single clustering perfectly captures all relationships.
+                However, 5-6 well-chosen perspectives capture the vast majority of useful patterns,
+                while 21 positions create confusion without adding value.</p>
+            </div>
+
+            <h3>Immediate Actions:</h3>
+            <ol style="margin: 20px 0; margin-left: 30px;">
+                <li>Replace the 21-position slider with 5-6 radio buttons</li>
+                <li>Default to alpha=0 k=8 clustering</li>
+                <li>Add descriptive names to all clusters</li>
+                <li>Create tooltips explaining what each view reveals</li>
+                <li>Highlight edge cocktails for users interested in innovation</li>
+            </ol>
+
+            <h3>Technical Implementation:</h3>
+            <div class="code-block">
+const clusteringStrategies = {
+    flavor: { alpha: 0, k: 8, description: "Groups by taste profile" },
+    balanced: { alpha: 0.55, k: 3, description: "Balances flavor and structure" },
+    structure: { alpha: 1.0, k: 3, description: "Groups by recipe template" },
+    intensity: { tau: 0.14, description: "Emphasizes dominant flavors" },
+    volume: { tau: 4.019, description: "Groups by proportions" },
+    perceptual: { punch_weight: 0.4, description: "Weighted by perceived intensity" }
+};
+            </div>
+
+            <div class="recommendation-card">
+                <h3>The Payoff</h3>
+                <p>With these changes, users will:</p>
+                <div class="rec-item">Understand what each view shows them</div>
+                <div class="rec-item">Make informed choices about which perspective to use</div>
+                <div class="rec-item">Discover meaningful connections between cocktails</div>
+                <div class="rec-item">Find new favorites based on what they already enjoy</div>
+                <div class="rec-item">Learn about cocktail construction and theory</div>
+            </div>
+        </section>
+    </div>
+
+    <div class="footer">
+        <p>Cocktail Clustering Analysis - Generated from comprehensive data analysis</p>
+        <p>102 cocktails | 6 clustering strategies | 574 visualizations analyzed</p>
+    </div>
+</body>
+</html>

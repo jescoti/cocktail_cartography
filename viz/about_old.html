@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — Cocktail Cartography</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    /* ── Art Deco Design System ─────────────────────────────────── */
+    :root {
+      --deco-black: #0f0f12;
+      --deco-charcoal: #1a1a1d;
+      --deco-panel: #16161a;
+      --deco-gold: #d4af37;
+      --deco-gold-dark: #b8941e;
+      --deco-gold-light: #e6c860;
+      --deco-cream: #faf3e0;
+      --deco-cream-dark: #e8e0c8;
+      --deco-cream-muted: #c5b898;
+      --text-primary: #faf3e0;
+      --text-secondary: #c5b898;
+      --text-muted: #8a8070;
+      --border-gold: #d4af37;
+      --border-dim: #3a3528;
+    }
+
+    /* ── Reset & base ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "Futura", "Century Gothic", "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      background: var(--deco-black);
+      color: var(--text-primary);
+      letter-spacing: 0.01em;
+      min-height: 100vh;
+    }
+
+    /* ── Art Deco scrollbars ───────────────────────────────────── */
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--deco-gold) transparent;
+    }
+    *::-webkit-scrollbar { width: 8px; }
+    *::-webkit-scrollbar-track { background: transparent; }
+    *::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, var(--deco-gold) 0%, var(--deco-gold-dark) 100%);
+      border-radius: 4px;
+    }
+    *::-webkit-scrollbar-thumb:hover {
+      background: var(--deco-gold);
+      box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+    }
+
+    /* ── Fixed Header ─────────────────────────────────────────── */
+    #fixed-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: var(--deco-black);
+      border-bottom: 2px solid var(--border-gold);
+      padding: 0;
+    }
+
+    #fixed-header::after {
+      content: "";
+      position: absolute;
+      bottom: -6px;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(212, 175, 55, 0.15) 20%,
+        rgba(212, 175, 55, 0.3) 50%,
+        rgba(212, 175, 55, 0.15) 80%,
+        transparent 100%
+      );
+    }
+
+    .header-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 20px 32px 16px;
+    }
+
+    .header-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .header-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--deco-gold);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .back-link {
+      font-size: 0.82rem;
+      color: var(--deco-gold);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border: 1px solid var(--border-dim);
+      padding: 5px 14px;
+      border-radius: 2px;
+      transition: all 0.25s ease;
+      white-space: nowrap;
+    }
+    .back-link:hover {
+      border-color: var(--deco-gold);
+      background: rgba(212, 175, 55, 0.08);
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.15);
+    }
+
+    .header-intro {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.65;
+      max-width: 720px;
+      font-style: italic;
+    }
+
+    /* ── Deco Divider ─────────────────────────────────────────── */
+    .deco-divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 16px 0 12px;
+    }
+    .deco-divider .line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border-dim), transparent);
+    }
+    .deco-divider .diamond {
+      width: 6px;
+      height: 6px;
+      background: var(--deco-gold);
+      transform: rotate(45deg);
+      flex-shrink: 0;
+    }
+
+    /* ── Why This Exists section in header ─────────────────────── */
+    .why-section {
+      margin-top: 4px;
+    }
+    .why-section h2 {
+      font-size: 1.05rem;
+      color: var(--deco-gold);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+    .why-section p {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 10px;
+    }
+    .why-section p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* ── Reader Selection ─────────────────────────────────────── */
+    .reader-selection {
+      background: var(--deco-panel);
+      border: 1px solid var(--border-dim);
+      border-radius: 3px;
+      padding: 14px 20px;
+      margin-top: 14px;
+    }
+
+    .reader-label {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 10px;
+    }
+
+    .reader-options {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .reader-option {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      cursor: pointer;
+      user-select: none;
+      font-size: 0.88rem;
+      color: var(--deco-cream);
+      transition: color 0.2s ease;
+    }
+    .reader-option:hover {
+      color: var(--deco-gold);
+    }
+
+    /* Custom radio/checkbox styling */
+    .reader-option input[type="radio"],
+    .reader-option input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border: 1.5px solid var(--border-dim);
+      background: var(--deco-black);
+      cursor: pointer;
+      position: relative;
+      flex-shrink: 0;
+      transition: all 0.25s ease;
+    }
+    .reader-option input[type="radio"] {
+      border-radius: 50%;
+    }
+    .reader-option input[type="checkbox"] {
+      border-radius: 2px;
+    }
+    .reader-option input:checked {
+      border-color: var(--deco-gold);
+      background: var(--deco-gold);
+    }
+    .reader-option input[type="radio"]:checked::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 6px;
+      height: 6px;
+      background: var(--deco-black);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .reader-option input[type="checkbox"]:checked::after {
+      content: "";
+      position: absolute;
+      top: 1px;
+      left: 4.5px;
+      width: 5px;
+      height: 9px;
+      border: solid var(--deco-black);
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+
+    .option-separator {
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Main Content Area ────────────────────────────────────── */
+    #content-spacer {
+      /* dynamically set by JS to push content below the fixed header */
+    }
+
+    #content-area {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 32px 32px 80px;
+      position: relative;
+      min-height: 50vh;
+    }
+
+    /* ── Loading Indicator ────────────────────────────────────── */
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 0;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      letter-spacing: 0.08em;
+    }
+    .loading::before {
+      content: "";
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--border-dim);
+      border-top-color: var(--deco-gold);
+      border-radius: 50%;
+      margin-right: 12px;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ── Rendered Markdown Styles ─────────────────────────────── */
+    .markdown-content {
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    .markdown-content.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .markdown-content h1 {
+      font-size: 1.5rem;
+      color: var(--deco-gold);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin: 40px 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-dim);
+      font-weight: 700;
+    }
+    .markdown-content h1:first-child {
+      margin-top: 0;
+    }
+
+    .markdown-content h2 {
+      font-size: 1.2rem;
+      color: var(--deco-gold);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 36px 0 14px;
+      font-weight: 600;
+    }
+
+    .markdown-content h3 {
+      font-size: 1.02rem;
+      color: var(--deco-gold-light);
+      letter-spacing: 0.05em;
+      margin: 28px 0 10px;
+      font-weight: 600;
+    }
+
+    .markdown-content p {
+      margin-bottom: 14px;
+      color: var(--deco-cream);
+      font-size: 0.92rem;
+      line-height: 1.75;
+    }
+
+    .markdown-content strong {
+      color: var(--deco-gold-light);
+      font-weight: 600;
+    }
+
+    .markdown-content em {
+      color: var(--deco-cream-dark);
+      font-style: italic;
+    }
+
+    .markdown-content a {
+      color: var(--deco-gold);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+      transition: border-color 0.2s ease, color 0.2s ease;
+    }
+    .markdown-content a:hover {
+      color: var(--deco-gold-light);
+      border-bottom-color: var(--deco-gold);
+    }
+
+    .markdown-content ul, .markdown-content ol {
+      margin: 0 0 16px 24px;
+      color: var(--deco-cream);
+      font-size: 0.92rem;
+    }
+    .markdown-content li {
+      margin-bottom: 6px;
+      line-height: 1.65;
+    }
+
+    .markdown-content blockquote {
+      border-left: 3px solid var(--deco-gold);
+      padding: 10px 18px;
+      margin: 18px 0;
+      background: rgba(212, 175, 55, 0.04);
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+
+    .markdown-content code {
+      background: rgba(212, 175, 55, 0.08);
+      border: 1px solid var(--border-dim);
+      border-radius: 3px;
+      padding: 1px 6px;
+      font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+      font-size: 0.84rem;
+      color: var(--deco-gold-light);
+    }
+
+    .markdown-content pre {
+      background: var(--deco-panel);
+      border: 1px solid var(--border-dim);
+      border-radius: 3px;
+      padding: 16px 20px;
+      overflow-x: auto;
+      margin: 18px 0;
+    }
+    .markdown-content pre code {
+      background: none;
+      border: none;
+      padding: 0;
+      font-size: 0.82rem;
+      color: var(--deco-cream);
+    }
+
+    .markdown-content hr {
+      border: none;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border-dim), var(--deco-gold-dark), var(--border-dim), transparent);
+      margin: 36px 0;
+    }
+
+    .markdown-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 18px 0;
+      font-size: 0.88rem;
+    }
+    .markdown-content th {
+      background: var(--deco-panel);
+      color: var(--deco-gold);
+      text-align: left;
+      padding: 8px 12px;
+      border-bottom: 2px solid var(--deco-gold-dark);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+    }
+    .markdown-content td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border-dim);
+      color: var(--deco-cream);
+    }
+    .markdown-content tr:hover td {
+      background: rgba(212, 175, 55, 0.03);
+    }
+
+    /* ── Error state ──────────────────────────────────────────── */
+    .error-message {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+    }
+    .error-message .error-icon {
+      font-size: 2rem;
+      margin-bottom: 12px;
+      color: var(--deco-gold-dark);
+    }
+    .error-message p {
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    /* ── Responsive ───────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .header-inner {
+        padding: 16px 18px 14px;
+      }
+      .header-top-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      .header-title {
+        font-size: 1.25rem;
+      }
+      .header-intro {
+        font-size: 0.88rem;
+      }
+      .reader-options {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      .option-separator {
+        display: none;
+      }
+      #content-area {
+        padding: 24px 18px 60px;
+      }
+      .why-section p {
+        font-size: 0.84rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .header-title {
+        font-size: 1.05rem;
+        letter-spacing: 0.08em;
+      }
+      .back-link {
+        font-size: 0.75rem;
+        padding: 4px 10px;
+      }
+      .markdown-content h1 {
+        font-size: 1.2rem;
+      }
+      .markdown-content h2 {
+        font-size: 1.05rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ Fixed Header ═══════════════════════════════════════════ -->
+  <header id="fixed-header">
+    <div class="header-inner">
+
+      <div class="header-top-row">
+        <div class="header-title">Cocktail Cartography</div>
+        <a href="index.html" class="back-link">&larr; Back to Map</a>
+      </div>
+
+      <p class="header-intro">
+        An interactive map of 102 classic cocktails that shows you which drinks
+        are similar to each other &mdash; and lets you explore why they're similar
+        by switching between different ways of thinking about cocktails.
+      </p>
+
+      <div class="deco-divider">
+        <span class="line"></span>
+        <span class="diamond"></span>
+        <span class="line"></span>
+      </div>
+
+      <div class="why-section">
+        <h2>Why this exists</h2>
+        <p>
+          One thing I love about cocktails is their variety. So it took me a lot
+          of years and a lot of "I ordered this so I guess I'll drink it..."
+          moments to figure out what I actually enjoy. Every now and then, you
+          meet a great bartender who knows the territory and happens to have the
+          time to really understand what you might like (Cecily at ABV 10 years
+          ago, stands out in mind). But if you're not lucky enough to run into
+          your own Cecily, and especially if you don't exactly speak the local
+          language of spirits yet, this page is here to help you learn the
+          territory, and hopefully find your next favorite by starting with the
+          familiar, and moving into similar territory.
+        </p>
+        <p>
+          But then I went down a rabbit hole trying to figure out how to define
+          "similar." I started quantifying ingredients across taste components,
+          and that was straightforward, if painstaking. I wound up with 15
+          dimensions for each ingredient (sweet, bitter, saline, acid, herbal,
+          spice, citrus, floral, fruit, smoke, oak, grain, vegetal, nutty, anise).
+        </p>
+        <p>
+          Then you have to make a cocktail, and that gets complicated. A negroni
+          and a Martinez have very similar recipes (gin, sweet vermouth, and then
+          Campari or maraschino liqueur, respectively), but the Campari adds a
+          punch of bitterness that makes them quite different. A margarita and a
+          gin gimlet come from different worlds, but they're both citrus-forward
+          cocktails with a sweet and sour balance. How do we map that out?
+        </p>
+        <p>
+          In the end, I decided... not to decide. Instead, I built this tool to
+          explore the territory, and see how different ways of thinking about
+          cocktails can lead to different insights, and hopefully find some new
+          favorites.
+        </p>
+      </div>
+
+      <div class="deco-divider">
+        <span class="line"></span>
+        <span class="diamond"></span>
+        <span class="line"></span>
+      </div>
+
+      <!-- Reader Selection -->
+      <div class="reader-selection">
+        <div class="reader-label">I am...</div>
+        <div class="reader-options">
+          <label class="reader-option">
+            <input type="radio" name="reader-curious" id="opt-curious" checked />
+            <span>Curious</span>
+          </label>
+          <span class="option-separator">or</span>
+          <label class="reader-option">
+            <input type="checkbox" id="opt-cocktail" />
+            <span>a cocktail nerd</span>
+          </label>
+          <label class="reader-option">
+            <input type="checkbox" id="opt-data" />
+            <span>a data nerd</span>
+          </label>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ═══ Content Spacer (pushes below fixed header) ═════════════ -->
+  <div id="content-spacer"></div>
+
+  <!-- ═══ Dynamic Content Area ═══════════════════════════════════ -->
+  <main id="content-area">
+    <div class="loading">Loading...</div>
+  </main>
+
+  <!-- ═══ Scripts ════════════════════════════════════════════════ -->
+  <script>
+    (function () {
+      "use strict";
+
+      // ── Elements ────────────────────────────────────────────────
+      const header       = document.getElementById("fixed-header");
+      const spacer       = document.getElementById("content-spacer");
+      const contentArea  = document.getElementById("content-area");
+      const optCurious   = document.getElementById("opt-curious");
+      const optCocktail  = document.getElementById("opt-cocktail");
+      const optData      = document.getElementById("opt-data");
+
+      // ── Configure marked.js ─────────────────────────────────────
+      marked.setOptions({
+        breaks: false,
+        gfm: true,
+        headerIds: true,
+        mangle: false
+      });
+
+      // ── Content file mapping ────────────────────────────────────
+      const CONTENT_MAP = {
+        curious:  "../About-CURIOUS.md",
+        cocktail: "../About-COCKTAIL_NERD.md",
+        data:     "../About-DATA_NERD.md",
+        both:     "../About-COCKTAIL_DATA_NERD.md"
+      };
+
+      // ── Hash mapping ────────────────────────────────────────────
+      const HASH_MAP = {
+        curious:  "#curious",
+        cocktail: "#cocktail",
+        data:     "#data",
+        both:     "#both"
+      };
+
+      // Content cache to avoid redundant fetches
+      const contentCache = {};
+
+      // Current active key
+      let currentKey = null;
+
+      // ── Determine selection key ─────────────────────────────────
+      function getSelectionKey() {
+        const cocktail = optCocktail.checked;
+        const data     = optData.checked;
+        if (cocktail && data) return "both";
+        if (cocktail)         return "cocktail";
+        if (data)             return "data";
+        return "curious";
+      }
+
+      // ── Set UI state from a key ─────────────────────────────────
+      function setUIFromKey(key) {
+        switch (key) {
+          case "curious":
+            optCurious.checked   = true;
+            optCocktail.checked  = false;
+            optData.checked      = false;
+            break;
+          case "cocktail":
+            optCurious.checked   = false;
+            optCocktail.checked  = true;
+            optData.checked      = false;
+            break;
+          case "data":
+            optCurious.checked   = false;
+            optCocktail.checked  = false;
+            optData.checked      = true;
+            break;
+          case "both":
+            optCurious.checked   = false;
+            optCocktail.checked  = true;
+            optData.checked      = true;
+            break;
+        }
+      }
+
+      // ── Fetch and render markdown content ───────────────────────
+      async function loadContent(key) {
+        if (key === currentKey) return;
+        currentKey = key;
+
+        // Update URL hash without triggering hashchange
+        const newHash = HASH_MAP[key];
+        if (window.location.hash !== newHash) {
+          history.replaceState(null, "", newHash);
+        }
+
+        // Fade out current content
+        const existing = contentArea.querySelector(".markdown-content");
+        if (existing) {
+          existing.classList.remove("visible");
+          await new Promise(resolve => setTimeout(resolve, 250));
+        }
+
+        // Show loading if not cached
+        if (!contentCache[key]) {
+          contentArea.innerHTML = '<div class="loading">Loading...</div>';
+        }
+
+        try {
+          // Fetch or use cache
+          let mdText;
+          if (contentCache[key]) {
+            mdText = contentCache[key];
+          } else {
+            const response = await fetch(CONTENT_MAP[key]);
+            if (!response.ok) {
+              throw new Error("Could not load content (" + response.status + ")");
+            }
+            mdText = await response.text();
+            contentCache[key] = mdText;
+          }
+
+          // Convert markdown to HTML
+          const html = marked.parse(mdText);
+
+          // Insert with fade-in
+          contentArea.innerHTML =
+            '<div class="markdown-content">' + html + "</div>";
+
+          // Trigger reflow then animate in
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+              const el = contentArea.querySelector(".markdown-content");
+              if (el) el.classList.add("visible");
+            });
+          });
+
+          // Scroll to top of content
+          window.scrollTo({ top: spacer.offsetHeight, behavior: "smooth" });
+
+        } catch (err) {
+          contentArea.innerHTML =
+            '<div class="error-message">' +
+            '  <div class="error-icon">&#9670;</div>' +
+            "  <p>Could not load the content file.<br>" +
+            '  <span style="font-size:0.8rem;color:var(--text-muted)">' +
+            err.message + "</span></p>" +
+            "</div>";
+        }
+      }
+
+      // ── Event: Curious radio ────────────────────────────────────
+      optCurious.addEventListener("change", function () {
+        if (optCurious.checked) {
+          optCocktail.checked = false;
+          optData.checked     = false;
+          loadContent("curious");
+        }
+      });
+
+      // ── Event: Cocktail nerd checkbox ───────────────────────────
+      optCocktail.addEventListener("change", function () {
+        if (optCocktail.checked || optData.checked) {
+          optCurious.checked = false;
+        } else {
+          // Nothing checked, revert to curious
+          optCurious.checked = true;
+        }
+        loadContent(getSelectionKey());
+      });
+
+      // ── Event: Data nerd checkbox ───────────────────────────────
+      optData.addEventListener("change", function () {
+        if (optCocktail.checked || optData.checked) {
+          optCurious.checked = false;
+        } else {
+          optCurious.checked = true;
+        }
+        loadContent(getSelectionKey());
+      });
+
+      // ── Resize: keep spacer in sync with header height ─────────
+      function updateSpacer() {
+        spacer.style.height = header.offsetHeight + "px";
+      }
+
+      const resizeObserver = new ResizeObserver(updateSpacer);
+      resizeObserver.observe(header);
+      updateSpacer();
+
+      // ── Initialize from URL hash ────────────────────────────────
+      function initFromHash() {
+        const hash = window.location.hash.replace("#", "").toLowerCase();
+        const validKeys = ["curious", "cocktail", "data", "both"];
+        const key = validKeys.includes(hash) ? hash : "curious";
+        setUIFromKey(key);
+        loadContent(key);
+      }
+
+      // ── Hash change listener ────────────────────────────────────
+      window.addEventListener("hashchange", function () {
+        const hash = window.location.hash.replace("#", "").toLowerCase();
+        const validKeys = ["curious", "cocktail", "data", "both"];
+        if (validKeys.includes(hash)) {
+          setUIFromKey(hash);
+          currentKey = null; // Force reload
+          loadContent(hash);
+        }
+      });
+
+      // ── Boot ────────────────────────────────────────────────────
+      initFromHash();
+
+    })();
+  </script>
+
+</body>
+</html>

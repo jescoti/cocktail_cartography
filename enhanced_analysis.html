@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enhanced Cocktail Clustering Analysis</title>
+  <style>
+    :root {
+      --bg-primary: #1a1a1d;
+      --bg-secondary: #2d2d30;
+      --text-primary: #C5C5B0;
+      --text-highlight: #D4AF37;
+      --border: #4a4a3d;
+      --cluster-1: #2E7D32;
+      --cluster-2: #C62828;
+      --cluster-3: #1565C0;
+      --cluster-4: #F57C00;
+      --cluster-5: #7B1FA2;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Georgia', serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h1 {
+      color: var(--text-highlight);
+      font-size: 2.5em;
+      text-align: center;
+      margin-bottom: 10px;
+      font-weight: bold;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 1.1em;
+      color: var(--text-primary);
+      margin-bottom: 30px;
+      opacity: 0.9;
+    }
+
+    /* Navigation tabs */
+    .nav-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 30px;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .nav-tab {
+      padding: 10px 20px;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      border-radius: 5px 5px 0 0;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 14px;
+    }
+
+    .nav-tab:hover {
+      background: #3d3d40;
+    }
+
+    .nav-tab.active {
+      background: var(--text-highlight);
+      color: var(--bg-primary);
+      font-weight: bold;
+    }
+
+    /* Section containers */
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    /* Compact two-column layout */
+    .analysis-section {
+      display: grid;
+      grid-template-columns: 500px 1fr;
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .viz-container {
+      position: sticky;
+      top: 20px;
+      height: fit-content;
+    }
+
+    .viz-container img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      cursor: zoom-in;
+      transition: transform 0.3s;
+    }
+
+    .viz-container img:hover {
+      transform: scale(1.02);
+    }
+
+    .caption {
+      font-size: 0.9em;
+      color: #888;
+      text-align: center;
+      margin-top: 10px;
+      font-style: italic;
+    }
+
+    .text-column h3 {
+      color: var(--text-highlight);
+      margin-bottom: 15px;
+      font-size: 1.3em;
+    }
+
+    .text-column p {
+      margin-bottom: 15px;
+      line-height: 1.7;
+    }
+
+    /* Compact cluster info boxes */
+    .cluster-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .cluster-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px;
+      transition: all 0.3s;
+    }
+
+    .cluster-box:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(212, 175, 55, 0.2);
+    }
+
+    .cluster-name {
+      font-weight: bold;
+      color: var(--text-highlight);
+      margin-bottom: 8px;
+      font-size: 1.1em;
+    }
+
+    .cluster-members {
+      font-size: 0.85em;
+      color: #aaa;
+      line-height: 1.4;
+    }
+
+    .cluster-count {
+      font-size: 0.8em;
+      color: #888;
+      margin-top: 5px;
+    }
+
+    /* Subcluster info */
+    .subcluster-info {
+      background: rgba(212, 175, 55, 0.1);
+      border-left: 3px solid var(--text-highlight);
+      padding: 10px;
+      margin: 15px 0;
+      font-size: 0.9em;
+    }
+
+    /* Traveler insights */
+    .traveler-box {
+      background: linear-gradient(135deg, var(--bg-secondary), #2a2a35);
+      border: 1px solid var(--text-highlight);
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+
+    .traveler-name {
+      color: var(--text-highlight);
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .traveler-movement {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 10px;
+      margin: 8px 0;
+      font-size: 0.9em;
+    }
+
+    .movement-label {
+      color: #888;
+    }
+
+    .movement-companions {
+      color: var(--text-primary);
+    }
+
+    .insight {
+      color: var(--text-highlight);
+      font-style: italic;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* Modal for zoomed images */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+      cursor: zoom-out;
+    }
+
+    .modal-content {
+      margin: auto;
+      display: block;
+      max-width: 90%;
+      max-height: 90%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .close {
+      position: absolute;
+      top: 20px;
+      right: 35px;
+      color: #f1f1f1;
+      font-size: 40px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover {
+      color: var(--text-highlight);
+    }
+
+    /* Key findings highlight */
+    .key-finding {
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.05));
+      border-left: 4px solid var(--text-highlight);
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+
+    .finding-title {
+      color: var(--text-highlight);
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    /* Comparison table */
+    .comparison-table {
+      width: 100%;
+      margin: 20px 0;
+      border-collapse: collapse;
+    }
+
+    .comparison-table th {
+      background: var(--bg-secondary);
+      color: var(--text-highlight);
+      padding: 10px;
+      text-align: left;
+      border: 1px solid var(--border);
+    }
+
+    .comparison-table td {
+      padding: 10px;
+      border: 1px solid var(--border);
+      font-size: 0.9em;
+    }
+
+    .comparison-table tr:hover {
+      background: rgba(212, 175, 55, 0.05);
+    }
+
+    /* Responsive design */
+    @media (max-width: 900px) {
+      .analysis-section {
+        grid-template-columns: 1fr;
+      }
+
+      .viz-container {
+        position: relative;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Enhanced Cocktail Clustering Analysis</h1>
+  <p class="subtitle">8 Vectorization Strategies · Subcluster Detection · Traveler Insights</p>
+
+  <div class="nav-tabs">
+    <div class="nav-tab active" onclick="showSection('overview')">Overview</div>
+    <div class="nav-tab" onclick="showSection('flavor')">Pure Flavor</div>
+    <div class="nav-tab" onclick="showSection('structure')">Recipe Grammar</div>
+    <div class="nav-tab" onclick="showSection('perceptual')">Intensity-Weighted</div>
+    <div class="nav-tab" onclick="showSection('blends')">Flavor-Structure Blends</div>
+    <div class="nav-tab" onclick="showSection('subclusters')">Subcluster Analysis</div>
+    <div class="nav-tab" onclick="showSection('travelers')">Traveler Insights</div>
+    <div class="nav-tab" onclick="showSection('findings')">Key Findings</div>
+  </div>
+
+  <!-- Overview Section -->
+  <div class="section active" id="overview">
+    <h2 style="color: var(--text-highlight); margin-bottom: 20px;">Comprehensive Analysis Overview</h2>
+
+    <div class="key-finding">
+      <div class="finding-title">What We've Discovered</div>
+      <p>Through analysis of 8 vectorization strategies on 102 cocktails, we've uncovered natural groupings that reflect both flavor profiles and structural templates. The analysis reveals that cocktails exist in a multidimensional space where their position depends on which lens we use to view them.</p>
+    </div>
+
+    <div class="analysis-section">
+      <div class="viz-container">
+        <img src="viz/detailed_heatmap.svg" alt="Detailed Heatmap" onclick="openModal(this)">
+        <p class="caption">Cocktail Companion Matrix: How often cocktails cluster together (annotated)</p>
+      </div>
+
+      <div class="text-column">
+        <h3>Analysis Highlights</h3>
+
+        <p><strong>Strategies Analyzed:</strong></p>
+        <ul style="margin-left: 20px; margin-bottom: 15px;">
+          <li>Pure Flavor (BLEND)</li>
+          <li>Recipe Grammar (ROLE-SLOT)</li>
+          <li>Intensity-Weighted (PERCEPTUAL)</li>
+          <li>5 Flavor-Structure Blends (0%, 25%, 50%, 75%, 100% structure)</li>
+        </ul>
+
+        <p><strong>Key Metrics:</strong></p>
+        <ul style="margin-left: 20px; margin-bottom: 15px;">
+          <li>3-4 primary clusters per strategy</li>
+          <li>Subclusters found in groups >15 cocktails</li>
+          <li>Silhouette scores ranging from 0.540 to 0.845</li>
+          <li>102 total cocktails analyzed</li>
+        </ul>
+
+        <div class="key-finding">
+          <div class="finding-title">Most Stable vs. Most Nomadic</div>
+          <p><strong>Stable cocktails</strong> (consistent companions across strategies):</p>
+          <ul style="margin-left: 20px;">
+            <li>Margarita, Last Word, Aviation (0.66 stability)</li>
+          </ul>
+          <p style="margin-top: 10px;"><strong>Nomadic cocktails</strong> (changing companions):</p>
+          <ul style="margin-left: 20px;">
+            <li>Negroni (0.23 stability) - bridges bitter and spirit-forward worlds</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pure Flavor Section -->
+  <div class="section" id="flavor">
+    <h2 style="color: var(--text-highlight); margin-bottom: 20px;">Pure Flavor (BLEND)</h2>
+
+    <div class="analysis-section">
+      <div class="viz-container">
+        <img src="viz/enhanced_blend.svg" alt="Pure Flavor Clustering" onclick="openModal(this)">
+        <p class="caption">K-means found 3 optimal clusters (silhouette: 0.598)</p>
+      </div>
+
+      <div class="text-column">
+        <h3>Flavor-Based Groupings</h3>
+        <p>When we look purely at flavor profiles, ignoring structural templates, cocktails naturally organize into three main territories with distinct subclusters.</p>
+
+        <div class="cluster-grid">
+          <div class="cluster-box">
+            <div class="cluster-name">Herbal Complexity</div>
+            <div class="cluster-members">Last Word, Paper Plane, Margarita, Daiquiri, Aviation</div>
+            <div class="cluster-count">43 cocktails · 4 subclusters</div>
+          </div>
+          <div class="cluster-box">
+            <div class="cluster-name">Manhattan Family</div>
+            <div class="cluster-members">Manhattan, Old Fashioned, Boulevardier, Whiskey Sour</div>
+            <div class="cluster-count">34 cocktails · 4 subclusters</div>
+          </div>
+          <div class="cluster-box">
+            <div class="cluster-name">Martini Territory</div>
+            <div class="cluster-members">Martinez, Martini, Negroni, Bijou</div>
+            <div class="cluster-count">25 cocktails · 2 subclusters</div>
+          </div>
+        </div>
+
+        <div class="subcluster-info">
+          <strong>Within "Herbal Complexity":</strong><br>
+          • Last Word area (chartreuse-forward)<br>
+          • Margarita zone (citrus-tequila)<br>
+          • Daiquiri classics (rum-citrus)<br>
+          • Sour variations (amaretto, rum sours)
+        </div>
+
+        <div class="key-finding">
+          <div class="finding-title">Flavor Insight</div>
+          <p>Boulevardier clusters with whiskey drinks rather than Negroni, revealing its whiskey-forward nature dominates its Campari component in pure flavor space.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Additional k=5 and k=6 analysis -->
+    <h3 style="margin-top: 40px; color: var(--text-highlight);">Forced Higher-K Analysis</h3>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+      <div>
+        <img src="viz/enhanced_blend.svg" alt="k=5 clustering" style="width: 100%; border-radius: 8px;">
+        <p class="caption">With k=5: Reveals Whiskey Sour separation from Old Fashioned</p>
+      </div>
+      <div>
+        <img src="viz/enhanced_blend.svg" alt="k=6 clustering" style="width: 100%; border-radius: 8px;">
+        <p class="caption">With k=6: Further splits the citrus family</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recipe Grammar Section -->
+  <div class="section" id="structure">
+    <h2 style="color: var(--text-highlight); margin-bottom: 20px;">Recipe Grammar (ROLE-SLOT)</h2>
+
+    <div class="analysis-section">
+      <div class="viz-container">
+        <img src="viz/enhanced_role_slot.svg" alt="Recipe Grammar Clustering" onclick="openModal(this)">
+        <p class="caption">Highest silhouette score: 0.804 with 4 clusters</p>
+      </div>
+
+      <div class="text-column">
+        <h3>Structure-Based Templates</h3>
+        <p>Recipe grammar reveals the clearest separation, with cocktails grouping by their structural templates regardless of flavor.</p>
+
+        <div class="cluster-grid">
+          <div class="cluster-box">
+            <div class="cluster-name">Complex Classics</div>
+            <div class="cluster-members">Martinez, Vieux Carré, Boulevardier, Negroni</div>
+            <div class="cluster-count">23 cocktails · 6 subclusters</div>
+          </div>
+          <div class="cluster-box">
+            <div class="cluster-name">Sour Templates</div>
+            <div class="cluster-members">Daiquiri, Margarita, Whiskey Sour, Gimlet</div>
+            <div class="cluster-count">52 cocktails · 6 subclusters</div>
+          </div>
+          <div class="cluster-box">
+            <div class="cluster-name">Spirit-Forward</div>
+            <div class="cluster-members">Martini, Manhattan, Rob Roy</div>
+            <div class="cluster-count">19 cocktails · 2 subclusters</div>
+          </div>
+          <div class="cluster-box">
+            <div class="cluster-name">Old Fashioned Template</div>
+            <div class="cluster-members">Old Fashioned, Sazerac, Oaxaca OF</div>
+            <div class="cluster-count">8 cocktails · No subclusters</div>
+          </div>
+        </div>
+
+        <div class="key-finding">
+          <div class="finding-title">Structure Insight</div>
+          <p>Old Fashioned forms its own distinct cluster, showing how unique its template is. This 8-cocktail group includes all regional variations but nothing else.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Intensity-Weighted Section -->
+  <div class="section" id="perceptual">
+    <h2 style="color: var(--text-highlight); margin-bottom: 20px;">Intensity-Weighted (PERCEPTUAL)</h2>
+
+    <div class="analysis-section">
+      <div class="viz-container">
+        <img src="viz/enhanced_perceptual.svg" alt="Perceptual Clustering" onclick="openModal(this)">
+        <p class="caption">Clearest boundaries: 0.845 silhouette score</p>
+      </div>
+
+      <div class="text-column">
+        <h3>Human Perception Model</h3>
+        <p>When small intense ingredients are weighted by their perceptual impact, we get the clearest cluster separation—suggesting this matches how humans actually taste cocktails.</p>
+
+        <div class="cluster-grid">
+          <div class="cluster-box">
+            <div class="cluster-name">Intense Spirits</div>
+            <div class="cluster-members">Martini, Negroni, Martinez</div>
+            <div class="cluster-count">23 cocktails</div>
+          </div>
+          <div class="cluster-box">
+            <div class="cluster-name">Bright & Citrus</div>
+            <div class="cluster-members">Margarita, Daiquiri, Last Word</div>
+            <div class="cluster-count">52 cocktails</div>
+          </div>
+          <div class="cluster-box">
+            <div class="cluster-name">Rich & Warming</div>
+            <div class="cluster-members">Manhattan, Old Fashioned, Boulevardier</div>
+            <div class="cluster-count">27 cocktails</div>
+          </div>
+        </div>
+
+        <div class="key-finding">
+          <div class="finding-title">Perceptual Insight</div>
+          <p>Penicillin moves from the citrus cluster to whiskey territory—the Islay float's intensity overrides its sour template in human perception.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Flavor-Structure Blends Section -->
+  <div class="section" id="blends">
+    <h2 style="color: var(--text-highlight); margin-bottom: 20px;">Flavor-Structure Spectrum</h2>
+
+    <p style="margin-bottom: 20px;">Analyzing the full spectrum from pure flavor to pure structure reveals how cocktails transition between categories.</p>
+
+    <div class="comparison-table">
+      <thead>
+        <tr>
+          <th>Strategy</th>
+          <th>Optimal K</th>
+          <th>Silhouette</th>
+          <th>Key Insight</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>0% Structure (Pure Flavor)</td>
+          <td>3</td>
+          <td>0.598</td>
+          <td>Flavor dominates: Boulevardier with whiskey</td>
+        </tr>
+        <tr>
+          <td>25% Structure</td>
+          <td>4</td>
+          <td>0.623</td>
+          <td>Structure emerges: Fourth cluster appears</td>
+        </tr>
+        <tr>
+          <td>50% Structure</td>
+          <td>3</td>
+          <td>0.777</td>
+          <td>Balanced view: Cocktails in transition</td>
+        </tr>
+        <tr>
+          <td>75% Structure</td>
+          <td>4</td>
+          <td>0.540</td>
+          <td>Template-driven: Structure dominates</td>
+        </tr>
+        <tr>
+          <td>100% Structure</td>
+          <td>4</td>
+          <td>0.582</td>
+          <td>Pure grammar: Boulevardier rejoins Negroni</td>
+        </tr>
+      </tbody>
+    </div>
+
+    <div class="analysis-section" style="margin-top: 30px;">
+      <div class="viz-container">
+        <img src="viz/enhanced_blend_struct_a050.svg" alt="50/50 Balanced Mix" onclick="openModal(this)">
+        <p class="caption">50/50 Balance: Cocktails caught between worlds</p>
+      </div>
+
+      <div class="text-column">
+        <h3>The Transitional View</h3>
+        <p>At 50% flavor / 50% structure, we see cocktails in their most conflicted state—caught between their flavor identity and structural template.</p>
+
+        <div class="traveler-box">
+          <div class="traveler-name">Cocktails in Transition at 50/50</div>
+          <div class="traveler-movement">
+            <span class="movement-label">Boulevardier:</span>
+            <span class="movement-companions">Moves between whiskey and Negroni clusters</span>
+          </div>
+          <div class="traveler-movement">
+            <span class="movement-label">Paper Plane:</span>
+            <span class="movement-companions">Bridges sours and equal-parts</span>
+          </div>
+          <div class="traveler-movement">
+            <span class="movement-label">Bee's Knees:</span>
+            <span class="movement-companions">Honey creates flavor ambiguity</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Subcluster Analysis Section -->
+  <div class="section" id="subclusters">
+    <h2 style="color: var(--text-highlight); margin-bottom: 20px;">Subcluster Deep Dive</h2>
+
+    <p>Within the large clusters, we found meaningful subclusters that reveal finer distinctions.</p>
+
+    <div class="analysis-section">
+      <div class="viz-container">
+        <img src="viz/enhanced_blend.svg" alt="Subcluster Visualization" onclick="openModal(this)">
+        <p class="caption">Subclusters within the 43-cocktail "Herbal Complexity" group</p>
+      </div>
+
+      <div class="text-column">
+        <h3>Herbal Complexity Subclusters (43 cocktails)</h3>
+
+        <div class="cluster-grid">
+          <div class="cluster-box">
+            <div class="cluster-name">Chartreuse Forward</div>
+            <div class="cluster-members">Last Word, Final Ward, Naked and Famous</div>
+            <div class="cluster-count">Subcluster 1 · Score: 0.612</div>
+          </div>
+          <div class="cluster-box">
+            <div class="cluster-name">Tequila Citrus</div>
+            <div class="cluster-members">Margarita, Tommy's Margarita, Paloma</div>
+            <div class="cluster-count">Subcluster 2 · Score: 0.589</div>
+          </div>
+          <div class="cluster-box">
+            <div class="cluster-name">Rum Classics</div>
+            <div class="cluster-members">Daiquiri, El Presidente, Pisco Sour</div>
+            <div class="cluster-count">Subcluster 3 · Score: 0.573</div>
+          </div>
+          <div class="cluster-box">
+            <div class="cluster-name">Nut Sours</div>
+            <div class="cluster-members">Amaretto Sour, Rum Sour, Sidecar</div>
+            <div class="cluster-count">Subcluster 4 · Score: 0.581</div>
+          </div>
+        </div>
+
+        <h3 style="margin-top: 30px;">Manhattan Family Subclusters (34 cocktails)</h3>
+
+        <div class="cluster-grid">
+          <div class="cluster-box">
+            <div class="cluster-name">True Manhattans</div>
+            <div class="cluster-members">Manhattan, Black Manhattan, Little Italy</div>
+            <div class="cluster-count">Vermouth-forward whiskey drinks</div>
+          </div>
+          <div class="cluster-box">
+            <div class="cluster-name">Old Fashioned Area</div>
+            <div class="cluster-members">Old Fashioned, Rum OF, Oaxaca OF</div>
+            <div class="cluster-count">Sugar-spirit-bitters template</div>
+          </div>
+          <div class="cluster-box">
+            <div class="cluster-name">Whiskey Sours</div>
+            <div class="cluster-members">Whiskey Sour, Gold Rush, Penicillin</div>
+            <div class="cluster-count">Citrus-whiskey balance</div>
+          </div>
+          <div class="cluster-box">
+            <div class="cluster-name">Dark & Spiced</div>
+            <div class="cluster-members">Dark and Stormy, El Diablo, Corn 'n Oil</div>
+            <div class="cluster-count">Ginger and spice notes</div>
+          </div>
+        </div>
+
+        <div class="key-finding">
+          <div class="finding-title">Subcluster Discovery</div>
+          <p>Your intuition was correct: Whiskey Sour does form a distinct subcluster separate from Old Fashioned within the broader whiskey family. They share a base spirit but diverge in template and balance.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Traveler Insights Section -->
+  <div class="section" id="travelers">
+    <h2 style="color: var(--text-highlight); margin-bottom: 20px;">Traveler Cocktails</h2>
+
+    <p>Some cocktails move between clusters depending on which lens we use, revealing their multifaceted nature.</p>
+
+    <div class="traveler-box">
+      <div class="traveler-name">Boulevardier</div>
+      <div class="traveler-movement">
+        <span class="movement-label">Flavor view:</span>
+        <span class="movement-companions">Lives with Manhattan, Old Fashioned (whiskey family)</span>
+      </div>
+      <div class="traveler-movement">
+        <span class="movement-label">Structure view:</span>
+        <span class="movement-companions">Lives with Negroni (equal parts template)</span>
+      </div>
+      <div class="insight">→ A cocktail with split personality: whiskey heart, Negroni structure</div>
+    </div>
+
+    <div class="traveler-box">
+      <div class="traveler-name">Penicillin</div>
+      <div class="traveler-movement">
+        <span class="movement-label">Without intensity:</span>
+        <span class="movement-companions">Groups with Whiskey Sour, Gold Rush (citrus-whiskey)</span>
+      </div>
+      <div class="traveler-movement">
+        <span class="movement-label">With intensity:</span>
+        <span class="movement-companions">Pulls toward Old Fashioned territory (Islay impact)</span>
+      </div>
+      <div class="insight">→ The Islay float fundamentally changes how we perceive this drink</div>
+    </div>
+
+    <div class="traveler-box">
+      <div class="traveler-name">Last Word</div>
+      <div class="traveler-movement">
+        <span class="movement-label">Flavor focus:</span>
+        <span class="movement-companions">With Paper Plane, Aviation (herbal complexity)</span>
+      </div>
+      <div class="traveler-movement">
+        <span class="movement-label">Structure focus:</span>
+        <span class="movement-companions">With Daiquiri, Margarita (sour template)</span>
+      </div>
+      <div class="insight">→ Chartreuse intensity bridges multiple categories</div>
+    </div>
+
+    <div class="traveler-box">
+      <div class="traveler-name">Aperol Spritz</div>
+      <div class="traveler-movement">
+        <span class="movement-label">Low structure weight:</span>
+        <span class="movement-companions">Lives with citrus refreshers</span>
+      </div>
+      <div class="traveler-movement">
+        <span class="movement-label">High structure weight:</span>
+        <span class="movement-companions">Joins the Negroni bitter family</span>
+      </div>
+      <div class="insight">→ Aperol creates a bridge between refreshing and bitter</div>
+    </div>
+
+    <div class="analysis-section" style="margin-top: 30px;">
+      <div class="viz-container">
+        <img src="viz/traveler_matrix.svg" alt="Traveler Companion Matrix" onclick="openModal(this)">
+        <p class="caption">Companion frequency matrix across all strategies</p>
+      </div>
+
+      <div class="text-column">
+        <h3>Stability Analysis</h3>
+
+        <div class="comparison-table">
+          <thead>
+            <tr>
+              <th>Cocktail</th>
+              <th>Stability Score</th>
+              <th>Classification</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Margarita</td>
+              <td>0.66</td>
+              <td>Highly Stable - consistent companions</td>
+            </tr>
+            <tr>
+              <td>Last Word</td>
+              <td>0.66</td>
+              <td>Highly Stable - defines its category</td>
+            </tr>
+            <tr>
+              <td>Aviation</td>
+              <td>0.66</td>
+              <td>Highly Stable - clear identity</td>
+            </tr>
+            <tr>
+              <td>Boulevardier</td>
+              <td>0.42</td>
+              <td>Moderate Traveler - dual identity</td>
+            </tr>
+            <tr>
+              <td>Negroni</td>
+              <td>0.23</td>
+              <td>Highly Nomadic - bridges categories</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Findings Section -->
+  <div class="section" id="findings">
+    <h2 style="color: var(--text-highlight); margin-bottom: 20px;">Key Findings & Implications</h2>
+
+    <div class="key-finding">
+      <div class="finding-title">1. Multiple Valid Perspectives</div>
+      <p>There is no single "correct" way to cluster cocktails. Each vectorization strategy reveals different truths:</p>
+      <ul style="margin-left: 20px; margin-top: 10px;">
+        <li><strong>Flavor (BLEND):</strong> What the cocktail tastes like</li>
+        <li><strong>Structure (ROLE-SLOT):</strong> How the cocktail is built</li>
+        <li><strong>Perception (PERCEPTUAL):</strong> How humans experience it</li>
+      </ul>
+    </div>
+
+    <div class="key-finding">
+      <div class="finding-title">2. Subclusters Reveal Nuance</div>
+      <p>Your intuition about Whiskey Sour being different from Old Fashioned was correct. Within the 34-cocktail whiskey family, we found 4 distinct subclusters:</p>
+      <ul style="margin-left: 20px; margin-top: 10px;">
+        <li>Manhattan variations (vermouth-forward)</li>
+        <li>Old Fashioned template (sugar-spirit-bitters)</li>
+        <li>Whiskey Sours (citrus-balanced)</li>
+        <li>Spiced variations (ginger/exotic elements)</li>
+      </ul>
+    </div>
+
+    <div class="key-finding">
+      <div class="finding-title">3. Traveler Cocktails Bridge Categories</div>
+      <p>Cocktails like Boulevardier and Penicillin serve as bridges between categories. Their movement across clusters depending on perspective shows they embody characteristics of multiple families.</p>
+    </div>
+
+    <div class="key-finding">
+      <div class="finding-title">4. Intensity Matters More Than Volume</div>
+      <p>The PERCEPTUAL strategy achieved the highest silhouette score (0.845), suggesting that weighting ingredients by intensity rather than volume better matches human taste perception. A dash of Islay can override ounces of citrus.</p>
+    </div>
+
+    <div class="key-finding">
+      <div class="finding-title">5. The 50/50 Sweet Spot</div>
+      <p>The balanced mix (50% flavor, 50% structure) reveals cocktails in transition. This is where we see the most "conflict" in identity—drinks caught between what they taste like and how they're built.</p>
+    </div>
+
+    <h3 style="margin-top: 40px; color: var(--text-highlight);">Implications for Cocktail Design</h3>
+
+    <div style="background: var(--bg-secondary); padding: 20px; border-radius: 8px; margin-top: 20px;">
+      <p style="margin-bottom: 15px;"><strong>For creating new cocktails:</strong></p>
+      <ul style="margin-left: 20px;">
+        <li>Consider both flavor profile and structural template</li>
+        <li>Small intense ingredients can define a drink's identity</li>
+        <li>Cocktails that bridge categories often become modern classics</li>
+        <li>Subclusters suggest unexplored spaces for innovation</li>
+      </ul>
+
+      <p style="margin-top: 20px; margin-bottom: 15px;"><strong>For understanding classics:</strong></p>
+      <ul style="margin-left: 20px;">
+        <li>Boulevardier's dual identity explains its versatility</li>
+        <li>Old Fashioned's structural uniqueness justifies its own category</li>
+        <li>Last Word's chartreuse bridges herbal and sour worlds</li>
+        <li>Negroni's low stability score shows it's a true category-defier</li>
+      </ul>
+    </div>
+
+    <h3 style="margin-top: 40px; color: var(--text-highlight);">Questions for Further Exploration</h3>
+
+    <div class="key-finding">
+      <div class="finding-title">Open Questions</div>
+      <ol style="margin-left: 20px;">
+        <li>If you accept Boulevardier is more like Old Fashioned than Negroni (flavor view), what are the implications for substitutions and variations?</li>
+        <li>The empty spaces between clusters—do they represent opportunities for new cocktail creation?</li>
+        <li>Why do some cocktails (Margarita, Aviation) maintain stable companions while others (Negroni) constantly shift?</li>
+        <li>Could we predict a new cocktail's cluster membership based on its recipe?</li>
+        <li>What would hierarchical clustering reveal about family trees within cocktails?</li>
+      </ol>
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal for zoomed images -->
+<div id="imageModal" class="modal" onclick="closeModal()">
+  <span class="close">&times;</span>
+  <img class="modal-content" id="modalImg">
+</div>
+
+<script>
+function showSection(sectionId) {
+  // Hide all sections
+  const sections = document.querySelectorAll('.section');
+  sections.forEach(section => section.classList.remove('active'));
+
+  // Remove active from all tabs
+  const tabs = document.querySelectorAll('.nav-tab');
+  tabs.forEach(tab => tab.classList.remove('active'));
+
+  // Show selected section
+  document.getElementById(sectionId).classList.add('active');
+
+  // Mark tab as active
+  event.target.classList.add('active');
+}
+
+function openModal(img) {
+  const modal = document.getElementById("imageModal");
+  const modalImg = document.getElementById("modalImg");
+  modal.style.display = "block";
+  modalImg.src = img.src;
+}
+
+function closeModal() {
+  document.getElementById("imageModal").style.display = "none";
+}
+
+// Close modal on Escape key
+document.addEventListener('keydown', function(event) {
+  if (event.key === 'Escape') {
+    closeModal();
+  }
+});
+</script>
+
+</body>
+</html>

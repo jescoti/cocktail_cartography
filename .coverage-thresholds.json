@@ -1,0 +1,12 @@
+{
+  "thresholds": {
+    "lines": 100,
+    "branches": 100,
+    "functions": 100,
+    "statements": 100
+  },
+  "enforcement": {
+    "command": "npx jest --coverage",
+    "notes": "No test runner currently configured. Install jest or vitest to enable coverage."
+  }
+}

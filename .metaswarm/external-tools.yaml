@@ -1,0 +1,12 @@
+# External AI tools configuration
+# Install missing tools to enable them:
+#   Codex:  npm i -g @openai/codex
+#   Gemini: npm i -g @google/gemini-cli
+
+codex:
+  enabled: false
+  notes: "Not installed. Run: npm i -g @openai/codex"
+
+gemini:
+  enabled: false
+  notes: "Not installed. Run: npm i -g @google/gemini-cli"

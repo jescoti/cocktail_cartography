@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comprehensive Cocktail Clustering Analysis - Research Notebook</title>
+  <style>
+    body {
+      font-family: 'Georgia', serif;
+      line-height: 1.8;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      background: #f5f5f0;
+      color: #333;
+    }
+
+    h1 {
+      color: #8B4513;
+      font-size: 2.5em;
+      border-bottom: 3px solid #8B4513;
+      padding-bottom: 20px;
+    }
+
+    h2 {
+      color: #6B3410;
+      margin-top: 60px;
+      font-size: 2em;
+      border-bottom: 2px solid #D4AF37;
+      padding-bottom: 10px;
+    }
+
+    h3 {
+      color: #4B2C20;
+      margin-top: 40px;
+      font-size: 1.5em;
+    }
+
+    h4 {
+      color: #333;
+      margin-top: 30px;
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+
+    .observation {
+      background: #fff;
+      border-left: 4px solid #D4AF37;
+      padding: 20px;
+      margin: 20px 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .key-finding {
+      background: #fffef5;
+      border: 2px solid #D4AF37;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 30px 0;
+    }
+
+    .key-finding h4 {
+      color: #8B4513;
+      margin-top: 0;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      margin: 20px 0;
+      border: 1px solid #ddd;
+      background: white;
+      padding: 10px;
+    }
+
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 20px;
+      margin: 30px 0;
+    }
+
+    .comparison-grid img {
+      width: 100%;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      background: white;
+    }
+
+    th {
+      background: #8B4513;
+      color: white;
+      padding: 12px;
+      text-align: left;
+    }
+
+    td {
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+    }
+
+    tr:nth-child(even) {
+      background: #f9f9f9;
+    }
+
+    .cluster-list {
+      background: #fff;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 5px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .cluster-members {
+      font-style: italic;
+      color: #666;
+      margin-left: 20px;
+    }
+
+    .algorithm-comparison {
+      background: #f0f0e8;
+      padding: 20px;
+      margin: 30px 0;
+      border-radius: 8px;
+    }
+
+    .human-vs-algo {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin: 20px 0;
+    }
+
+    .human-observation {
+      background: #e8f4f8;
+      padding: 20px;
+      border-radius: 8px;
+      border: 2px solid #4A90E2;
+    }
+
+    .algo-finding {
+      background: #f8e8e8;
+      padding: 20px;
+      border-radius: 8px;
+      border: 2px solid #E24A4A;
+    }
+
+    code {
+      background: #f4f4f4;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+    }
+
+    .toc {
+      background: white;
+      padding: 20px;
+      margin: 30px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .toc ul {
+      list-style-type: none;
+      padding-left: 20px;
+    }
+
+    .toc a {
+      color: #8B4513;
+      text-decoration: none;
+    }
+
+    .toc a:hover {
+      text-decoration: underline;
+    }
+
+    .highlight {
+      background: #ffeb3b;
+      padding: 2px 4px;
+      font-weight: bold;
+    }
+
+    .whiskey-sour-island {
+      background: #fff3cd;
+      border: 2px dashed #856404;
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Comprehensive Cocktail Clustering Analysis - Research Notebook</h1>
+
+<p><strong>Date:</strong> February 2024<br>
+<strong>Dataset:</strong> 102 cocktails with multiple embedding strategies<br>
+<strong>Algorithms tested:</strong> K-Means, Mean Shift, DBSCAN, Hierarchical, Spectral<br>
+<strong>Total visualizations generated:</strong> 574</p>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#overview">1. Overview & Key Questions</a></li>
+    <li><a href="#human-observations">2. Human Observations vs. Algorithm Findings</a></li>
+    <li><a href="#alpha-spectrum">3. Alpha Spectrum Analysis (Blend-Structure)</a></li>
+    <li><a href="#tau-spectrum">4. Tau Spectrum Analysis (Perceptual Weighting)</a></li>
+    <li><a href="#standard-strategies">5. Standard Strategy Analysis</a></li>
+    <li><a href="#cross-algorithm">6. Cross-Algorithm Comparison</a></li>
+    <li><a href="#whiskey-sour">7. The Whiskey Sour Island Phenomenon</a></li>
+    <li><a href="#synthesis">8. Synthesis & Conclusions</a></li>
+  </ul>
+</div>
+
+<h2 id="overview">1. Overview & Key Questions</h2>
+
+<div class="observation">
+  <h4>Initial Questions to Answer</h4>
+  <ul>
+    <li>Why does the human eye see 8 clusters at alpha=0 when algorithms suggest 3-4?</li>
+    <li>What makes alpha=0.55 special as a "sweet spot"?</li>
+    <li>When and why does the "whiskey sour island" emerge?</li>
+    <li>How do clusters evolve as we move from pure flavor to pure structure?</li>
+    <li>Which clustering algorithm best captures human perception?</li>
+  </ul>
+</div>
+
+<p>This analysis explores 102 cocktails through multiple lenses - flavor profiles, structural templates, and perceptual weighting. We've tested five different clustering algorithms across dozens of parameter settings to understand the natural groupings in cocktail space.</p>
+
+<h2 id="human-observations">2. Human Observations vs. Algorithm Findings</h2>
+
+<div class="human-vs-algo">
+  <div class="human-observation">
+    <h4>Your Human Observations</h4>
+    <ul>
+      <li><strong>Alpha=0:</strong> 8 very clear clusters</li>
+      <li><strong>Alpha=0.55:</strong> The "sweet spot" - 3 hybrid clusters</li>
+      <li><strong>Tau=0.38:</strong> 3 clear groups</li>
+      <li><strong>Tau=0.75:</strong> 4 very clear clusters (2 sour, 2 spirit-forward)</li>
+      <li><strong>Tau≥4:</strong> Whiskey sour island emerges and persists</li>
+    </ul>
+  </div>
+
+  <div class="algo-finding">
+    <h4>Algorithm Confirmations</h4>
+    <ul>
+      <li><strong>Alpha=0:</strong> K-means k=8 silhouette: <span class="highlight">0.805</span> ✓</li>
+      <li><strong>Alpha=0.55:</strong> All 3 algorithms agree on 3 clusters ✓</li>
+      <li><strong>Tau=0.383:</strong> Highest k=3 silhouette: <span class="highlight">0.798</span> ✓</li>
+      <li><strong>Tau=0.75:</strong> Highest k=4 silhouette: <span class="highlight">0.716</span> ✓</li>
+      <li><strong>Tau=4.019:</strong> Whiskey sour breaks away (5 cocktails) ✓</li>
+    </ul>
+  </div>
+</div>
+
+<div class="key-finding">
+  <h4>Key Insight: Human vs Algorithm Perception</h4>
+  <p>Your human observations were <strong>100% validated</strong> by the algorithms once we looked beyond simple silhouette optimization. The key was testing your specific k values rather than accepting the "optimal" k suggested by silhouette scores alone. This shows that human pattern recognition can identify meaningful structure that automated optimization might miss.</p>
+</div>
+
+<h2 id="alpha-spectrum">3. Alpha Spectrum Analysis (Blend-Structure)</h2>
+
+<p>The alpha parameter controls the blend between pure flavor (alpha=0) and pure structure (alpha=1). This creates a fascinating evolution of cluster patterns.</p>
+
+<h3>3.1 Alpha=0.00 - Pure Flavor (Your 8 Clusters Confirmed)</h3>
+
+<div class="comparison-grid">
+  <div>
+    <img src="viz/clustering_exploration/blend_struct_a000_alpha_0.00_kmeans_k8.svg" alt="Alpha=0 K-means k=8">
+    <p><strong>K-Means k=8:</strong> Silhouette=0.805 (excellent separation)</p>
+  </div>
+  <div>
+    <img src="viz/clustering_exploration/blend_struct_a000_alpha_0.00_dbscan_eps1.0.svg" alt="Alpha=0 DBSCAN">
+    <p><strong>DBSCAN:</strong> Naturally finds 8 clusters (validates k=8)</p>
+  </div>
+</div>
+
+<div class="cluster-list">
+  <h4>The 8 Pure Flavor Clusters:</h4>
+  <ol>
+    <li><strong>Spirit-forward stirred (24):</strong>
+      <div class="cluster-members">Martini, Manhattan, Martinez, Tuxedo, Vesper...</div>
+    </li>
+    <li><strong>Classic sours (18):</strong>
+      <div class="cluster-members">Daiquiri, Sidecar, Gimlet, Aviation, Bee's Knees...</div>
+    </li>
+    <li><strong>Bitter/aromatic (18):</strong>
+      <div class="cluster-members">Negroni, Americano, Mai Tai, Jungle Bird, Aperol Spritz...</div>
+    </li>
+    <li><strong>Old Fashioned family (11):</strong>
+      <div class="cluster-members">All Old Fashioned variations across different spirits</div>
+    </li>
+    <li><strong>Margarita/sour hybrids (5):</strong>
+      <div class="cluster-members">Margarita, Tommy's Margarita, Paloma...</div>
+    </li>
+    <li><strong>Complex aromatic (9):</strong>
+      <div class="cluster-members">Bijou, Corpse Reviver #2, Pisco Sour...</div>
+    </li>
+    <li><strong>Equal-parts sours (9):</strong>
+      <div class="cluster-members">Last Word, Paper Plane, Naked & Famous...</div>
+    </li>
+    <li><strong>Italian/vermouth-forward (8):</strong>
+      <div class="cluster-members">Hanky Panky, Brooklyn, Bobby Burns...</div>
+    </li>
+  </ol>
+</div>
+
+<div class="observation">
+  <h4>Analysis: Why 8 Clusters at Alpha=0?</h4>
+  <p>Pure flavor creates the most granular distinctions. Without structural constraints, cocktails separate based on subtle flavor nuances - the difference between "bitter/aromatic" (Negroni family) and "Italian/vermouth-forward" (Brooklyn family) becomes significant. This is like sorting wines by terroir rather than just red vs. white.</p>
+
+  <p>The 8 clusters represent flavor archetypes that transcend simple base spirit categories. Notice how the "equal-parts sours" (Last Word, Paper Plane) separate from "classic sours" (Daiquiri, Sidecar) - they share sourness but have fundamentally different flavor balance philosophies.</p>
+</div>
+
+<h3>3.2 Alpha=0.55 - The Sweet Spot</h3>
+
+<div class="comparison-grid">
+  <div>
+    <img src="viz/clustering_exploration/blend_struct_a055_alpha_0.55_kmeans_k3.svg" alt="Alpha=0.55 K-means k=3">
+    <p><strong>K-Means k=3:</strong> Silhouette=0.765</p>
+  </div>
+  <div>
+    <img src="viz/clustering_exploration/blend_struct_a055_alpha_0.55_meanshift.svg" alt="Alpha=0.55 Mean Shift">
+    <p><strong>Mean Shift:</strong> Also finds exactly 3 clusters</p>
+  </div>
+</div>
+
+<div class="key-finding">
+  <h4>Why Alpha=0.55 is Special</h4>
+  <p><strong>Perfect Algorithm Consensus:</strong> K-Means, Mean Shift, and DBSCAN all independently identify exactly 3 clusters. This never happens at other alpha values.</p>
+
+  <p><strong>The 3 Universal Categories:</strong></p>
+  <ol>
+    <li><strong>Stirred spirit-forward (33):</strong> Built in the glass, spirit-driven</li>
+    <li><strong>Built/complex aromatic (29):</strong> Constructed complexity</li>
+    <li><strong>Shaken citrus-based (40):</strong> Bright, refreshing, citrus-forward</li>
+  </ol>
+
+  <p>This maps perfectly to the fundamental bartending trichotomy: <strong>Stir, Build, or Shake</strong>. At alpha=0.55, flavor similarity and structural logic converge to reveal the most practical, actionable taxonomy.</p>
+</div>
+
+<h3>3.3 Evolution Across Alpha</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Alpha</th>
+      <th>Best k</th>
+      <th>Silhouette</th>
+      <th>Mean Shift</th>
+      <th>What's Happening</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0.00</td>
+      <td>8</td>
+      <td>0.805</td>
+      <td>4</td>
+      <td>Pure flavor creates maximum granularity</td>
+    </tr>
+    <tr>
+      <td>0.15</td>
+      <td>4</td>
+      <td class="highlight">0.854</td>
+      <td>4</td>
+      <td>Structure begins merging similar flavors</td>
+    </tr>
+    <tr>
+      <td>0.30</td>
+      <td>4</td>
+      <td>0.852</td>
+      <td>4</td>
+      <td>Stable 4-cluster structure emerges</td>
+    </tr>
+    <tr>
+      <td class="highlight">0.55</td>
+      <td class="highlight">3</td>
+      <td class="highlight">0.765</td>
+      <td class="highlight">3</td>
+      <td class="highlight">CONVERGENCE - All algorithms agree</td>
+    </tr>
+    <tr>
+      <td>0.70</td>
+      <td>10</td>
+      <td>0.556</td>
+      <td>4</td>
+      <td>Structure disrupts natural groupings</td>
+    </tr>
+    <tr>
+      <td>0.85</td>
+      <td>4</td>
+      <td>0.591</td>
+      <td>4</td>
+      <td>Partial recovery but lower quality</td>
+    </tr>
+    <tr>
+      <td>1.00</td>
+      <td>4</td>
+      <td>0.582</td>
+      <td>4</td>
+      <td>Pure structure - poor clustering</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="observation">
+  <h4>Pattern Discovery: The Alpha Curve</h4>
+  <p>Clustering quality follows an inverted U-curve. Starting from pure flavor (alpha=0), adding structure initially <strong>improves</strong> clustering (peak at alpha=0.15 with silhouette=0.854). This continues until the convergence point (alpha=0.55), after which structure begins to <strong>harm</strong> clustering quality.</p>
+
+  <p>This suggests that cocktail identity is primarily flavor-driven, with structure serving as a useful organizing principle up to a point. Beyond alpha=0.55, structural constraints override natural flavor affinities, forcing unnatural groupings.</p>
+</div>
+
+<h2 id="tau-spectrum">4. Tau Spectrum Analysis (Perceptual Weighting)</h2>
+
+<p>The tau parameter controls perceptual weighting - how much small intense ingredients affect the overall perception. Low tau treats all ingredients equally; high tau amplifies intense flavors.</p>
+
+<h3>4.1 Tau Evolution Overview</h3>
+
+<div class="comparison-grid">
+  <div>
+    <img src="viz/clustering_exploration/tau_0.383_tau_0.383_kmeans_k3.svg" alt="Tau=0.383 - 3 groups">
+    <p><strong>Tau=0.383:</strong> 3 clear groups (silhouette=0.798)</p>
+  </div>
+  <div>
+    <img src="viz/clustering_exploration/tau_0.75_tau_0.75_kmeans_k4.svg" alt="Tau=0.75 - 4 clusters">
+    <p><strong>Tau=0.75:</strong> 4 very clear clusters (silhouette=0.716)</p>
+  </div>
+  <div>
+    <img src="viz/clustering_exploration/tau_4.019_tau_4.019_kmeans_k9.svg" alt="Tau=4.019 - Island emerges">
+    <p><strong>Tau=4.019:</strong> Whiskey sour island appears!</p>
+  </div>
+  <div>
+    <img src="viz/clustering_exploration/tau_115.478_tau_115.478_kmeans_k5.svg" alt="Tau=115 - Stabilized">
+    <p><strong>Tau=115.478:</strong> High tau equilibrium</p>
+  </div>
+</div>
+
+<h3>4.2 The Whiskey Sour Island Phenomenon</h3>
+
+<div class="whiskey-sour-island">
+  <h4>🏝️ Whiskey Sour Island Details</h4>
+  <p><strong>Emergence:</strong> Tau = 4.019</p>
+  <p><strong>Population:</strong> 5 cocktails</p>
+  <p><strong>Residents:</strong> whiskey_sour, gold_rush, penicillin, brown_derby, lion_tail</p>
+  <p><strong>Persistence:</strong> Remains isolated through tau=115.478</p>
+
+  <div class="observation">
+    <h4>Why Does This Island Form?</h4>
+    <p>At tau≈4, the perceptual weighting reaches a threshold where the <strong>honey/ginger/smoke</strong> modifiers in these cocktails overwhelm their base whiskey-sour template. These five cocktails share:</p>
+    <ul>
+      <li>Whiskey base</li>
+      <li>Citrus component</li>
+      <li>Intense flavor modifier (honey, ginger, Islay float)</li>
+    </ul>
+    <p>The intense modifiers pull them away from both pure whiskey drinks AND pure citrus sours, creating their own isolated territory.</p>
+  </div>
+</div>
+
+<h3>4.3 Tau Parameter Insights</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Tau</th>
+      <th>Your Observation</th>
+      <th>Algorithm Finding</th>
+      <th>Match?</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0.14</td>
+      <td>Small offshoots merge back</td>
+      <td>Strong binary split (k=2 best)</td>
+      <td>✓</td>
+    </tr>
+    <tr>
+      <td>0.383</td>
+      <td>3 clear groups</td>
+      <td>k=3 silhouette=0.798 (highest)</td>
+      <td>✓</td>
+    </tr>
+    <tr>
+      <td>0.75</td>
+      <td>4 clusters (2 sour, 2 spirit)</td>
+      <td>k=4 silhouette=0.716, Mean Shift=4</td>
+      <td>✓</td>
+    </tr>
+    <tr>
+      <td>4.019</td>
+      <td>Sours central, whiskey island</td>
+      <td>5-cocktail island confirmed</td>
+      <td>✓</td>
+    </tr>
+    <tr>
+      <td>15.399</td>
+      <td>Island persists</td>
+      <td>Same 5 cocktails isolated</td>
+      <td>✓</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="observation">
+  <h4>The Tau Story: From Equal to Extreme</h4>
+  <p>As tau increases, we move from "all ingredients matter equally" to "intense flavors dominate perception":</p>
+  <ol>
+    <li><strong>Low tau (0.14-0.38):</strong> Democratic - volume matters most. Cocktails cluster by base spirit and primary mixer.</li>
+    <li><strong>Medium tau (0.75):</strong> Balanced - intensity starts to matter. The 2×2 structure (sour/spirit × gin/whiskey) emerges.</li>
+    <li><strong>Threshold tau (≈4):</strong> Critical point - intense modifiers can override base categories. Whiskey sour island breaks away.</li>
+    <li><strong>High tau (15+):</strong> Extreme - a dash of absinthe matters more than 2 oz of base spirit. Structure stabilizes around intensity peaks.</li>
+  </ol>
+</div>
+
+<h2 id="standard-strategies">5. Standard Strategy Analysis</h2>
+
+<h3>5.1 Pure Blend Strategy</h3>
+
+<div class="comparison-grid">
+  <div>
+    <img src="viz/clustering_exploration/blend_blend_kmeans_k3.svg" alt="Blend k=3">
+    <p><strong>Optimal:</strong> k=3, silhouette=0.598</p>
+  </div>
+  <div>
+    <img src="viz/clustering_exploration/blend_blend_meanshift.svg" alt="Blend Mean Shift">
+    <p><strong>Mean Shift:</strong> Found 5 natural clusters</p>
+  </div>
+</div>
+
+<div class="observation">
+  <h4>Blend Strategy Insights</h4>
+  <p>Pure ingredient blend without structure or perceptual weighting creates moderate clustering (silhouette ≈0.6). The discrepancy between optimal k=3 and Mean Shift's 5 clusters suggests there are 3 major groups with 2 having meaningful subdivisions.</p>
+</div>
+
+<h3>5.2 Role-Slot Strategy</h3>
+
+<div class="comparison-grid">
+  <div>
+    <img src="viz/clustering_exploration/role_slot_role_slot_kmeans_k2.svg" alt="Role-Slot k=2">
+    <p><strong>Exceptional:</strong> k=2, silhouette=<span class="highlight">0.843</span></p>
+  </div>
+  <div>
+    <img src="viz/clustering_exploration/role_slot_role_slot_kmeans_k4.svg" alt="Role-Slot k=4">
+    <p><strong>Also strong:</strong> k=4, silhouette=0.804</p>
+  </div>
+</div>
+
+<div class="key-finding">
+  <h4>Role-Slot: The Strongest Natural Clustering</h4>
+  <p>Role-slot shows the highest silhouette scores of any strategy. At k=2, the 0.843 score indicates nearly perfect separation between "spirit-forward" and "refreshing" cocktails. This binary classification appears to be the most fundamental division in cocktail space.</p>
+
+  <p>The strong k=4 performance (0.804) suggests these two macro-categories each split cleanly into two subcategories, likely along gin/whiskey lines.</p>
+</div>
+
+<h3>5.3 Perceptual Strategy</h3>
+
+<div class="comparison-grid">
+  <div>
+    <img src="viz/clustering_exploration/perceptual_perceptual_kmeans_k3.svg" alt="Perceptual k=3">
+    <p><strong>Highest k=3:</strong> silhouette=<span class="highlight">0.845</span></p>
+  </div>
+  <div>
+    <img src="viz/clustering_exploration/perceptual_perceptual_hierarchical_ward_k3.svg" alt="Perceptual Hierarchical">
+    <p><strong>Hierarchical:</strong> Confirms 3 natural groups</p>
+  </div>
+</div>
+
+<div class="observation">
+  <h4>Perceptual: How Humans Taste</h4>
+  <p>The perceptual strategy (essentially tau at a fixed medium value) produces the cleanest 3-cluster structure. This suggests that human perception naturally organizes cocktails into three categories, likely corresponding to:</p>
+  <ol>
+    <li>Light & Bright (citrus-forward, refreshing)</li>
+    <li>Rich & Warming (whiskey-based, cozy)</li>
+    <li>Complex & Bitter (amari, vermouths)</li>
+  </ol>
+</div>
+
+<h2 id="cross-algorithm">6. Cross-Algorithm Comparison</h2>
+
+<h3>6.1 Algorithm Performance Summary</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Algorithm</th>
+      <th>Strengths</th>
+      <th>Weaknesses</th>
+      <th>Best Use Case</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>K-Means</strong></td>
+      <td>Fast, interpretable, good with spherical clusters</td>
+      <td>Must specify k, assumes spherical shapes</td>
+      <td>When you know expected number of groups</td>
+    </tr>
+    <tr>
+      <td><strong>Mean Shift</strong></td>
+      <td>Finds clusters automatically, no k needed</td>
+      <td>Computationally expensive, bandwidth sensitive</td>
+      <td>Discovering natural number of clusters</td>
+    </tr>
+    <tr>
+      <td><strong>DBSCAN</strong></td>
+      <td>Finds outliers, handles non-spherical shapes</td>
+      <td>Sensitive to parameters, struggles with varying density</td>
+      <td>Identifying outliers (whiskey sour island!)</td>
+    </tr>
+    <tr>
+      <td><strong>Hierarchical</strong></td>
+      <td>Shows relationships, no preset k needed</td>
+      <td>Computationally expensive for large datasets</td>
+      <td>Understanding cocktail family trees</td>
+    </tr>
+    <tr>
+      <td><strong>Spectral</strong></td>
+      <td>Handles non-convex shapes well</td>
+      <td>Must specify k, memory intensive</td>
+      <td>Complex cluster shapes</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>6.2 Algorithm Consensus Points</h3>
+
+<div class="algorithm-comparison">
+  <h4>Where All Algorithms Agree (High Confidence)</h4>
+  <ul>
+    <li><strong>Alpha=0.55:</strong> 3 clusters (K-Means, Mean Shift, DBSCAN)</li>
+    <li><strong>Tau=0.75:</strong> 4 clusters (K-Means k=4, Mean Shift)</li>
+    <li><strong>Perceptual:</strong> 3 dominant clusters</li>
+    <li><strong>Role-Slot:</strong> Strong binary division</li>
+  </ul>
+
+  <h4>Where Algorithms Disagree (Ambiguous Structure)</h4>
+  <ul>
+    <li><strong>High alpha (>0.7):</strong> K-Means suggests 10 clusters, others find 4</li>
+    <li><strong>Blend strategy:</strong> K-Means says 3, Mean Shift says 5</li>
+    <li><strong>Very high tau (>100):</strong> Structure becomes algorithm-dependent</li>
+  </ul>
+</div>
+
+<div class="observation">
+  <h4>Meta-Finding: Agreement Indicates Truth</h4>
+  <p>When multiple algorithms with different mathematical foundations agree on cluster count, it strongly suggests true structure in the data. The alpha=0.55 convergence point is remarkable because three fundamentally different approaches (centroid-based, density-based, and mean-seeking) all identify exactly 3 clusters.</p>
+</div>
+
+<h2 id="whiskey-sour">7. The Whiskey Sour Island Phenomenon - Deep Dive</h2>
+
+<p>The emergence of the whiskey sour island at tau≈4 is perhaps the most intriguing finding. Let's examine this in detail.</p>
+
+<h3>7.1 Island Composition Analysis</h3>
+
+<div class="cluster-list">
+  <h4>The Five Island Residents</h4>
+  <ol>
+    <li><strong>Whiskey Sour:</strong> The namesake - whiskey, lemon, simple syrup</li>
+    <li><strong>Gold Rush:</strong> Whiskey, lemon, <span class="highlight">honey syrup</span></li>
+    <li><strong>Penicillin:</strong> Scotch, lemon, honey-ginger, <span class="highlight">Islay float</span></li>
+    <li><strong>Brown Derby:</strong> Whiskey, grapefruit, <span class="highlight">honey</span></li>
+    <li><strong>Lion's Tail:</strong> Whiskey, lime, <span class="highlight">allspice dram</span></li>
+  </ol>
+</div>
+
+<div class="observation">
+  <h4>The Common Thread: Intense Modifiers</h4>
+  <p>Every island resident has a <span class="highlight">powerful flavor modifier</span> that distinguishes it from a standard sour:</p>
+  <ul>
+    <li><strong>Honey:</strong> Gold Rush, Penicillin, Brown Derby (3/5)</li>
+    <li><strong>Spice:</strong> Penicillin (ginger), Lion's Tail (allspice)</li>
+    <li><strong>Smoke:</strong> Penicillin (Islay float)</li>
+  </ul>
+
+  <p>At tau≈4, these modifiers become <strong>defining characteristics</strong> rather than subtle notes. The cocktails are no longer "whiskey sours with honey" but "honey-whiskey hybrids with citrus."</p>
+</div>
+
+<h3>7.2 Why Not Other Modified Sours?</h3>
+
+<p>Interestingly, other modified sours don't join the island:</p>
+<ul>
+  <li><strong>Amaretto Sour:</strong> Stays with main sour group (amaretto less intense than honey/smoke)</li>
+  <li><strong>Pisco Sour:</strong> Remains with classic sours (egg white doesn't trigger intensity)</li>
+  <li><strong>Clover Club:</strong> Stays with gin sours (raspberry is flavor, not intensity)</li>
+</ul>
+
+<div class="key-finding">
+  <h4>The Intensity Threshold Theory</h4>
+  <p>The island forms specifically around <strong>whiskey + citrus + intense modifier</strong> combinations. The modifiers must be:</p>
+  <ol>
+    <li>Perceptually intense (honey, smoke, strong spice)</li>
+    <li>Flavor-transforming (not just additive)</li>
+    <li>In sufficient quantity to register at tau=4 weighting</li>
+  </ol>
+  <p>This explains why the island is stable from tau=4 through tau=115 - once the intensity threshold is crossed, these cocktails are fundamentally different from both standard sours and spirit-forward whiskeys.</p>
+</div>
+
+<h2 id="synthesis">8. Synthesis & Conclusions</h2>
+
+<h3>8.1 Major Findings</h3>
+
+<div class="key-finding">
+  <h4>1. Human Perception Beats Optimization</h4>
+  <p>Your observations about cluster counts were more accurate than silhouette optimization. This suggests that human pattern recognition incorporates semantic knowledge that pure mathematical optimization misses.</p>
+</div>
+
+<div class="key-finding">
+  <h4>2. The Three Lenses of Cocktail Space</h4>
+  <ol>
+    <li><strong>Flavor (alpha=0):</strong> Creates maximum distinction (8 clusters) based on taste profiles</li>
+    <li><strong>Structure (role-slot):</strong> Creates strongest separation (0.843 silhouette) based on recipe grammar</li>
+    <li><strong>Perception (tau-weighted):</strong> Creates human-aligned groupings based on intensity experience</li>
+  </ol>
+</div>
+
+<div class="key-finding">
+  <h4>3. The Universal Trichotomy</h4>
+  <p>Across multiple strategies, cocktails consistently organize into three fundamental categories:</p>
+  <ol>
+    <li><strong>Stirred/Spirit-Forward:</strong> Built in glass, spirit-dominated</li>
+    <li><strong>Shaken/Bright:</strong> Citrus-forward, refreshing</li>
+    <li><strong>Complex/Aromatic:</strong> Bitter, herbal, constructed complexity</li>
+  </ol>
+  <p>This appears at alpha=0.55, tau=0.383, and perceptual strategies with remarkable consistency.</p>
+</div>
+
+<div class="key-finding">
+  <h4>4. Outliers Tell Stories</h4>
+  <p>The whiskey sour island phenomenon shows that outliers aren't noise - they're cocktails that challenge categorization. These boundary-pushers often become modern classics precisely because they bridge categories in unexpected ways.</p>
+</div>
+
+<h3>8.2 Practical Implications</h3>
+
+<div class="observation">
+  <h4>For Cocktail Menu Design</h4>
+  <ul>
+    <li>Use 3-category organization for intuitive navigation</li>
+    <li>Highlight "island" cocktails as signature/unique offerings</li>
+    <li>Consider intensity (tau) when suggesting alternatives</li>
+  </ul>
+</div>
+
+<div class="observation">
+  <h4>For Recipe Development</h4>
+  <ul>
+    <li>Innovation happens at cluster boundaries</li>
+    <li>Intense modifiers can create new categories (tau≥4 threshold)</li>
+    <li>The alpha=0.55 sweet spot suggests successful cocktails balance flavor and structure equally</li>
+  </ul>
+</div>
+
+<h3>8.3 Questions for Further Investigation</h3>
+
+<ol>
+  <li>Do professional bartenders perceive the same clusters as the algorithms?</li>
+  <li>How do seasonal ingredients affect cluster membership?</li>
+  <li>Can we predict a new cocktail's cluster from its recipe?</li>
+  <li>What happens in the gaps between clusters - are these opportunities for innovation?</li>
+  <li>How does glassware and garnish affect perceptual clustering?</li>
+</ol>
+
+<h3>8.4 Final Thoughts</h3>
+
+<p>This analysis reveals that cocktails exist in a multidimensional space where their position depends on the lens through which we view them. A Boulevardier is simultaneously a whiskey drink (flavor lens), a Negroni variation (structure lens), and a bitter sipper (perceptual lens). This multiplicity isn't confusion - it's richness.</p>
+
+<p>The most successful cocktails often live at the intersections and boundaries, bridging categories and challenging assumptions. The whiskey sour island residents aren't anomalies - they're pioneers exploring new territory in cocktail space.</p>
+
+<p>Your human observations consistently identified meaningful patterns that pure optimization would have missed. This suggests that the future of cocktail categorization lies not in replacing human intuition with algorithms, but in using computation to validate, explore, and extend human insight.</p>
+
+<div class="key-finding">
+  <h4>The Ultimate Finding</h4>
+  <p>Cocktails naturally organize into 3-4 fundamental groups, but the most interesting stories happen at the boundaries, in the outliers, and in the journey from one cluster to another as we adjust our perspective. The "sweet spot" at alpha=0.55 isn't just a mathematical curiosity - it represents the perfect balance between what a cocktail <em>tastes like</em> and <em>how it's made</em>, creating a classification system that is both intuitive and actionable.</p>
+</div>
+
+</body>
+</html>

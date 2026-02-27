@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cocktail Cartography — Cluster Analysis Report</title>
+  <style>
+    /* ── Art Deco Design System ─────────────────────────────────────────── */
+    :root {
+      --deco-black: #1a1a1d;
+      --deco-charcoal: #2d2d30;
+      --deco-gold: #D4AF37;
+      --deco-gold-dark: #B8941E;
+      --deco-cream: #F5F5DC;
+      --deco-cream-dark: #E8E8CF;
+      --deco-silver: #C0C0C0;
+      --deco-emerald: #50C878;
+      --deco-sapphire: #0F52BA;
+      --deco-ruby: #E0115F;
+      --deco-bronze: #CD7F32;
+      --text-primary: #F5F5DC;
+      --text-secondary: #C5C5B0;
+      --text-tertiary: #9A9A88;
+      --text-muted: #6B6B60;
+      --border-primary: #D4AF37;
+      --border-secondary: #4a4a3d;
+      --bg-panel: #1a1a1d;
+      --bg-panel-lighter: #2d2d30;
+    }
+
+    /* ── Reset & base ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Futura", "Century Gothic", "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      background: var(--deco-black);
+      color: var(--text-secondary);
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    /* ── Typography ─────────────────────────────────────────── */
+    h1 {
+      font-size: 3em;
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--deco-gold);
+      margin-bottom: 0.2em;
+      text-align: center;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .subtitle {
+      text-align: center;
+      color: var(--text-tertiary);
+      margin-bottom: 3em;
+      font-size: 1.2em;
+      font-style: italic;
+    }
+
+    h2 {
+      font-size: 2em;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--deco-gold);
+      margin-top: 3em;
+      margin-bottom: 1em;
+      border-bottom: 2px solid var(--border-secondary);
+      padding-bottom: 0.5em;
+    }
+
+    h3 {
+      font-size: 1.4em;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-top: 2em;
+      margin-bottom: 1em;
+      letter-spacing: 0.03em;
+    }
+
+    h4 {
+      font-size: 1.1em;
+      font-weight: 600;
+      color: var(--deco-gold);
+      margin-top: 1.5em;
+      margin-bottom: 0.8em;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    p {
+      margin-bottom: 1.2em;
+    }
+
+    strong {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    em {
+      color: var(--text-primary);
+      font-style: italic;
+    }
+
+    /* ── Layout Elements ─────────────────────────────────────────── */
+    .section {
+      margin-bottom: 4em;
+    }
+
+    .viz-container {
+      background: var(--deco-charcoal);
+      border: 2px solid var(--border-secondary);
+      border-radius: 8px;
+      padding: 2em;
+      margin: 2em 0;
+      text-align: center;
+    }
+
+    .viz-container img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
+
+    .caption {
+      margin-top: 1em;
+      font-size: 0.9em;
+      color: var(--text-tertiary);
+      font-style: italic;
+    }
+
+    /* ── Cluster Cards ─────────────────────────────────────────── */
+    .cluster-card {
+      background: var(--bg-panel-lighter);
+      border-left: 4px solid var(--deco-gold);
+      border-radius: 4px;
+      padding: 1.5em;
+      margin: 1.5em 0;
+    }
+
+    .cluster-name {
+      font-size: 1.2em;
+      font-weight: 600;
+      color: var(--deco-gold);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5em;
+    }
+
+    .cluster-members {
+      color: var(--text-tertiary);
+      font-size: 0.95em;
+      line-height: 1.8;
+      margin-bottom: 0.8em;
+    }
+
+    .cluster-description {
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+
+    /* ── Tables ─────────────────────────────────────────── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 2em 0;
+      background: var(--bg-panel-lighter);
+      border: 1px solid var(--border-secondary);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    th {
+      background: var(--deco-charcoal);
+      padding: 1em;
+      text-align: left;
+      color: var(--deco-gold);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.85em;
+      letter-spacing: 0.05em;
+      border-bottom: 2px solid var(--border-secondary);
+    }
+
+    td {
+      padding: 0.8em 1em;
+      border-bottom: 1px solid var(--border-secondary);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* ── Highlight Boxes ─────────────────────────────────────────── */
+    .highlight-box {
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.05), rgba(212, 175, 55, 0.02));
+      border: 2px solid var(--deco-gold);
+      border-radius: 8px;
+      padding: 2em;
+      margin: 3em 0;
+    }
+
+    .highlight-title {
+      color: var(--deco-gold);
+      font-size: 1.3em;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1em;
+    }
+
+    /* ── Lists ─────────────────────────────────────────── */
+    ul, ol {
+      margin: 1em 0 1.5em 2em;
+    }
+
+    li {
+      margin-bottom: 0.5em;
+    }
+
+    /* ── Code & Technical ─────────────────────────────────────────── */
+    code {
+      background: var(--deco-charcoal);
+      padding: 0.2em 0.4em;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9em;
+      color: var(--deco-cream);
+    }
+
+    .technical-note {
+      background: var(--deco-charcoal);
+      border-left: 3px solid var(--text-muted);
+      padding: 1em;
+      margin: 1em 0;
+      font-size: 0.9em;
+      color: var(--text-tertiary);
+    }
+
+    /* ── Navigation ─────────────────────────────────────────── */
+    .nav {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-secondary);
+      border-radius: 4px;
+      padding: 1em;
+      z-index: 100;
+      max-width: 200px;
+    }
+
+    .nav h5 {
+      color: var(--deco-gold);
+      font-size: 0.9em;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.8em;
+    }
+
+    .nav a {
+      display: block;
+      color: var(--text-tertiary);
+      text-decoration: none;
+      padding: 0.3em 0;
+      font-size: 0.85em;
+      transition: color 0.2s;
+    }
+
+    .nav a:hover {
+      color: var(--deco-gold);
+    }
+
+    @media (max-width: 768px) {
+      .nav {
+        display: none;
+      }
+    }
+
+    /* ── Comparison Grid ─────────────────────────────────────────── */
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2em;
+      margin: 2em 0;
+    }
+
+    .comparison-item {
+      background: var(--bg-panel-lighter);
+      padding: 1.5em;
+      border-radius: 4px;
+      border: 1px solid var(--border-secondary);
+    }
+
+    .comparison-title {
+      color: var(--deco-gold);
+      font-weight: 600;
+      margin-bottom: 0.5em;
+      text-transform: uppercase;
+      font-size: 0.9em;
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="nav">
+    <h5>Contents</h5>
+    <a href="#overview">Overview</a>
+    <a href="#blend">Pure Flavor</a>
+    <a href="#role-slot">Recipe Grammar</a>
+    <a href="#perceptual">Intensity-Weighted</a>
+    <a href="#balanced">Balanced Mix</a>
+    <a href="#travelers">The Travelers</a>
+    <a href="#findings">Key Findings</a>
+    <a href="#recommendations">Recommendations</a>
+  </nav>
+
+  <!-- Header -->
+  <h1>Cocktail Clustering Analysis</h1>
+  <p class="subtitle">How Different Ways of Thinking About Similarity Produce Different Neighborhoods</p>
+
+  <!-- Overview Section -->
+  <section id="overview" class="section">
+    <h2>Overview</h2>
+    <p>
+      This analysis explores how 102 classic cocktails cluster when we change our definition of "similar."
+      By examining four different vectorization strategies — pure flavor, recipe grammar, intensity-weighted perception,
+      and a balanced mix — we discover that some cocktails are stable anchors while others are nomadic travelers,
+      moving between completely different neighborhoods depending on how we look at them.
+    </p>
+
+    <div class="highlight-box">
+      <div class="highlight-title">The Core Question</div>
+      <p>
+        <strong>What makes two cocktails similar?</strong> Is it how they taste? How they're made?
+        Which ingredients dominate the experience? The answer changes everything.
+      </p>
+      <p>
+        A Boulevardier (bourbon, Campari, sweet vermouth) sits with Negronis when we consider structure —
+        they're the same template with different base spirits. But when we consider flavor, it drifts toward
+        Manhattan territory because bourbon and rye share more flavor DNA than bourbon and gin.
+      </p>
+    </div>
+  </section>
+
+  <!-- BLEND Strategy -->
+  <section id="blend" class="section">
+    <h2>Pure Flavor Profile (BLEND)</h2>
+
+    <p>
+      The simplest approach: volume-weighted average of 15-dimensional flavor profiles. Each ingredient contributes
+      proportionally to its volume. This produces a <strong>silhouette score of 0.81</strong> — the strongest clustering
+      of all strategies, because flavor families are remarkably consistent.
+    </p>
+
+    <div class="viz-container">
+      <img src="viz/clusters_blend.svg" alt="Pure Flavor Clustering">
+      <p class="caption">
+        Figure 1: Pure flavor clustering shows clear separation between citrus sours (green), whiskey territory (bronze),
+        martini family (silver), and bitter aperitivo drinks (ruby).
+      </p>
+    </div>
+
+    <h3>Identified Clusters</h3>
+
+    <div class="cluster-card">
+      <div class="cluster-name">Citrus-Forward Sours</div>
+      <div class="cluster-members">
+        <strong>Members:</strong> Daiquiri, Mojito, Caipirinha, Hemingway Daiquiri, Pisco Sour, Gimlet, Margarita,
+        Paloma, Tommy's Margarita, Gin Sour, Whiskey Sour, Amaretto Sour
+      </div>
+      <div class="cluster-description">
+        The most coherent cluster across all strategies. These drinks share a fundamental citrus-sugar balance,
+        regardless of base spirit. The lime/lemon acidity dominates the flavor profile so strongly that a
+        Whiskey Sour clusters closer to a Daiquiri than to a Manhattan.
+      </div>
+    </div>
+
+    <div class="cluster-card">
+      <div class="cluster-name">Whiskey-Vermouth Territory</div>
+      <div class="cluster-members">
+        <strong>Members:</strong> Manhattan, Perfect Manhattan, Rob Roy, Brooklyn, Vieux Carré, Remember the Maine,
+        Greenpoint, Little Italy, Black Manhattan, Dry Manhattan
+      </div>
+      <div class="cluster-description">
+        Unified by the combination of whiskey's oak/grain/spice notes with sweet vermouth's herbal complexity.
+        Rob Roy (scotch) stays tightly coupled to Manhattan (rye) because the vermouth acts as a flavor bridge.
+      </div>
+    </div>
+
+    <div class="cluster-card">
+      <div class="cluster-name">Martini Family</div>
+      <div class="cluster-members">
+        <strong>Members:</strong> Martini, Martini Olive, Fifty-Fifty Martini, Vesper, Gibson, Tuxedo, Dirty Martini
+      </div>
+      <div class="cluster-description">
+        Gin's juniper-forward profile plus dry vermouth creates an unmistakable flavor signature. Even the Vesper,
+        with its vodka addition, can't escape this cluster's gravitational pull.
+      </div>
+    </div>
+
+    <h3>Notable Observations</h3>
+    <ul>
+      <li><strong>Negroni and Manhattan don't cluster together</strong> despite both being "spirit + vermouth + modifier"
+          structurally. Campari's bitter intensity creates a completely different flavor profile than whiskey's sweetness.</li>
+      <li><strong>All citrus sours collapse into one mega-cluster</strong> — the citrus overwhelms base spirit differences.</li>
+      <li><strong>Trinidad Sour is completely isolated</strong> — using Angostura bitters as the base spirit creates
+          a flavor profile unlike anything else in the dataset.</li>
+    </ul>
+  </section>
+
+  <!-- ROLE-SLOT Strategy -->
+  <section id="role-slot" class="section">
+    <h2>Recipe Grammar (ROLE-SLOT)</h2>
+
+    <p>
+      This strategy treats cocktails as having four functional slots: base spirit, modifier/sweetener, citrus, and accent.
+      Each slot gets its own 15-dimensional flavor sub-vector, creating a 60-dimensional representation.
+      <strong>Silhouette score: 0.76</strong> — slightly lower due to higher-dimensional sparsity.
+    </p>
+
+    <div class="viz-container">
+      <img src="viz/clusters_role_slot.svg" alt="Recipe Grammar Clustering">
+      <p class="caption">
+        Figure 2: Recipe grammar clustering emphasizes structural templates. Equal-parts drinks form a tight cluster
+        regardless of ingredients.
+      </p>
+    </div>
+
+    <h3>Identified Clusters</h3>
+
+    <div class="cluster-card">
+      <div class="cluster-name">Equal-Parts Templates</div>
+      <div class="cluster-members">
+        <strong>Members:</strong> Negroni, Boulevardier, Old Pal, Mezcal Negroni, White Negroni, Last Word,
+        Paper Plane, Final Ward, Naked & Famous, Corpse Reviver #2
+      </div>
+      <div class="cluster-description">
+        The defining characteristic isn't flavor but structure: equal volumes across all non-garnish ingredients.
+        This grammatical similarity overrides massive flavor differences — a gin-Chartreuse Last Word clusters
+        with a bourbon-Aperol Paper Plane.
+      </div>
+    </div>
+
+    <div class="cluster-card">
+      <div class="cluster-name">Classic Sour Grammar</div>
+      <div class="cluster-members">
+        <strong>Members:</strong> Daiquiri, Whiskey Sour, Margarita, Gimlet, Bee's Knees, Southside, Clover Club,
+        Pisco Sour, Gin Sour, Amaretto Sour, Hemingway Daiquiri, Aviation, White Lady
+      </div>
+      <div class="cluster-description">
+        Base + citrus + sweetener, shaken and served up. The template is so consistent that an egg-white
+        Clover Club clusters with a simple Daiquiri — the structural roles matter more than the ingredients.
+      </div>
+    </div>
+
+    <h3>The Americano Anomaly</h3>
+    <p>
+      Initially, we coded Americano with Campari as the <code>base</code> (since there's no distilled spirit).
+      This placed it far from Negroni (cosine distance: 3.2). Recoding Campari as <code>accent</code> to match
+      Negroni's role structure collapsed the distance to 0.87 — <strong>a single role swap produced a 3.7×
+      distance change</strong>. This extreme sensitivity reveals how critical role assignment is in this model.
+    </p>
+  </section>
+
+  <!-- PERCEPTUAL Strategy -->
+  <section id="perceptual" class="section">
+    <h2>Intensity-Weighted Flavor (PERCEPTUAL)</h2>
+
+    <p>
+      This strategy acknowledges that some ingredients "punch above their weight." A Penicillin has 60ml blended scotch
+      and just 7.5ml Islay scotch float, but that smoky Islay defines the entire drink. The model uses 40% max-pooling
+      and 60% volume-weighting. <strong>Silhouette score: 0.79</strong>.
+    </p>
+
+    <div class="viz-container">
+      <img src="viz/clusters_perceptual.svg" alt="Intensity-Weighted Clustering">
+      <p class="caption">
+        Figure 3: Intensity-weighted clustering groups drinks by dominant flavors. Smoky drinks (brown),
+        Chartreuse drinks (green), and Fernet drinks (purple) form distinct territories.
+      </p>
+    </div>
+
+    <h3>Identified Clusters</h3>
+
+    <div class="cluster-card">
+      <div class="cluster-name">Smoky & Intense</div>
+      <div class="cluster-members">
+        <strong>Members:</strong> Penicillin, Mezcal Negroni, Oaxacan Old Fashioned, Division Bell,
+        Naked & Famous, Mezcal Sour
+      </div>
+      <div class="cluster-description">
+        United by smoke — whether from Islay scotch or mezcal. Penicillin's tiny Islay float (11% by volume)
+        has enough intensity to pull it away from other scotch sours and into mezcal territory.
+      </div>
+    </div>
+
+    <div class="cluster-card">
+      <div class="cluster-name">Chartreuse Territory</div>
+      <div class="cluster-members">
+        <strong>Members:</strong> Last Word, Final Ward, Bijou, Yellow Jacket, Greenpoint, Champs-Élysées
+      </div>
+      <div class="cluster-description">
+        Green Chartreuse's 130-herb intensity creates an unmistakable signature. Even when it's just one of
+        four equal parts (Last Word), it dominates the perceptual experience.
+      </div>
+    </div>
+
+    <div class="cluster-card">
+      <div class="cluster-name">Absinthe-Touched</div>
+      <div class="cluster-members">
+        <strong>Members:</strong> Sazerac, Corpse Reviver #2, Death in the Afternoon, Improved Whiskey Cocktail,
+        Rattlesnake
+      </div>
+      <div class="cluster-description">
+        Whether it's a rinse (Sazerac) or a full pour (Death in the Afternoon), absinthe's anise intensity
+        creates a distinct cluster. The model can't distinguish volume — it just knows absinthe is present.
+      </div>
+    </div>
+
+    <h3>Mathematical Example: Penicillin</h3>
+    <div class="technical-note">
+      <p><strong>Penicillin smoke calculation:</strong></p>
+      <p>Blended Scotch: 60ml at smoke=0.1<br>
+         Islay Scotch: 7.5ml at smoke=0.9</p>
+      <p>BLEND approach: (60×0.1 + 7.5×0.9) / 67.5 ≈ 0.19 smoke<br>
+         PERCEPTUAL approach: 0.4 × 0.9 + 0.6 × 0.19 = 0.47 smoke</p>
+      <p>Result: 2.5× higher smoke value pushes Penicillin toward mezcal cluster</p>
+    </div>
+  </section>
+
+  <!-- Balanced Mix Strategy -->
+  <section id="balanced" class="section">
+    <h2>Balanced Mix (50% Structure, 50% Flavor)</h2>
+
+    <p>
+      The midpoint of the BLEND+STRUCT slider reveals cocktails in transition. With equal weighting of flavor and
+      structure, we see which drinks occupy boundary spaces. <strong>Silhouette score: 0.53</strong> — the lowest,
+      as expected when averaging incommensurate signals.
+    </p>
+
+    <div class="viz-container">
+      <img src="viz/clusters_blend_struct_50.svg" alt="Balanced Mix Clustering">
+      <p class="caption">
+        Figure 4: At 50/50 mix, method-based clusters (shaken vs. stirred) begin forming while flavor
+        similarities still influence positioning.
+      </p>
+    </div>
+
+    <h3>What Emerges at the Midpoint</h3>
+
+    <div class="cluster-card">
+      <div class="cluster-name">Boundary Dwellers</div>
+      <div class="cluster-members">
+        <strong>Members:</strong> Boulevardier, Martinez, Americano, Aperol Spritz, Division Bell
+      </div>
+      <div class="cluster-description">
+        These cocktails don't fit cleanly into either pure flavor or pure structure categories. They're
+        the interesting edge cases that reveal the limitations of any single clustering approach.
+      </div>
+    </div>
+
+    <p>
+      At this midpoint, we can watch individual cocktails migrate:
+    </p>
+    <ul>
+      <li><strong>Boulevardier</strong> sits exactly between Negroni (structural twin) and Manhattan (flavor cousin)</li>
+      <li><strong>Martinez</strong> can't decide if it's a proto-Martini or a sweet Negroni variant</li>
+      <li><strong>Americano</strong> hovers between bitter aperitivo and refreshing spritz territories</li>
+    </ul>
+  </section>
+
+  <!-- The Travelers -->
+  <section id="travelers" class="section">
+    <h2>The Travelers: Cocktails That Move</h2>
+
+    <p>
+      Some cocktails dramatically change neighborhoods depending on the clustering strategy. These "travelers"
+      reveal the most about what each strategy prioritizes.
+    </p>
+
+    <div class="viz-container">
+      <img src="viz/travelers_comparison.svg" alt="Cocktail Travelers Comparison">
+      <p class="caption">
+        Figure 5: Seven cocktails that move significantly between strategies. Gold dots show their positions
+        across BLEND, ROLE-SLOT, PERCEPTUAL, and 50% mix views.
+      </p>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Cocktail</th>
+          <th>Movement (Δ)</th>
+          <th>Why It Travels</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Vesper</strong></td>
+          <td>3.5</td>
+          <td>Dry vermouth as modifier creates unique grammar in ROLE-SLOT, but flavor-wise it's just a strong Martini</td>
+        </tr>
+        <tr>
+          <td><strong>Tuxedo</strong></td>
+          <td>3.4</td>
+          <td>Maraschino + dry vermouth is grammatically unusual but tastes like a sweeter Martini</td>
+        </tr>
+        <tr>
+          <td><strong>Boulevardier</strong></td>
+          <td>3.2</td>
+          <td>Structurally a Negroni, flavor-wise a Manhattan — occupies the exact boundary</td>
+        </tr>
+        <tr>
+          <td><strong>Division Bell</strong></td>
+          <td>3.1</td>
+          <td>Mezcal + Aperol + maraschino creates classification chaos across all strategies</td>
+        </tr>
+        <tr>
+          <td><strong>Aviation</strong></td>
+          <td>2.8</td>
+          <td>Maraschino dominates in PERCEPTUAL, becomes a gin sour in BLEND</td>
+        </tr>
+        <tr>
+          <td><strong>Corpse Reviver #2</strong></td>
+          <td>2.7</td>
+          <td>Equal-parts structure, absinthe intensity, but ultimately gin-forward</td>
+        </tr>
+        <tr>
+          <td><strong>Martinez</strong></td>
+          <td>2.6</td>
+          <td>Old Tom gin base suggests Martini, but sweet vermouth + maraschino says Negroni</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>What The Travelers Teach Us</h3>
+    <p>
+      High-movement cocktails aren't poorly defined — they're <em>multiply defined</em>. They occupy the
+      interesting spaces between categories, which is often where innovation happens in cocktail development.
+      A Boulevardier isn't confused; it's bilingual, speaking both Negroni and Manhattan fluently.
+    </p>
+  </section>
+
+  <!-- Key Findings -->
+  <section id="findings" class="section">
+    <h2>Key Findings</h2>
+
+    <h3>1. Stable Cores vs. Fluid Boundaries</h3>
+    <p>
+      Some cocktails are definitional — they anchor their categories across all strategies:
+    </p>
+    <ul>
+      <li><strong>Martini variations</strong> always cluster together (Δ < 0.5)</li>
+      <li><strong>Manhattan family</strong> maintains coherence (Δ < 0.6)</li>
+      <li><strong>Classic sours</strong> (Daiquiri, Margarita, Gimlet) are inseparable (Δ < 0.7)</li>
+    </ul>
+    <p>
+      These stable cores suggest there are fundamental cocktail archetypes that transcend any particular
+      analytical framework.
+    </p>
+
+    <h3>2. Base Spirit Matters, But Not How You'd Expect</h3>
+    <p>
+      We never explicitly told the model that "gin vs. whiskey" matters, yet base spirit naturally emerges
+      as a primary axis of variation. However:
+    </p>
+    <ul>
+      <li>In BLEND, a Whiskey Sour clusters with Daiquiris, not Manhattans</li>
+      <li>In PERCEPTUAL, anything with intense smoke (Islay or mezcal) groups together regardless of category</li>
+      <li>In ROLE-SLOT, base spirit becomes almost irrelevant — structure dominates</li>
+    </ul>
+
+    <h3>3. The Outliers Are Consistent</h3>
+    <div class="cluster-card">
+      <div class="cluster-name">Trinidad Sour</div>
+      <div class="cluster-description">
+        45ml Angostura bitters as base spirit. Mean nearest-neighbor distance: 3.2 (z-score: 4.1).
+        Completely isolated in every strategy. Nothing else in the cocktail canon does this.
+      </div>
+    </div>
+    <div class="cluster-card">
+      <div class="cluster-name">El Presidente</div>
+      <div class="cluster-description">
+        White rum + dry vermouth + curaçao + grenadine. The only drink with this specific grammar.
+        Mean NN distance: 2.8 (z-score: 3.4). Its structure is genuinely unique.
+      </div>
+    </div>
+
+    <h3>4. Intensity Creates Its Own Geography</h3>
+    <p>
+      The PERCEPTUAL strategy reveals that cocktail experience isn't just about proportions. Tiny amounts
+      of intense ingredients (Fernet, Chartreuse, absinthe, Islay scotch) can completely redefine a drink's
+      identity. This suggests that human perception of cocktails is non-linear — we notice and remember
+      intensity peaks more than average flavors.
+    </p>
+  </section>
+
+  <!-- Recommendations -->
+  <section id="recommendations" class="section">
+    <h2>Recommendations for Interface Design</h2>
+
+    <div class="highlight-box">
+      <div class="highlight-title">Simplify to Four Views</div>
+      <p>
+        Based on this analysis, we recommend reducing the interface from 21 slider positions to 4 distinct views:
+      </p>
+    </div>
+
+    <div class="comparison-grid">
+      <div class="comparison-item">
+        <div class="comparison-title">1. Pure Flavor (BLEND)</div>
+        <p>What drinks actually taste like. Strongest clustering (0.81 silhouette). Best for flavor-based exploration.</p>
+      </div>
+      <div class="comparison-item">
+        <div class="comparison-title">2. Recipe Grammar (ROLE-SLOT)</div>
+        <p>How drinks are structurally composed. Reveals template patterns. Good for understanding cocktail construction.</p>
+      </div>
+      <div class="comparison-item">
+        <div class="comparison-title">3. Intensity-Weighted (PERCEPTUAL)</div>
+        <p>Emphasizes dominant flavors. Best matches human perception where intense flavors define the experience.</p>
+      </div>
+      <div class="comparison-item">
+        <div class="comparison-title">4. Balanced Mix (50%)</div>
+        <p>Shows boundary-dwelling cocktails. Useful for understanding drinks that defy single categorization.</p>
+      </div>
+    </div>
+
+    <h3>Why These Four?</h3>
+    <ul>
+      <li><strong>Maximum differentiation:</strong> Each view tells a fundamentally different story</li>
+      <li><strong>Clear use cases:</strong> Users can understand when to use each view</li>
+      <li><strong>Captures key insights:</strong> The gradual transitions in between don't reveal new clusters</li>
+      <li><strong>Cognitive simplicity:</strong> Four options are manageable; 21 are overwhelming</li>
+    </ul>
+
+    <h3>Implementation Notes</h3>
+    <p>
+      The intermediate slider positions (5%, 10%, 15%, etc.) show smooth transitions but don't reveal
+      fundamentally new clustering patterns. The clusters either exist (at the endpoints) or dissolve
+      (at the midpoint). The journey is less interesting than the destinations.
+    </p>
+
+    <p>
+      Consider using radio buttons or tabs instead of a slider. This makes the distinct nature of each
+      view clearer and prevents users from getting lost in intermediate positions that have lower
+      cluster coherence.
+    </p>
+  </section>
+
+  <!-- Conclusion -->
+  <section class="section">
+    <h2>Conclusion</h2>
+    <p>
+      This analysis reveals that "similarity" in cocktails is not a fixed property but a lens through which
+      we view relationships. A Boulevardier is simultaneously a Negroni (structurally) and a Manhattan
+      (flavor-wise). A Penicillin is both a scotch sour and a smoky-intense experience. These multiple
+      identities aren't contradictions — they're the richness that makes cocktail culture interesting.
+    </p>
+
+    <p>
+      The four recommended views — Pure Flavor, Recipe Grammar, Intensity-Weighted, and Balanced Mix —
+      capture the essential ways bartenders and drinkers think about cocktail relationships. By simplifying
+      to these core perspectives, we can provide clearer insights while avoiding the confusion of
+      intermediate states.
+    </p>
+
+    <p>
+      Ultimately, this cartography suggests that the most interesting cocktails are the ones that travel —
+      the boundary-dwellers that refuse single categorization. They're the ones that teach us the most about
+      what makes cocktails similar, and what makes them surprising.
+    </p>
+  </section>
+
+</body>
+</html>

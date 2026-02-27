@@ -62,6 +62,91 @@
       box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
     }
 
+    /* ── Top Explanation Panel ──────────────────────────────── */
+    #explanation-panel {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: var(--bg-panel);
+      border-bottom: 2px solid var(--deco-gold);
+      z-index: 60;
+      transform: translateY(-100%);
+      transition: transform 0.3s ease;
+      max-height: 40vh;
+      overflow-y: auto;
+    }
+    #explanation-panel.visible {
+      transform: translateY(0);
+    }
+    #explanation-toggle {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-panel);
+      border: 2px solid var(--deco-gold);
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      padding: 6px 16px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--deco-gold);
+      z-index: 61;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    #explanation-panel.visible #explanation-toggle {
+      top: auto;
+      bottom: -30px;
+    }
+    #explanation-toggle:hover {
+      background: var(--bg-panel-lighter);
+      padding: 8px 20px;
+    }
+    #explanation-content {
+      padding: 24px 32px;
+      max-width: 800px;
+      margin: 0 auto;
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--text-secondary);
+    }
+    #explanation-content p {
+      margin-bottom: 16px;
+    }
+    #explanation-content ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    #explanation-content li {
+      position: relative;
+      padding-left: 24px;
+      margin-bottom: 8px;
+      color: var(--text-secondary);
+    }
+    #explanation-content li::before {
+      content: "▸";
+      position: absolute;
+      left: 0;
+      color: var(--deco-gold);
+      font-weight: bold;
+    }
+    #explanation-content a {
+      color: var(--deco-gold);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    #explanation-content a:hover {
+      color: var(--deco-cream);
+      text-decoration: underline;
+    }
+
     /* ── Sidebar ──────────────────────────────────────────────── */
     #sidebar {
       width: 280px;
@@ -143,6 +228,13 @@
       position: absolute;
       left: 0;
       color: var(--deco-gold);
+    }
+    /* Special case: no triangle for MY BAR */
+    #ingredient-panel-header .section-label {
+      padding-left: 0;
+    }
+    #ingredient-panel-header .section-label::before {
+      display: none;
     }
 
     /* Strategy radio group */
@@ -462,7 +554,8 @@
     .bp-section {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 8px;
+      margin-bottom: 4px;
     }
     .bp-label {
       font-size: 10px;
@@ -504,6 +597,14 @@
       filter: brightness(1.3) drop-shadow(0 0 8px currentColor);
     }
     .dot.dimmed { opacity: 0.12; }
+    .dot.highlighted {
+      filter: drop-shadow(0 0 12px var(--deco-gold));
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
 
     /* Labels */
     .dot-label {
@@ -728,8 +829,41 @@
       border-bottom: 2px solid var(--border-secondary);
     }
     #ingredient-panel-header .section-label {
-      margin-bottom: 6px;
+      margin-bottom: 10px;
     }
+
+    /* Bar tabs */
+    .bar-tabs {
+      display: flex;
+      gap: 2px;
+      margin-bottom: 10px;
+      background: var(--bg-panel-lighter);
+      padding: 2px;
+      border-radius: 2px;
+    }
+    .bar-tab {
+      flex: 1;
+      padding: 6px 12px;
+      background: transparent;
+      border: none;
+      color: var(--text-tertiary);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border-radius: 2px;
+    }
+    .bar-tab:hover {
+      color: var(--text-secondary);
+    }
+    .bar-tab.active {
+      background: var(--deco-charcoal);
+      color: var(--deco-gold);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    }
+
     #ingredient-count {
       font-size: 11px;
       color: var(--text-tertiary);
@@ -739,6 +873,72 @@
       flex: 1;
       overflow-y: auto;
       padding: 10px 0;
+    }
+
+    /* Cocktails panel */
+    #cocktails-panel-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 16px;
+    }
+    .cocktails-controls {
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border-secondary);
+      margin-bottom: 12px;
+    }
+    .show-only-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 12px;
+      color: var(--text-secondary);
+      transition: color 0.2s ease;
+    }
+    .show-only-toggle:hover {
+      color: var(--deco-cream);
+    }
+    .show-only-toggle input[type="checkbox"] {
+      accent-color: var(--deco-gold);
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    /* Starred cocktails list */
+    #starred-cocktails-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .starred-cocktail-item {
+      padding: 6px 8px;
+      background: var(--bg-panel-lighter);
+      border-radius: 2px;
+      cursor: pointer;
+      font-size: 12px;
+      color: var(--text-secondary);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-left: 3px solid transparent;
+    }
+    .starred-cocktail-item:hover {
+      background: var(--deco-charcoal);
+      color: var(--deco-cream);
+      border-left-color: var(--deco-gold);
+    }
+    .starred-cocktail-item.highlighted {
+      background: var(--deco-charcoal);
+      color: var(--deco-gold);
+      border-left-color: var(--deco-gold);
+      font-weight: 600;
+    }
+    .starred-cocktail-item .star-icon {
+      color: var(--deco-gold);
+      font-size: 14px;
+      flex-shrink: 0;
     }
     /* Ingredient group */
     .ing-group {
@@ -867,6 +1067,101 @@
       inset: 0 -6px;
     }
 
+    /* First visit modal */
+    #first-visit-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #first-visit-modal.hidden {
+      display: none;
+    }
+    .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+    }
+    .modal-content {
+      position: relative;
+      background: var(--bg-panel);
+      border: 2px solid var(--deco-gold);
+      padding: 32px;
+      max-width: 600px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(212, 175, 55, 0.3);
+    }
+    .modal-content h2 {
+      font-family: 'Bebas Neue', 'Arial Black', sans-serif;
+      font-size: 28px;
+      letter-spacing: 0.08em;
+      color: var(--deco-gold);
+      margin: 0 0 16px;
+    }
+    .modal-content p {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.6;
+      margin: 0 0 24px;
+    }
+    .cocktail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .cocktail-option {
+      background: var(--bg-main);
+      border: 1px solid var(--border-secondary);
+      padding: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    .cocktail-option:hover {
+      border-color: var(--deco-gold);
+      background: var(--bg-panel-lighter);
+    }
+    .cocktail-option.selected {
+      background: rgba(212, 175, 55, 0.15);
+      border-color: var(--deco-gold);
+      color: var(--deco-cream);
+    }
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+    .modal-actions button {
+      padding: 10px 20px;
+      background: var(--bg-main);
+      border: 1px solid var(--border-secondary);
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 13px;
+      letter-spacing: 0.05em;
+      transition: all 0.2s ease;
+    }
+    .modal-actions button:hover {
+      background: var(--bg-panel-lighter);
+      border-color: var(--deco-gold);
+      color: var(--deco-cream);
+    }
+    .modal-actions button.primary {
+      background: rgba(212, 175, 55, 0.2);
+      border-color: var(--deco-gold);
+      color: var(--deco-gold);
+    }
+    .modal-actions button.primary:hover {
+      background: rgba(212, 175, 55, 0.3);
+    }
+
     /* Legend */
     #legend {
       position: absolute;
@@ -879,6 +1174,10 @@
       min-width: 140px;
       z-index: 10;
       box-shadow: 0 8px 24px rgba(0,0,0,0.6), 0 0 16px rgba(212, 175, 55, 0.2);
+      transition: bottom 0.3s ease;
+    }
+    #bottom-panel:not(.collapsed) ~ #canvas-container #legend {
+      bottom: 100px;
     }
     #legend-title {
       font-size: 10px;
@@ -987,7 +1286,38 @@
 
 <!-- ── MAIN CHART ────────────────────────────────────────────────────────── -->
 <div id="main">
+  <!-- ── EXPLANATION PANEL ─────────────────────────────────────────────── -->
+  <div id="explanation-panel">
+    <div id="explanation-content">
+      <p>This page exists to explore the territory of cocktails. But how do you place the flavor complexity of a drink onto a screen? Each ingredient has so many dimensions, each cocktail mixes them in different proportions, how do you turn the many flavors blended together into a map of dots? If you want the full story, check out the <a href="about.html">About page</a>, but here's how to get started:</p>
+      <ul>
+        <li>To the left, you'll see different ways of grouping cocktails together, how to "mix" ingredients using math.</li>
+        <li>To the right is an ingredient list that lets you choose between seeing every cocktail possible or just what you can make with ingredients already in your bar.</li>
+        <li>Star your favorite cocktails to see how they cluster with others, and how they travel depending on how you math flavors.</li>
+      </ul>
+    </div>
+  </div>
+  <div id="explanation-toggle">
+    <span>What's this?</span>
+  </div>
   <div id="loading">Loading embeddings…</div>
+
+  <!-- ── FIRST VISIT MODAL ─────────────────────────────────────────────────── -->
+  <div id="first-visit-modal" class="hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <h2>Welcome to Cocktail Cartography!</h2>
+      <p>This visualization maps cocktails based on their flavor profiles and ingredients. To help you navigate, select a few cocktails you know:</p>
+      <div class="cocktail-grid">
+        <!-- Will be populated by JavaScript -->
+      </div>
+      <div class="modal-actions">
+        <button id="modal-skip">Skip</button>
+        <button id="modal-done" class="primary">Get Started</button>
+      </div>
+    </div>
+  </div>
+
   <div id="chart">
     <svg id="scatter"></svg>
     <div id="tooltip">
@@ -1009,7 +1339,7 @@
   </div>
 
   <!-- ── BOTTOM DISPLAY PANEL ──────────────────────────────────────────── -->
-  <div id="bottom-panel" class="collapsed">
+  <div id="bottom-panel">
     <div id="bottom-panel-toggle">
       <span id="bottom-panel-arrow">&#9650;</span> Display Options
     </div>
@@ -1033,8 +1363,6 @@
         <div class="bp-checks">
           <label><input type="checkbox" class="family-cb" value="sour" checked> Sour</label>
           <label><input type="checkbox" class="family-cb" value="spirit_forward" checked> Spirit-fwd</label>
-          <label><input type="checkbox" class="family-cb" value="built" checked> Built</label>
-          <label><input type="checkbox" class="family-cb" value="other" checked> Other</label>
         </div>
       </div>
       <div class="bp-section">
@@ -1054,11 +1382,26 @@
 <!-- ── INGREDIENT PANEL ──────────────────────────────────────────────────── -->
 <div id="ingredient-panel">
   <div id="ingredient-panel-header">
-    <div class="section-label">My Bar</div>
+    <div class="section-label">MY BAR</div>
+    <div class="bar-tabs">
+      <button class="bar-tab active" data-tab="bottles">Bottles</button>
+      <button class="bar-tab" data-tab="cocktails">Cocktails</button>
+    </div>
     <div id="ingredient-count">All cocktails shown</div>
   </div>
-  <div id="ingredient-panel-body">
+  <div id="ingredient-panel-body" data-view="bottles">
     <!-- populated by JS -->
+  </div>
+  <div id="cocktails-panel-body" data-view="cocktails" style="display:none;">
+    <div class="cocktails-controls">
+      <label class="show-only-toggle">
+        <input type="checkbox" id="show-only-starred">
+        <span>Show only my cocktails</span>
+      </label>
+    </div>
+    <div id="starred-cocktails-list">
+      <!-- populated by JS -->
+    </div>
   </div>
 </div>
 
@@ -1104,9 +1447,7 @@ const CATEGORICAL_PALETTES = {
     agave:   "#009E73", // Bluish green (good contrast)
     rum:     "#F0E442", // Yellow (bright on black)
     brandy:  "#E69F00", // Orange (warm, visible)
-    vodka:   "#0072B2", // Blue (deep, clear)
-    mixed:   "#999999", // Gray (neutral)
-    other:   "#666666", // Darker gray
+    other:   "#666666", // Darker gray (includes vodka & mixed)
   },
   family: {
     sour:           "#56B4E9", // Sky blue
@@ -1157,6 +1498,8 @@ let showLabels      = false;
 let highlightFamilies = new Set(["sour", "spirit_forward", "built", "other"]);
 let pinnedTooltip   = false;
 let pinnedName      = null;
+let showOnlyStarred = false;  // For "Show only my cocktails"
+let highlightedCocktail = null;  // Currently clicked cocktail in the list
 
 // Ingredient filtering
 // Set of ingredient names the user has checked (i.e. "I have this")
@@ -1258,7 +1601,11 @@ function getColorValue(name, recipe) {
   const idx = d => FLAVOR_DIMS.indexOf(d);
 
   switch (currentColor) {
-    case "base_spirit":      return recipe.base_spirit;
+    case "base_spirit":
+      // Lump vodka and mixed into "other"
+      const base = recipe.base_spirit;
+      if (base === "vodka" || base === "mixed") return "other";
+      return base;
     case "family":           return recipe.family;
     case "served":           return recipe.served;
     case "dominant_flavor":  return dominantFlavor(recipe);
@@ -1315,13 +1662,128 @@ function toggleStar(name) {
     starredCocktails.add(name);
   }
   saveStarredCocktails();
-  redraw(false); // Redraw to update outlines
+  updateStarredCocktailsList();  // Update the cocktails list
+
+  // Redraw to update stars and labels
+  if (DATA) {
+    redraw(false);
+  }
 
   // Update star button if tooltip is showing this cocktail
   if (pinnedName === name || ttName.textContent === name.replace(/_/g, " ").toUpperCase()) {
     ttStar.innerHTML = starredCocktails.has(name) ? "★" : "☆";
     ttStar.classList.toggle("starred", starredCocktails.has(name));
   }
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// First visit modal
+// ────────────────────────────────────────────────────────────────────────────
+function showFirstVisitModalIfNeeded() {
+  // Check if user has visited before
+  const hasVisited = localStorage.getItem('hasVisitedCocktailCartography');
+  if (hasVisited) return;
+
+  // Popular cocktails to suggest
+  const suggestedCocktails = [
+    'margarita',
+    'martinez',
+    'boulevardier',
+    'old_fashioned',
+    'manhattan',
+    'negroni',
+    'mai_tai',
+    'daiquiri',
+    'whiskey_sour',
+    'last_word',
+    'martini',
+    'mojito'
+  ];
+
+  const modal = document.getElementById('first-visit-modal');
+  const grid = modal.querySelector('.cocktail-grid');
+  const selectedCocktails = new Set();
+
+  // Populate grid
+  suggestedCocktails.forEach(name => {
+    const div = document.createElement('div');
+    div.className = 'cocktail-option';
+    div.textContent = name.replace(/_/g, ' ').charAt(0).toUpperCase() + name.replace(/_/g, ' ').slice(1);
+    div.dataset.name = name;
+
+    div.addEventListener('click', () => {
+      if (selectedCocktails.has(name)) {
+        selectedCocktails.delete(name);
+        div.classList.remove('selected');
+      } else {
+        selectedCocktails.add(name);
+        div.classList.add('selected');
+      }
+    });
+
+    grid.appendChild(div);
+  });
+
+  // Handle modal actions
+  document.getElementById('modal-skip').addEventListener('click', () => {
+    modal.classList.add('hidden');
+    localStorage.setItem('hasVisitedCocktailCartography', 'true');
+  });
+
+  document.getElementById('modal-done').addEventListener('click', () => {
+    // Star the selected cocktails
+    selectedCocktails.forEach(name => {
+      if (!starredCocktails.has(name)) {
+        starredCocktails.add(name);
+      }
+    });
+    saveStarredCocktails();
+    updateStarredCocktailsList();
+
+    modal.classList.add('hidden');
+    localStorage.setItem('hasVisitedCocktailCartography', 'true');
+
+    // Redraw to show the newly starred cocktails
+    if (DATA) redraw(false);
+  });
+
+  // Show the modal
+  modal.classList.remove('hidden');
+}
+
+// Update the starred cocktails list in the cocktails tab
+function updateStarredCocktailsList() {
+  const listEl = document.getElementById("starred-cocktails-list");
+  if (!listEl) return;
+
+  listEl.innerHTML = "";
+
+  if (starredCocktails.size === 0) {
+    listEl.innerHTML = '<div style="padding: 12px; text-align: center; color: var(--text-tertiary); font-size: 11px;">No starred cocktails yet.<br>Click the star in a cocktail\'s tooltip to add it.</div>';
+    return;
+  }
+
+  const sorted = Array.from(starredCocktails).sort();
+  sorted.forEach(name => {
+    const item = document.createElement("div");
+    item.className = "starred-cocktail-item";
+    if (name === highlightedCocktail) {
+      item.classList.add("highlighted");
+    }
+
+    item.innerHTML = `
+      <span class="star-icon">★</span>
+      <span>${name.replace(/_/g, " ")}</span>
+    `;
+
+    item.addEventListener("click", () => {
+      highlightedCocktail = highlightedCocktail === name ? null : name;
+      updateStarredCocktailsList();
+      redraw(false);
+    });
+
+    listEl.appendChild(item);
+  });
 }
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -1395,22 +1857,58 @@ function redraw(animate = false) {
     .on("mouseout",  onMouseout)
     .on("click",     onClick);
 
+  // Add star first (behind) for starred items
+  enter.each(function(d) {
+    const g = d3.select(this);
+    // Star will be added/removed dynamically
+  });
+
   appendDotShape(enter);
 
   // UPDATE (shape already exists)
   const all = enter.merge(dotSel);
 
-  // Color & opacity (instant) - with gold outline for starred items
+  // Update stars (behind the dots)
+  all.each(function(d) {
+    const g = d3.select(this);
+    const starSel = g.selectAll(".star-bg");
+
+    if (starredCocktails.has(d.name)) {
+      if (starSel.empty()) {
+        // Add star if not present - insert before the shape
+        const star = g.insert("path", ":first-child")
+          .attr("class", "star-bg")
+          .attr("d", d3.symbol().type(d3.symbolStar).size(350)())
+          .attr("fill", "none")
+          .attr("stroke", "#d4af37")
+          .attr("stroke-width", 2)
+          .attr("opacity", 0.9);
+      }
+    } else {
+      // Remove star if present
+      starSel.remove();
+    }
+  });
+
+  // Color & opacity (instant) - no outline needed now
   all.selectAll("circle,rect,polygon")
     .attr("fill", d => colorFor(d.name, d.recipe))
     .attr("fill-opacity", 0.9)
-    .attr("stroke", d => starredCocktails.has(d.name) ? "#d4af37" : "#0f0f12")
-    .attr("stroke-width", d => starredCocktails.has(d.name) ? 2.5 : 0.5);
+    .attr("stroke", "#0f0f12")
+    .attr("stroke-width", 0.5);
 
-  // Dim non-highlighted families OR unmakeable cocktails
-  all.classed("dimmed", d =>
-    !highlightFamilies.has(d.recipe.family) || !isCocktailMakeable(d.recipe)
-  );
+  // Dim non-highlighted families OR unmakeable cocktails OR show only starred
+  all.classed("dimmed", d => {
+    // If showing only starred, dim non-starred
+    if (showOnlyStarred && !starredCocktails.has(d.name)) return true;
+    // If a cocktail is highlighted, dim all others
+    if (highlightedCocktail && d.name !== highlightedCocktail) return true;
+    // Otherwise use normal dimming rules
+    return !highlightFamilies.has(d.recipe.family) || !isCocktailMakeable(d.recipe);
+  });
+
+  // Highlight the selected cocktail
+  all.classed("highlighted", d => d.name === highlightedCocktail);
 
   // Transition position
   if (animate) {
@@ -1423,8 +1921,8 @@ function redraw(animate = false) {
   dotSel.exit().remove();
 
   // ── Labels + leader lines ────────────────────────────────────────────────
-  if (showLabels) {
-    drawLabels(data);
+  if (showLabels || starredCocktails.size > 0) {
+    drawLabels(data, showLabels);
   } else {
     gLabels.selectAll(".dot-label").remove();
     gLines.selectAll(".label-line").remove();
@@ -1434,9 +1932,12 @@ function redraw(animate = false) {
 // ── Label force simulation ───────────────────────────────────────────────────
 let labelSimulation = null;
 
-function drawLabels(data) {
+function drawLabels(data, showAllLabels = true) {
+  // Filter to only show labels for starred cocktails if not showing all labels
+  const filteredData = showAllLabels ? data : data.filter(d => starredCocktails.has(d.name));
+
   // Each node: dot position (fx/fy fixed) + floating label position (x/y)
-  const nodes = data.map(d => ({
+  const nodes = filteredData.map(d => ({
     name:    d.name,
     recipe:  d.recipe,
     dotX:    xScale(d.x),   // fixed dot position
@@ -1729,9 +2230,9 @@ document.getElementById("show-labels").addEventListener("change", e => {
 // Family checkboxes
 document.querySelectorAll(".family-cb").forEach(cb => {
   cb.addEventListener("change", () => {
-    highlightFamilies = new Set(
-      [...document.querySelectorAll(".family-cb:checked")].map(c => c.value)
-    );
+    // Always include built and other, only toggle sour and spirit_forward
+    const checkedValues = [...document.querySelectorAll(".family-cb:checked")].map(c => c.value);
+    highlightFamilies = new Set([...checkedValues, "built", "other"]);
     if (DATA) redraw(false);
   });
 });
@@ -1751,8 +2252,8 @@ const zoom = d3.zoom()
     currentTransform = e.transform;
     gMain.attr("transform", e.transform);
     // Re-run label simulation with updated dot positions if labels are visible
-    if (showLabels && DATA) {
-      drawLabels(dotData(getPoints()));
+    if ((showLabels || starredCocktails.size > 0) && DATA) {
+      drawLabels(dotData(getPoints()), showLabels);
     }
   });
 
@@ -2093,6 +2594,42 @@ function onIngredientChange() {
 })();
 
 // ────────────────────────────────────────────────────────────────────────────
+// Tab switching setup
+// ────────────────────────────────────────────────────────────────────────────
+
+function initializeTabSwitching() {
+  // Tab switching
+  document.querySelectorAll('.bar-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const tabName = tab.dataset.tab;
+
+      // Update active tab
+      document.querySelectorAll('.bar-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      // Show/hide panels
+      const bottlesPanel = document.getElementById('ingredient-panel-body');
+      const cocktailsPanel = document.getElementById('cocktails-panel-body');
+
+      if (tabName === 'bottles') {
+        bottlesPanel.style.display = 'block';
+        cocktailsPanel.style.display = 'none';
+      } else {
+        bottlesPanel.style.display = 'none';
+        cocktailsPanel.style.display = 'block';
+        updateStarredCocktailsList();
+      }
+    });
+  });
+
+  // Show only starred cocktails toggle
+  document.getElementById('show-only-starred').addEventListener('change', (e) => {
+    showOnlyStarred = e.target.checked;
+    redraw(false);
+  });
+}
+
+// ────────────────────────────────────────────────────────────────────────────
 // Fetch & init
 // ────────────────────────────────────────────────────────────────────────────
 
@@ -2103,6 +2640,9 @@ d3.json("../data/embeddings.json").then(data => {
   // Load starred cocktails from localStorage
   loadStarredCocktails();
 
+  // Show first visit modal if needed
+  showFirstVisitModalIfNeeded();
+
   // We also need the taxonomy to build the ingredient panel
   return d3.json("../data/taxonomy.json").then(taxonomy => {
     DATA.taxonomy = taxonomy;
@@ -2111,6 +2651,48 @@ d3.json("../data/embeddings.json").then(data => {
     updateLegend();
     buildIngredientPanel();
     updateIngredientCount();
+    updateStarredCocktailsList();  // Initialize the starred cocktails list
+    initializeTabSwitching();  // Initialize tab switching after DOM is ready
+
+    // ──────────────────────────────────────────────────────────────────────
+    // Initialize explanation panel toggle
+    // ──────────────────────────────────────────────────────────────────────
+    document.getElementById("explanation-toggle").addEventListener("click", () => {
+      // Check if it's a first visit - if so, show the modal instead
+      const hasVisited = localStorage.getItem('hasVisitedCocktailCartography');
+      if (!hasVisited) {
+        showFirstVisitModalIfNeeded();
+        return;
+      }
+
+      const panel = document.getElementById("explanation-panel");
+      const toggle = document.getElementById("explanation-toggle");
+      const isVisible = panel.classList.contains("visible");
+
+      if (isVisible) {
+        panel.classList.remove("visible");
+        toggle.innerHTML = '<span>What\'s this?</span>';
+      } else {
+        panel.classList.add("visible");
+        toggle.innerHTML = '<span>Hide</span>';
+      }
+
+      // Save preference
+      localStorage.setItem('explanationPanelHidden', isVisible ? 'true' : 'false');
+    });
+
+    // Initialize explanation panel state
+    const explanationHidden = localStorage.getItem('explanationPanelHidden');
+    if (explanationHidden !== 'true') {
+      // Show by default unless explicitly hidden
+      document.getElementById("explanation-panel").classList.add("visible");
+      document.getElementById("explanation-toggle").innerHTML = '<span>Hide</span>';
+    }
+
+    // Show bottom panel by default on desktop
+    if (window.innerWidth > 768) {
+      document.getElementById("bottom-panel").classList.remove("collapsed");
+    }
   });
 }).catch(err => {
   document.getElementById("loading").textContent = `Failed to load embeddings.json: ${err.message}`;

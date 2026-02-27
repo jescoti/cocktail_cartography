@@ -8,3 +8,15 @@ __pycache__/
 dist/
 build/
 .pytest_cache/
+
+# Node.js
+node_modules/
+coverage/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log

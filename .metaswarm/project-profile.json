@@ -1,0 +1,30 @@
+{
+  "metaswarm_version": "0.7.0",
+  "installed_at": "2026-02-27T19:39:00Z",
+  "updated_at": "2026-02-27T19:39:00Z",
+  "detection": {
+    "language": "javascript+python",
+    "framework": "express",
+    "test_runner": null,
+    "linter": null,
+    "formatter": null,
+    "package_manager": "npm",
+    "type_checker": null,
+    "ci": null,
+    "git_hooks": null
+  },
+  "choices": {
+    "coverage_threshold": 100,
+    "external_tools": true,
+    "visual_review": true,
+    "ci_pipeline": true,
+    "git_hooks": false
+  },
+  "commands": {
+    "test": null,
+    "coverage": null,
+    "lint": null,
+    "typecheck": null,
+    "format_check": null
+  }
+}

@@ -1,0 +1,1696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cocktail Clustering Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-deepest: #08090c;
+  --bg-deep: #0e1117;
+  --bg-panel: #161b22;
+  --bg-card: #1c2230;
+  --bg-hover: #252d3a;
+  --border: #2a3142;
+  --border-bright: #3d4a5f;
+  --text-primary: #e2e8f0;
+  --text-secondary: #8b96a9;
+  --text-dim: #5a6577;
+  --accent: #60a5fa;
+  --accent-dim: #2563eb;
+  --accent-glow: rgba(96, 165, 250, 0.15);
+  --orange: #f59e0b;
+  --green: #34d399;
+  --red: #f87171;
+  --font-sans: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg-deepest);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  overflow: hidden;
+  height: 100vh;
+}
+
+/* ── LAYOUT ── */
+.app {
+  display: grid;
+  grid-template-columns: 260px 1fr 280px;
+  grid-template-rows: 1fr auto;
+  grid-template-areas:
+    "left canvas right"
+    "left bottom right";
+  height: 100vh;
+  gap: 1px;
+  background: var(--border);
+}
+
+.left-sidebar {
+  grid-area: left;
+  background: var(--bg-deep);
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.main-canvas-area {
+  grid-area: canvas;
+  background: var(--bg-deepest);
+  position: relative;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.right-sidebar {
+  grid-area: right;
+  background: var(--bg-deep);
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.bottom-panel {
+  grid-area: bottom;
+  background: var(--bg-panel);
+  border-top: 1px solid var(--border);
+  padding: 12px 20px;
+  min-height: 48px;
+  max-height: 140px;
+  overflow-y: auto;
+}
+
+/* ── SCROLLBARS ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border-bright); }
+
+/* ── SIDEBAR CONTROLS ── */
+.panel-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.control-group {
+  margin-bottom: 18px;
+}
+
+.control-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.control-label .badge {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  background: var(--accent-dim);
+  color: var(--accent);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+select, input[type="text"] {
+  width: 100%;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+select:focus, input[type="text"]:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+select { cursor: pointer; }
+
+optgroup { font-weight: 700; color: var(--text-secondary); }
+option { font-weight: 400; color: var(--text-primary); padding: 4px; }
+
+input[type="range"] {
+  width: 100%;
+  -webkit-appearance: none;
+  background: transparent;
+  margin: 8px 0;
+}
+
+input[type="range"]::-webkit-slider-track {
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-top: -6px;
+  cursor: pointer;
+  box-shadow: 0 0 6px var(--accent-glow);
+}
+
+.k-display {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--accent);
+  text-align: center;
+  margin-top: 4px;
+}
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 0;
+}
+
+.toggle-row label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.toggle {
+  position: relative;
+  width: 36px; height: 20px;
+  -webkit-appearance: none;
+  background: var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.toggle:checked { background: var(--accent-dim); }
+
+.toggle::after {
+  content: '';
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 16px; height: 16px;
+  background: var(--text-primary);
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+
+.toggle:checked::after { transform: translateX(16px); }
+
+.search-box {
+  position: relative;
+}
+
+.search-box input {
+  padding-left: 28px;
+}
+
+.search-box::before {
+  content: '⌕';
+  position: absolute;
+  left: 9px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-dim);
+  font-size: 14px;
+  pointer-events: none;
+}
+
+/* ── COLOR BY BUTTONS ── */
+.color-by-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+}
+
+.color-by-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  padding: 6px 4px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.color-by-btn.active {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.color-by-btn:hover:not(.active) {
+  border-color: var(--border-bright);
+  color: var(--text-primary);
+}
+
+/* ── CANVAS ── */
+#scatter-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+}
+
+.canvas-tooltip {
+  position: absolute;
+  pointer-events: none;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-bright);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 12px;
+  max-width: 280px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 0.12s;
+  line-height: 1.5;
+}
+
+.canvas-tooltip.visible { opacity: 1; }
+
+.canvas-tooltip .tt-name {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.canvas-tooltip .tt-meta {
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+
+.canvas-tooltip .tt-ingredients {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 10px;
+  font-family: var(--font-mono);
+}
+
+.canvas-stats {
+  position: absolute;
+  top: 12px; left: 12px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  pointer-events: none;
+}
+
+/* ── RIGHT SIDEBAR CLUSTERS ── */
+.cluster-list { display: flex; flex-direction: column; gap: 6px; }
+
+.cluster-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.cluster-item:hover { border-color: var(--border-bright); background: var(--bg-hover); }
+.cluster-item.active { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent-glow); }
+
+.cluster-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.cluster-swatch {
+  width: 12px; height: 12px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.cluster-id {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.cluster-count {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  margin-left: auto;
+}
+
+.cluster-members {
+  font-size: 10px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  display: none;
+}
+
+.cluster-item.expanded .cluster-members { display: block; }
+
+.cluster-members span {
+  display: inline-block;
+  background: var(--bg-deep);
+  padding: 1px 6px;
+  border-radius: 3px;
+  margin: 1px;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.cluster-members span:hover { background: var(--accent-dim); color: var(--accent); }
+.cluster-members span.highlight { background: var(--accent-dim); color: var(--accent); }
+
+.sil-score {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 8px;
+  background: var(--bg-card);
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+.sil-score strong { color: var(--accent); }
+
+/* ── BOTTOM PANEL ── */
+.bottom-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  font-size: 12px;
+}
+
+.bottom-content .cocktail-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.bottom-content .meta-grid {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.meta-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.meta-item .meta-key {
+  font-size: 9px;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-dim);
+}
+
+.meta-item .meta-val {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.bottom-content .ingredients-list {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  flex-shrink: 0;
+}
+
+.bottom-empty {
+  color: var(--text-dim);
+  font-size: 12px;
+  font-style: italic;
+}
+
+/* ── LOADING ── */
+/* ── SCENARIOS ── */
+.scenario-list { display: flex; flex-direction: column; gap: 4px; }
+
+.scenario-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s;
+  line-height: 1.4;
+}
+
+.scenario-btn:hover { border-color: var(--border-bright); color: var(--text-primary); }
+.scenario-btn.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+
+.scenario-btn .scenario-title {
+  font-weight: 600;
+  font-size: 11px;
+  display: block;
+}
+
+.scenario-btn .scenario-sub {
+  font-size: 9px;
+  color: var(--text-dim);
+  display: block;
+  margin-top: 2px;
+}
+
+.scenario-btn.active .scenario-sub { color: rgba(96, 165, 250, 0.6); }
+
+/* ── ANALYSIS NOTE ── */
+.analysis-note {
+  position: absolute;
+  bottom: 12px; left: 12px;
+  max-width: 380px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-bright);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.analysis-note.visible { opacity: 1; pointer-events: auto; }
+
+.analysis-note .note-close {
+  position: absolute;
+  top: 6px; right: 8px;
+  background: none; border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  padding: 2px 4px;
+}
+.analysis-note .note-close:hover { color: var(--text-primary); }
+
+.analysis-note .note-title {
+  font-weight: 700;
+  color: var(--accent);
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 14px 0;
+}
+
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-deepest);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  transition: opacity 0.4s;
+}
+
+.loading-overlay.hidden { opacity: 0; pointer-events: none; }
+
+.loading-text {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--text-dim);
+}
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loading">
+  <div class="loading-text">Loading clustering data...</div>
+</div>
+
+<div class="app">
+  <!-- LEFT SIDEBAR -->
+  <div class="left-sidebar">
+    <div class="panel-title">Analysis Scenarios</div>
+
+    <div class="control-group">
+      <div class="scenario-list" id="scenario-list">
+        <button class="scenario-btn active" data-scenario="alpha0_k8">
+          <span class="scenario-title">Pure Flavor, 8 Clusters</span>
+          <span class="scenario-sub">Alpha=0 k=8 | sil=0.805 | The key finding</span>
+        </button>
+        <button class="scenario-btn" data-scenario="alpha015_k4">
+          <span class="scenario-title">Flavor + Structure, 4 Clusters</span>
+          <span class="scenario-sub">Alpha=0.15 k=4 | sil=0.854 | Peak silhouette</span>
+        </button>
+        <button class="scenario-btn" data-scenario="alpha055_k3">
+          <span class="scenario-title">The Sweet Spot</span>
+          <span class="scenario-sub">Alpha=0.55 k=3 | sil=0.765 | All algos agree</span>
+        </button>
+        <button class="scenario-btn" data-scenario="alpha1_k3">
+          <span class="scenario-title">Pure Structure</span>
+          <span class="scenario-sub">Alpha=1.0 k=3 | sil=0.509 | Recipe grammar</span>
+        </button>
+        <button class="scenario-btn" data-scenario="binary_split">
+          <span class="scenario-title">The Binary Split</span>
+          <span class="scenario-sub">Alpha=0.15 k=2 | sil=0.930 | Strongest divide</span>
+        </button>
+        <button class="scenario-btn" data-scenario="three_tribes">
+          <span class="scenario-title">Three Flavor Tribes</span>
+          <span class="scenario-sub">Alpha=0.0 k=3 | sil=0.755 | Broadest flavor view</span>
+        </button>
+        <button class="scenario-btn" data-scenario="fine_grained">
+          <span class="scenario-title">Fine-Grained: 10 Clusters</span>
+          <span class="scenario-sub">Alpha=0.0 k=10 | Maximum granularity</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="panel-title">Manual Controls</div>
+
+    <div class="control-group">
+      <div class="control-label">Embedding Strategy</div>
+      <select id="strategy-select"></select>
+    </div>
+
+    <div class="control-group">
+      <div class="control-label">Clustering Family</div>
+      <select id="clustering-family-select"></select>
+    </div>
+
+    <div class="control-group" id="k-group">
+      <div class="control-label">K (number of clusters) <span class="badge" id="k-badge">8</span></div>
+      <input type="range" id="k-slider" min="2" max="10" value="8" step="1">
+      <div class="k-display" id="k-display">k = 8</div>
+    </div>
+
+    <div class="control-group">
+      <div class="control-label">Color by</div>
+      <div class="color-by-group">
+        <button class="color-by-btn active" data-mode="cluster">Cluster</button>
+        <button class="color-by-btn" data-mode="base_spirit">Spirit</button>
+        <button class="color-by-btn" data-mode="family">Family</button>
+        <button class="color-by-btn" data-mode="method">Method</button>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <div class="toggle-row">
+        <label for="labels-toggle">Show labels</label>
+        <input type="checkbox" class="toggle" id="labels-toggle">
+      </div>
+      <div class="toggle-row">
+        <label for="hull-toggle">Show cluster hulls</label>
+        <input type="checkbox" class="toggle" id="hull-toggle" checked>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <div class="control-label">Search</div>
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="Find a cocktail...">
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CANVAS -->
+  <div class="main-canvas-area">
+    <canvas id="scatter-canvas"></canvas>
+    <div class="canvas-tooltip" id="tooltip"></div>
+    <div class="canvas-stats" id="canvas-stats"></div>
+    <div class="analysis-note" id="analysis-note"></div>
+  </div>
+
+  <!-- RIGHT SIDEBAR -->
+  <div class="right-sidebar">
+    <div class="panel-title">Clusters</div>
+    <div class="sil-score" id="sil-score">Silhouette: <strong>—</strong></div>
+    <div class="cluster-list" id="cluster-list"></div>
+  </div>
+
+  <!-- BOTTOM PANEL -->
+  <div class="bottom-panel" id="bottom-panel">
+    <div class="bottom-empty">Click a cocktail to see details</div>
+  </div>
+</div>
+
+<script>
+// ─── DATA LOADING ───
+let DATA = null;
+let CLUSTER_HASH_MAP = null;
+let CLUSTER_NAMES = null;
+
+async function loadData() {
+  const [dataResp, hashResp, namesResp] = await Promise.all([
+    fetch('viz/clustering_data.json'),
+    fetch('viz/cluster_hash_mapping.json'),
+    fetch('viz/cluster_names_v2.json'),
+  ]);
+  DATA = await dataResp.json();
+  CLUSTER_HASH_MAP = await hashResp.json();
+  CLUSTER_NAMES = await namesResp.json();
+  init();
+  document.getElementById('loading').classList.add('hidden');
+}
+
+// ─── STATE ───
+const state = {
+  strategy: 'blend_struct_a000',
+  clusteringFamily: 'alpha_0.0',
+  k: 8,
+  colorBy: 'cluster',
+  showLabels: false,
+  showHulls: true,
+  searchTerm: '',
+  selectedCocktail: null,
+  hoveredCocktail: null,
+  highlightedCluster: null,
+};
+
+// ─── ANALYSIS SCENARIOS ───
+const SCENARIOS = {
+  alpha0_k8: {
+    strategy: 'blend_struct_a000',
+    family: 'alpha_0.0',
+    k: 8,
+    title: 'Pure Flavor: 8 Clusters',
+    note: 'Alpha=0 uses only flavor vectors, no structural info. At k=8, silhouette hits 0.805 — your human eye saw 8 groups and the algorithms confirm it. Notice how Manhattan/Martini share a cluster (spirit-forward vermouth drinks), while equal-parts sours (Last Word, Paper Plane) separate from standard citrus sours. The Old Fashioned family forms its own tight group defined by bitters + sweetener + spirit.',
+  },
+  alpha015_k4: {
+    strategy: 'blend_struct_a015',
+    family: 'alpha_0.15',
+    k: 4,
+    title: 'Peak Separation: Alpha=0.15 k=4',
+    note: 'Adding just 15% structural weight produces the highest silhouette of any configuration: 0.854. Four very clean groups emerge. This suggests that a small amount of structural awareness actually helps flavor clustering — like knowing "stirred" vs "shaken" clarifies ambiguous flavor similarities.',
+  },
+  alpha055_k3: {
+    strategy: 'blend_struct_a055',
+    family: 'alpha_0.55',
+    k: 3,
+    title: 'The Convergence Point',
+    note: 'Alpha=0.55 is where K-Means, Mean Shift, and DBSCAN all independently find exactly 3 clusters. This never happens at other alpha values. The three groups map to the bartending trichotomy: Stirred/Spirit-Forward, Shaken/Citrus-Bright, and Built/Complex-Aromatic. This is the most practical taxonomy for menu design.',
+  },
+  alpha1_k3: {
+    strategy: 'blend_struct_a100',
+    family: 'alpha_1.0',
+    k: 3,
+    title: 'Pure Structure (Recipe Grammar)',
+    note: 'Alpha=1.0 ignores flavor entirely — only recipe structure matters. Silhouette drops to 0.509 (mediocre). Cocktails that taste nothing alike end up together just because they share the same template. This confirms cocktail identity is primarily flavor-driven; structure alone gives poor groupings.',
+  },
+  binary_split: {
+    strategy: 'blend_struct_a015',
+    family: 'alpha_0.15',
+    k: 2,
+    title: 'The Binary Split',
+    note: 'At k=2 with alpha=0.15, the cocktail universe divides into its most fundamental partition. This is likely the strongest binary separation available — spirit-forward/stirred drinks on one side, citrus-bright/shaken drinks on the other. Every cocktail falls into one of two camps. This is the "are you a Manhattan person or a Daiquiri person?" question, answered mathematically.',
+  },
+  three_tribes: {
+    strategy: 'blend_struct_a000',
+    family: 'alpha_0.0',
+    k: 3,
+    title: 'Three Flavor Tribes',
+    note: 'The broadest useful flavor-only grouping. Three clusters from pure flavor vectors (alpha=0) — no structural information used. Compare this to the alpha=0.55 k=3 convergence scenario: both find 3 groups, but here the grouping is purely by how the drinks taste, not how they\'re made. Notice which cocktails shift between groups when structure is added.',
+  },
+  fine_grained: {
+    strategy: 'blend_struct_a000',
+    family: 'alpha_0.0',
+    k: 10,
+    title: 'Fine-Grained: 10 Clusters',
+    note: 'Maximum granularity on the flavor landscape. At k=10, the alpha=0 space reveals micro-families: the equal-parts sours (Last Word, Paper Plane), the whiskey-honey drinks, the tiki cluster, the Negroni cousins. Some of these are "real" families that bartenders would recognize; others are artifacts of forcing too many divisions. Compare with k=8 (the sweet spot) to see which groups split vs remain stable.',
+  },
+};
+
+// ─── CLUSTER NAMING ───
+// Look up pre-computed cluster names via composition hash
+function getClusterNames() {
+  const clusteringKey = getCurrentClusteringKey();
+  const clustering = getCurrentClustering();
+  if (!clustering) return {};
+
+  // Group cocktails by cluster_id to get sizes
+  const clusters = {};
+  for (const [name, cid] of Object.entries(clustering.assignments)) {
+    if (!clusters[cid]) clusters[cid] = [];
+    clusters[cid].push(name);
+  }
+
+  const names = {};
+  for (const cid of Object.keys(clusters)) {
+    // Look up hash for this clustering::cluster_id
+    const hashKey = `${clusteringKey}::${cid}`;
+    const hash = CLUSTER_HASH_MAP?.[hashKey];
+    const name = hash && CLUSTER_NAMES?.[hash];
+    names[cid] = name || `Cluster ${cid}`;
+  }
+
+  return names;
+}
+
+// ─── COLORBLIND-FRIENDLY PALETTE ───
+// Wong palette + extensions
+const CLUSTER_COLORS = [
+  '#4e79a7', '#f28e2b', '#e15759', '#76b7b2',
+  '#59a14f', '#edc948', '#b07aa1', '#ff9da7',
+  '#9c755f', '#bab0ac', '#86bcb6', '#8cd17d',
+];
+
+const SPIRIT_COLORS = {
+  gin: '#4e79a7',
+  whiskey: '#f28e2b',
+  rum: '#e15759',
+  agave: '#59a14f',
+  brandy: '#b07aa1',
+  vermouth: '#edc948',
+  amaro: '#9c755f',
+  mixed: '#76b7b2',
+  other: '#bab0ac',
+  bitters: '#ff9da7',
+  herbal_liqueur: '#86bcb6',
+};
+
+const FAMILY_COLORS = {
+  spirit_forward: '#4e79a7',
+  sour: '#f28e2b',
+  built: '#59a14f',
+};
+
+const METHOD_COLORS = {
+  stirred: '#4e79a7',
+  shaken: '#f28e2b',
+  built: '#59a14f',
+};
+
+// ─── HELPERS ───
+function getCurrentClusteringKey() {
+  return `${state.clusteringFamily}_k=${state.k}`;
+}
+
+function getCurrentClustering() {
+  return DATA.clusterings[getCurrentClusteringKey()];
+}
+
+function getCurrentPoints() {
+  return DATA.strategies[state.strategy]?.points || {};
+}
+
+function getColor(cocktailName, clusterId) {
+  if (state.colorBy === 'cluster') {
+    return CLUSTER_COLORS[clusterId % CLUSTER_COLORS.length];
+  }
+  const recipe = DATA.recipes[cocktailName];
+  if (state.colorBy === 'base_spirit') return SPIRIT_COLORS[recipe.base_spirit] || '#bab0ac';
+  if (state.colorBy === 'family') return FAMILY_COLORS[recipe.family] || '#bab0ac';
+  if (state.colorBy === 'method') return METHOD_COLORS[recipe.method] || '#bab0ac';
+  return '#bab0ac';
+}
+
+// ─── CANVAS RENDERER ───
+const canvas = document.getElementById('scatter-canvas');
+const ctx = canvas.getContext('2d');
+let canvasW, canvasH, transform;
+
+// Zoom & pan state
+const view = { zoom: 1, panX: 0, panY: 0 };
+let isPanning = false, panStartX = 0, panStartY = 0, panStartVX = 0, panStartVY = 0;
+
+function resetView() { view.zoom = 1; view.panX = 0; view.panY = 0; }
+
+function resizeCanvas() {
+  const rect = canvas.parentElement.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  canvasW = rect.width;
+  canvasH = rect.height;
+  canvas.width = canvasW * dpr;
+  canvas.height = canvasH * dpr;
+  canvas.style.width = canvasW + 'px';
+  canvas.style.height = canvasH + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  computeTransform();
+  render();
+}
+
+function computeTransform() {
+  const points = getCurrentPoints();
+  const names = Object.keys(points);
+  if (!names.length) return;
+
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  for (const n of names) {
+    const p = points[n];
+    if (p.x < minX) minX = p.x;
+    if (p.x > maxX) maxX = p.x;
+    if (p.y < minY) minY = p.y;
+    if (p.y > maxY) maxY = p.y;
+  }
+
+  const pad = 60;
+  const rangeX = maxX - minX || 1;
+  const rangeY = maxY - minY || 1;
+  const scaleX = (canvasW - pad * 2) / rangeX;
+  const scaleY = (canvasH - pad * 2) / rangeY;
+  const scale = Math.min(scaleX, scaleY);
+
+  const cx = (minX + maxX) / 2;
+  const cy = (minY + maxY) / 2;
+
+  const z = view.zoom;
+  transform = {
+    toScreen: (x, y) => ({
+      sx: canvasW / 2 + ((x - cx) * scale) * z + view.panX,
+      sy: canvasH / 2 + ((y - cy) * scale) * z + view.panY,
+    }),
+    toData: (sx, sy) => ({
+      x: ((sx - canvasW / 2 - view.panX) / z) / scale + cx,
+      y: ((sy - canvasH / 2 - view.panY) / z) / scale + cy,
+    }),
+    scale: scale * z,
+  };
+}
+
+function convexHull(points) {
+  if (points.length < 3) return points;
+  points = points.slice().sort((a, b) => a.sx - b.sx || a.sy - b.sy);
+  const cross = (O, A, B) => (A.sx - O.sx) * (B.sy - O.sy) - (A.sy - O.sy) * (B.sx - O.sx);
+  const lower = [];
+  for (const p of points) {
+    while (lower.length >= 2 && cross(lower[lower.length - 2], lower[lower.length - 1], p) <= 0) lower.pop();
+    lower.push(p);
+  }
+  const upper = [];
+  for (let i = points.length - 1; i >= 0; i--) {
+    const p = points[i];
+    while (upper.length >= 2 && cross(upper[upper.length - 2], upper[upper.length - 1], p) <= 0) upper.pop();
+    upper.push(p);
+  }
+  upper.pop();
+  lower.pop();
+  return lower.concat(upper);
+}
+
+function render() {
+  if (!DATA || !transform) return;
+
+  ctx.clearRect(0, 0, canvasW, canvasH);
+
+  const points = getCurrentPoints();
+  const clustering = getCurrentClustering();
+  const assignments = clustering?.assignments || {};
+
+  // Build cluster -> screen points map for hulls
+  const clusterScreenPoints = {};
+  const cocktailScreenPositions = {};
+
+  for (const [name, pt] of Object.entries(points)) {
+    const { sx, sy } = transform.toScreen(pt.x, pt.y);
+    const clusterId = assignments[name] ?? -1;
+    cocktailScreenPositions[name] = { sx, sy, clusterId };
+    if (!clusterScreenPoints[clusterId]) clusterScreenPoints[clusterId] = [];
+    clusterScreenPoints[clusterId].push({ sx, sy, name });
+  }
+
+  // Draw cluster hulls
+  if (state.showHulls && state.colorBy === 'cluster') {
+    for (const [cid, pts] of Object.entries(clusterScreenPoints)) {
+      if (pts.length < 3) continue;
+      const hull = convexHull(pts);
+      const color = CLUSTER_COLORS[parseInt(cid) % CLUSTER_COLORS.length];
+
+      const centroidX = hull.reduce((s, p) => s + p.sx, 0) / hull.length;
+      const centroidY = hull.reduce((s, p) => s + p.sy, 0) / hull.length;
+      const expanded = hull.map(p => ({
+        sx: p.sx + (p.sx - centroidX) * 0.2,
+        sy: p.sy + (p.sy - centroidY) * 0.2,
+      }));
+
+      // Draw rounded hull using quadratic curves through midpoints
+      ctx.beginPath();
+      if (expanded.length >= 3) {
+        const midX = (expanded[0].sx + expanded[expanded.length - 1].sx) / 2;
+        const midY = (expanded[0].sy + expanded[expanded.length - 1].sy) / 2;
+        ctx.moveTo(midX, midY);
+        for (let i = 0; i < expanded.length; i++) {
+          const curr = expanded[i];
+          const next = expanded[(i + 1) % expanded.length];
+          const mx = (curr.sx + next.sx) / 2;
+          const my = (curr.sy + next.sy) / 2;
+          ctx.quadraticCurveTo(curr.sx, curr.sy, mx, my);
+        }
+      } else {
+        ctx.moveTo(expanded[0].sx, expanded[0].sy);
+        for (let i = 1; i < expanded.length; i++) ctx.lineTo(expanded[i].sx, expanded[i].sy);
+      }
+      ctx.closePath();
+
+      ctx.fillStyle = color + '25';
+      ctx.fill();
+      ctx.strokeStyle = color + '80';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([5, 3]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Draw cluster name below the cluster dots (not on top)
+      const clusterNames = getClusterNames();
+      const clusterName = clusterNames[cid] || `Cluster ${cid}`;
+      ctx.save();
+      ctx.font = '600 11px "DM Sans", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      // Position label below the bottom-most dot in this cluster + padding
+      const dotsBottomY = pts.reduce((max, p) => Math.max(max, p.sy), -Infinity);
+      const labelX = centroidX;
+      const labelY = dotsBottomY + 24;
+      // Background pill
+      const nameW = ctx.measureText(clusterName).width;
+      const pillPad = 5;
+      ctx.fillStyle = 'rgba(8, 9, 12, 0.85)';
+      ctx.beginPath();
+      const rx = labelX - nameW / 2 - pillPad;
+      const ry = labelY - 8;
+      const rw = nameW + pillPad * 2;
+      const rh = 16;
+      const rr = 4;
+      ctx.moveTo(rx + rr, ry);
+      ctx.lineTo(rx + rw - rr, ry);
+      ctx.quadraticCurveTo(rx + rw, ry, rx + rw, ry + rr);
+      ctx.lineTo(rx + rw, ry + rh - rr);
+      ctx.quadraticCurveTo(rx + rw, ry + rh, rx + rw - rr, ry + rh);
+      ctx.lineTo(rx + rr, ry + rh);
+      ctx.quadraticCurveTo(rx, ry + rh, rx, ry + rh - rr);
+      ctx.lineTo(rx, ry + rr);
+      ctx.quadraticCurveTo(rx, ry, rx + rr, ry);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = color + '60';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([]);
+      ctx.stroke();
+      // Name text
+      ctx.fillStyle = color;
+      ctx.fillText(clusterName, labelX, labelY);
+      ctx.restore();
+    }
+  }
+
+  // Draw dots
+  const isSearching = state.searchTerm.length > 0;
+  const searchLower = state.searchTerm.toLowerCase();
+
+  for (const [name, pos] of Object.entries(cocktailScreenPositions)) {
+    const { sx, sy, clusterId } = pos;
+    const recipe = DATA.recipes[name];
+    let color = getColor(name, clusterId);
+    let radius = 5;
+    let alpha = 1;
+
+    // Dimming logic
+    if (isSearching) {
+      const displayName = recipe.display_name.toLowerCase();
+      const matchesSearch = displayName.includes(searchLower) || name.includes(searchLower);
+      alpha = matchesSearch ? 1 : 0.12;
+    }
+
+    if (state.highlightedCluster !== null && state.colorBy === 'cluster') {
+      alpha = clusterId === state.highlightedCluster ? 1 : 0.12;
+    }
+
+    if (state.selectedCocktail === name) {
+      radius = 9;
+    }
+
+    if (state.hoveredCocktail === name) {
+      radius = 8;
+    }
+
+    // Draw dot
+    ctx.beginPath();
+    ctx.arc(sx, sy, radius, 0, Math.PI * 2);
+    ctx.fillStyle = color;
+    ctx.globalAlpha = alpha;
+    ctx.fill();
+
+    // Ring for selected
+    if (state.selectedCocktail === name) {
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+
+    ctx.globalAlpha = 1;
+  }
+
+  // Draw labels with collision avoidance
+  if (state.showLabels) {
+    ctx.font = '500 9px "DM Sans", sans-serif';
+    ctx.textBaseline = 'middle';
+
+    // Build label candidates with priority scores
+    const labelCandidates = [];
+    for (const [name, pos] of Object.entries(cocktailScreenPositions)) {
+      const { sx, sy, clusterId } = pos;
+      const displayName = DATA.recipes[name].display_name;
+      let alpha = 1;
+      let priority = 1;
+
+      if (isSearching) {
+        const dn = displayName.toLowerCase();
+        const matches = dn.includes(searchLower) || name.includes(searchLower);
+        alpha = matches ? 1 : 0.08;
+        priority = matches ? 10 : 0;
+      }
+      if (state.highlightedCluster !== null && state.colorBy === 'cluster') {
+        const inCluster = clusterId === state.highlightedCluster;
+        alpha = inCluster ? 1 : 0.08;
+        priority = inCluster ? 10 : 0;
+      }
+      if (state.selectedCocktail === name) priority = 20;
+      if (state.hoveredCocktail === name) priority = 15;
+
+      const textW = ctx.measureText(displayName).width;
+      labelCandidates.push({ name, displayName, sx, sy, alpha, priority, textW });
+    }
+
+    // Sort by priority descending so important labels get placed first
+    labelCandidates.sort((a, b) => b.priority - a.priority);
+
+    // Greedy collision avoidance: place labels that don't overlap
+    const placed = []; // array of {x, y, w, h}
+    const labelH = 11;
+    const offsets = [
+      { dx: 8, dy: 0 },      // right
+      { dx: -8, dy: 0, alignRight: true },  // left
+      { dx: 0, dy: -10 },    // above
+      { dx: 0, dy: 12 },     // below
+    ];
+
+    for (const lbl of labelCandidates) {
+      let bestPlacement = null;
+
+      for (const off of offsets) {
+        const lx = off.alignRight ? lbl.sx + off.dx - lbl.textW : lbl.sx + off.dx;
+        const ly = lbl.sy + off.dy - labelH / 2;
+        const rect = { x: lx, y: ly, w: lbl.textW, h: labelH };
+
+        // Check collisions with already-placed labels
+        let collides = false;
+        for (const p of placed) {
+          if (rect.x < p.x + p.w && rect.x + rect.w > p.x &&
+              rect.y < p.y + p.h && rect.y + rect.h > p.y) {
+            collides = true;
+            break;
+          }
+        }
+
+        if (!collides) {
+          bestPlacement = { lx: off.alignRight ? lbl.sx + off.dx - lbl.textW : lbl.sx + off.dx, ly: lbl.sy + off.dy, align: off.alignRight ? 'right' : 'left' };
+          placed.push(rect);
+          break;
+        }
+      }
+
+      if (!bestPlacement) {
+        // Skip this label - no non-overlapping position found
+        // Still place very high-priority labels (selected, hovered, searched)
+        if (lbl.priority >= 10) {
+          bestPlacement = { lx: lbl.sx + 8, ly: lbl.sy, align: 'left' };
+          placed.push({ x: lbl.sx + 8, y: lbl.sy - labelH / 2, w: lbl.textW, h: labelH });
+        } else {
+          continue;
+        }
+      }
+
+      ctx.globalAlpha = lbl.alpha;
+      ctx.textAlign = 'left';
+      // Text shadow for readability
+      ctx.fillStyle = 'rgba(0,0,0,0.8)';
+      ctx.fillText(lbl.displayName, bestPlacement.lx + 1, bestPlacement.ly + 1);
+      ctx.fillStyle = '#c8d0dc';
+      ctx.fillText(lbl.displayName, bestPlacement.lx, bestPlacement.ly);
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  // Stats
+  const statsEl = document.getElementById('canvas-stats');
+  const nClusters = clustering ? clustering.n_clusters : '?';
+  statsEl.textContent = `${Object.keys(points).length} cocktails · ${nClusters} clusters · ${state.strategy}`;
+}
+
+// ─── HIT TESTING ───
+function hitTest(mx, my) {
+  const points = getCurrentPoints();
+  let closest = null;
+  let closestDist = 20; // pixel threshold
+
+  for (const [name, pt] of Object.entries(points)) {
+    const { sx, sy } = transform.toScreen(pt.x, pt.y);
+    const dist = Math.hypot(mx - sx, my - sy);
+    if (dist < closestDist) {
+      closestDist = dist;
+      closest = name;
+    }
+  }
+  return closest;
+}
+
+// ─── TOOLTIP ───
+const tooltipEl = document.getElementById('tooltip');
+
+function showTooltip(name, mx, my) {
+  const recipe = DATA.recipes[name];
+  const clustering = getCurrentClustering();
+  const cid = clustering?.assignments[name];
+
+  const clusterNames = getClusterNames();
+  const clusterLabel = cid !== undefined ? (clusterNames[cid] || `Cluster ${cid}`) : '';
+
+  tooltipEl.innerHTML = `
+    <div class="tt-name">${recipe.display_name}</div>
+    <div class="tt-meta">${recipe.base_spirit} · ${recipe.family} · ${recipe.method} · ${recipe.served}</div>
+    ${cid !== undefined ? `<div class="tt-meta" style="color:${CLUSTER_COLORS[cid % CLUSTER_COLORS.length]}">${clusterLabel}</div>` : ''}
+    <div class="tt-ingredients">${recipe.ingredients.join(', ')}</div>
+  `;
+
+  // Position
+  let left = mx + 16;
+  let top = my - 10;
+  if (left + 280 > canvasW) left = mx - 290;
+  if (top + 120 > canvasH) top = canvasH - 130;
+  if (top < 10) top = 10;
+
+  tooltipEl.style.left = left + 'px';
+  tooltipEl.style.top = top + 'px';
+  tooltipEl.classList.add('visible');
+}
+
+function hideTooltip() {
+  tooltipEl.classList.remove('visible');
+}
+
+// ─── BOTTOM PANEL ───
+function updateBottomPanel() {
+  const panel = document.getElementById('bottom-panel');
+  if (!state.selectedCocktail) {
+    panel.innerHTML = '<div class="bottom-empty">Click a cocktail to see details</div>';
+    return;
+  }
+
+  const name = state.selectedCocktail;
+  const recipe = DATA.recipes[name];
+  const clustering = getCurrentClustering();
+  const cid = clustering?.assignments[name];
+  const clusterColor = cid !== undefined ? CLUSTER_COLORS[cid % CLUSTER_COLORS.length] : '#888';
+  const clusterNames = getClusterNames();
+  const clusterLabel = cid !== undefined ? (clusterNames[cid] || `Cluster ${cid}`) : '—';
+
+  // Find visual neighbors
+  const points = getCurrentPoints();
+  const pt = points[name];
+  if (!pt) return;
+  const dists = [];
+  for (const [n, p] of Object.entries(points)) {
+    if (n === name) continue;
+    dists.push({ name: n, dist: Math.hypot(p.x - pt.x, p.y - pt.y) });
+  }
+  dists.sort((a, b) => a.dist - b.dist);
+  const neighbors = dists.slice(0, 5);
+
+  panel.innerHTML = `
+    <div class="bottom-content">
+      <div>
+        <div class="cocktail-name">${recipe.display_name}</div>
+        <div class="meta-grid" style="margin-top:6px;">
+          <div class="meta-item"><span class="meta-key">Spirit</span><span class="meta-val">${recipe.base_spirit}</span></div>
+          <div class="meta-item"><span class="meta-key">Family</span><span class="meta-val">${recipe.family}</span></div>
+          <div class="meta-item"><span class="meta-key">Method</span><span class="meta-val">${recipe.method}</span></div>
+          <div class="meta-item"><span class="meta-key">Served</span><span class="meta-val">${recipe.served}</span></div>
+          <div class="meta-item"><span class="meta-key">Cluster</span><span class="meta-val" style="color:${clusterColor}">${clusterLabel}</span></div>
+        </div>
+      </div>
+      <div class="ingredients-list">
+        <div class="meta-key" style="margin-bottom:4px">Ingredients</div>
+        ${recipe.ingredients.map(i => i.replace(/_/g, ' ')).join('<br>')}
+      </div>
+      <div class="ingredients-list">
+        <div class="meta-key" style="margin-bottom:4px">Nearest Neighbors</div>
+        ${neighbors.map(n => `<span style="cursor:pointer;color:var(--accent)" onclick="selectCocktail('${n.name}')">${DATA.recipes[n.name].display_name}</span>`).join('<br>')}
+      </div>
+    </div>
+  `;
+}
+
+function selectCocktail(name) {
+  state.selectedCocktail = name;
+  updateBottomPanel();
+  render();
+}
+
+// ─── CLUSTER LIST ───
+function updateClusterList() {
+  const container = document.getElementById('cluster-list');
+  const clustering = getCurrentClustering();
+  const silEl = document.getElementById('sil-score');
+
+  if (!clustering) {
+    container.innerHTML = '<div style="color:var(--text-dim);font-size:12px">No clustering selected</div>';
+    silEl.innerHTML = 'Silhouette: <strong>—</strong>';
+    return;
+  }
+
+  const sil = clustering.silhouette;
+  silEl.innerHTML = `Silhouette: <strong>${sil > 0 ? sil.toFixed(3) : 'N/A'}</strong>`;
+
+  // Group by cluster
+  const clusters = {};
+  for (const [name, cid] of Object.entries(clustering.assignments)) {
+    if (!clusters[cid]) clusters[cid] = [];
+    clusters[cid].push(name);
+  }
+
+  // Sort clusters
+  const sortedIds = Object.keys(clusters).map(Number).sort((a, b) => a - b);
+
+  const clusterNames = getClusterNames();
+
+  container.innerHTML = sortedIds.map(cid => {
+    const members = clusters[cid].sort();
+    const color = CLUSTER_COLORS[cid % CLUSTER_COLORS.length];
+    const clusterName = clusterNames[cid] || `Cluster ${cid}`;
+    return `
+      <div class="cluster-item" data-cid="${cid}" onclick="toggleCluster(this, ${cid})">
+        <div class="cluster-header">
+          <div class="cluster-swatch" style="background:${color}"></div>
+          <div class="cluster-id">${clusterName}</div>
+          <div class="cluster-count">${members.length}</div>
+        </div>
+        <div class="cluster-members">
+          ${members.map(m => `<span onclick="event.stopPropagation(); selectCocktail('${m}')">${DATA.recipes[m].display_name}</span>`).join(' ')}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleCluster(el, cid) {
+  const wasExpanded = el.classList.contains('expanded');
+  // Collapse all
+  document.querySelectorAll('.cluster-item').forEach(e => e.classList.remove('expanded', 'active'));
+
+  if (!wasExpanded) {
+    el.classList.add('expanded', 'active');
+    state.highlightedCluster = cid;
+  } else {
+    state.highlightedCluster = null;
+  }
+  render();
+}
+
+// ─── POPULATE CONTROLS ───
+function populateStrategySelect() {
+  const sel = document.getElementById('strategy-select');
+
+  const groups = {
+    'Key Strategies': ['blend', 'perceptual', 'role_slot'],
+    'Alpha Spectrum (Flavor → Structure)': [],
+  };
+
+  for (const k of Object.keys(DATA.strategies).sort()) {
+    if (k.startsWith('blend_struct_a')) {
+      groups['Alpha Spectrum (Flavor → Structure)'].push(k);
+    }
+  }
+  // Add blend_struct if present
+  if (DATA.strategies['blend_struct'] && !groups['Key Strategies'].includes('blend_struct')) {
+    groups['Key Strategies'].splice(1, 0, 'blend_struct');
+  }
+
+  sel.innerHTML = '';
+  for (const [groupName, keys] of Object.entries(groups)) {
+    const optgroup = document.createElement('optgroup');
+    optgroup.label = groupName;
+    for (const k of keys) {
+      if (!DATA.strategies[k]) continue;
+      const opt = document.createElement('option');
+      opt.value = k;
+      // Friendlier name
+      let label = k;
+      if (k === 'blend') label = 'Blend (pure taste)';
+      else if (k === 'blend_struct') label = 'Blend + Structure (α=0.50)';
+      else if (k === 'perceptual') label = 'Perceptual (punchy ingredients)';
+      else if (k === 'role_slot') label = 'Role-Slot (base-to-base)';
+      else if (k.startsWith('blend_struct_a')) {
+        const alpha = parseInt(k.replace('blend_struct_a', '')) / 100;
+        label = `α = ${alpha.toFixed(2)}`;
+      }
+      opt.textContent = label;
+      optgroup.appendChild(opt);
+    }
+    sel.appendChild(optgroup);
+  }
+
+  sel.value = state.strategy;
+}
+
+function populateClusteringFamilySelect() {
+  const sel = document.getElementById('clustering-family-select');
+
+  // Extract families
+  const families = {};
+  for (const key of Object.keys(DATA.clusterings)) {
+    // e.g. alpha_0.0_k=8 -> family = alpha_0.0
+    const parts = key.split('_k=');
+    if (parts.length === 2) {
+      const family = parts[0];
+      if (!families[family]) families[family] = [];
+      families[family].push(parseInt(parts[1]));
+    }
+  }
+
+  const alphaFamilies = Object.keys(families).filter(f => f.startsWith('alpha_')).sort((a, b) => {
+    return parseFloat(a.split('_')[1]) - parseFloat(b.split('_')[1]);
+  });
+  const tauFamilies = Object.keys(families).filter(f => f.startsWith('tau_')).sort((a, b) => {
+    return parseFloat(a.split('_')[1]) - parseFloat(b.split('_')[1]);
+  });
+
+  sel.innerHTML = '';
+
+  const alphaGroup = document.createElement('optgroup');
+  alphaGroup.label = 'Alpha (Flavor → Structure)';
+  for (const f of alphaFamilies) {
+    const opt = document.createElement('option');
+    opt.value = f;
+    const alphaVal = f.replace('alpha_', '');
+    opt.textContent = `Alpha = ${alphaVal}`;
+    alphaGroup.appendChild(opt);
+  }
+  sel.appendChild(alphaGroup);
+
+  const tauGroup = document.createElement('optgroup');
+  tauGroup.label = 'Tau (Intensity → Volume)';
+  for (const f of tauFamilies) {
+    const opt = document.createElement('option');
+    opt.value = f;
+    const tauVal = f.replace('tau_', '');
+    opt.textContent = `Tau = ${tauVal}`;
+    tauGroup.appendChild(opt);
+  }
+  sel.appendChild(tauGroup);
+
+  sel.value = state.clusteringFamily;
+
+  // Store available k values per family
+  sel._families = families;
+}
+
+function updateKSlider() {
+  const sel = document.getElementById('clustering-family-select');
+  const families = sel._families || {};
+  const available = families[state.clusteringFamily] || [];
+  const slider = document.getElementById('k-slider');
+
+  if (available.length === 0) {
+    document.getElementById('k-group').style.display = 'none';
+    return;
+  }
+
+  document.getElementById('k-group').style.display = '';
+  const minK = Math.min(...available);
+  const maxK = Math.max(...available);
+  slider.min = minK;
+  slider.max = maxK;
+
+  // Clamp current k
+  if (state.k < minK) state.k = minK;
+  if (state.k > maxK) state.k = maxK;
+  if (!available.includes(state.k)) state.k = available[0];
+
+  slider.value = state.k;
+  document.getElementById('k-display').textContent = `k = ${state.k}`;
+  document.getElementById('k-badge').textContent = state.k;
+}
+
+// ─── SCENARIO ACTIVATION ───
+function activateScenario(scenarioId) {
+  const sc = SCENARIOS[scenarioId];
+  if (!sc) return;
+
+  // Update state
+  state.strategy = sc.strategy;
+  state.clusteringFamily = sc.family;
+  state.k = sc.k;
+  state.highlightedCluster = null;
+  state.selectedCocktail = null;
+  state.colorBy = 'cluster';
+  resetView();
+
+  // Update UI controls to match
+  document.getElementById('strategy-select').value = sc.strategy;
+  document.getElementById('clustering-family-select').value = sc.family;
+  document.querySelectorAll('.color-by-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.color-by-btn[data-mode="cluster"]').classList.add('active');
+
+  // Update scenario button highlights
+  document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
+  const activeBtn = document.querySelector(`.scenario-btn[data-scenario="${scenarioId}"]`);
+  if (activeBtn) activeBtn.classList.add('active');
+
+  // Show analysis note with close button
+  const noteEl = document.getElementById('analysis-note');
+  noteEl.innerHTML = `<button class="note-close" onclick="this.parentElement.classList.remove('visible')">&times;</button><div class="note-title">${sc.title}</div>${sc.note}`;
+  noteEl.classList.add('visible');
+
+  updateKSlider();
+  computeTransform();
+  updateClusterList();
+  updateBottomPanel();
+  render();
+}
+
+function clearAnalysisNote() {
+  document.getElementById('analysis-note').classList.remove('visible');
+  document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
+}
+
+// ─── EVENT HANDLERS ───
+function setupEvents() {
+  // Scenarios
+  document.querySelectorAll('.scenario-btn').forEach(btn => {
+    btn.addEventListener('click', () => activateScenario(btn.dataset.scenario));
+  });
+
+  // Strategy
+  document.getElementById('strategy-select').addEventListener('change', e => {
+    state.strategy = e.target.value;
+    clearAnalysisNote();
+    computeTransform();
+    render();
+  });
+
+  // Clustering family
+  document.getElementById('clustering-family-select').addEventListener('change', e => {
+    state.clusteringFamily = e.target.value;
+    state.highlightedCluster = null;
+    clearAnalysisNote();
+
+    // Auto-switch strategy for alpha families
+    if (state.clusteringFamily.startsWith('alpha_')) {
+      const alphaVal = state.clusteringFamily.replace('alpha_', '');
+      const alphaKey = 'blend_struct_a' + String(Math.round(parseFloat(alphaVal) * 100)).padStart(3, '0');
+      if (DATA.strategies[alphaKey]) {
+        state.strategy = alphaKey;
+        document.getElementById('strategy-select').value = alphaKey;
+        computeTransform();
+      }
+    }
+
+    updateKSlider();
+    updateClusterList();
+    updateBottomPanel();
+    render();
+  });
+
+  // K slider
+  document.getElementById('k-slider').addEventListener('input', e => {
+    state.k = parseInt(e.target.value);
+    document.getElementById('k-display').textContent = `k = ${state.k}`;
+    document.getElementById('k-badge').textContent = state.k;
+    state.highlightedCluster = null;
+    clearAnalysisNote();
+    updateClusterList();
+    updateBottomPanel();
+    render();
+  });
+
+  // Color by
+  document.querySelectorAll('.color-by-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.color-by-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.colorBy = btn.dataset.mode;
+      state.highlightedCluster = null;
+      updateClusterList();
+      render();
+    });
+  });
+
+  // Labels toggle
+  document.getElementById('labels-toggle').addEventListener('change', e => {
+    state.showLabels = e.target.checked;
+    render();
+  });
+
+  // Hull toggle
+  document.getElementById('hull-toggle').addEventListener('change', e => {
+    state.showHulls = e.target.checked;
+    render();
+  });
+
+  // Search
+  document.getElementById('search-input').addEventListener('input', e => {
+    state.searchTerm = e.target.value;
+    render();
+  });
+
+  // Canvas mouse
+  canvas.addEventListener('mousemove', e => {
+    const rect = canvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    const hit = hitTest(mx, my);
+
+    if (hit !== state.hoveredCocktail) {
+      state.hoveredCocktail = hit;
+      if (hit) {
+        showTooltip(hit, mx, my);
+        canvas.style.cursor = 'pointer';
+      } else {
+        hideTooltip();
+        canvas.style.cursor = 'crosshair';
+      }
+      render();
+    } else if (hit) {
+      // Update tooltip position
+      showTooltip(hit, mx, my);
+    }
+  });
+
+  canvas.addEventListener('mouseleave', () => {
+    state.hoveredCocktail = null;
+    hideTooltip();
+    render();
+  });
+
+  canvas.addEventListener('click', e => {
+    const rect = canvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    const hit = hitTest(mx, my);
+
+    if (hit) {
+      state.selectedCocktail = hit === state.selectedCocktail ? null : hit;
+    } else {
+      state.selectedCocktail = null;
+      state.highlightedCluster = null;
+      document.querySelectorAll('.cluster-item').forEach(e => e.classList.remove('expanded', 'active'));
+    }
+    updateBottomPanel();
+    render();
+  });
+
+  // Zoom (scroll wheel)
+  canvas.addEventListener('wheel', e => {
+    e.preventDefault();
+    const rect = canvas.getBoundingClientRect();
+    const mx = e.clientX - rect.left;
+    const my = e.clientY - rect.top;
+    const zoomFactor = e.deltaY < 0 ? 1.1 : 1 / 1.1;
+    const newZoom = Math.max(0.3, Math.min(5, view.zoom * zoomFactor));
+    // Zoom toward mouse position
+    const ratio = newZoom / view.zoom;
+    view.panX = mx - ratio * (mx - view.panX - canvasW / 2) - canvasW / 2;
+    view.panY = my - ratio * (my - view.panY - canvasH / 2) - canvasH / 2;
+    view.zoom = newZoom;
+    computeTransform();
+    render();
+  }, { passive: false });
+
+  // Pan (middle-click or shift+drag)
+  canvas.addEventListener('mousedown', e => {
+    if (e.button === 1 || e.shiftKey) {
+      isPanning = true;
+      panStartX = e.clientX; panStartY = e.clientY;
+      panStartVX = view.panX; panStartVY = view.panY;
+      canvas.style.cursor = 'grabbing';
+      e.preventDefault();
+    }
+  });
+  window.addEventListener('mousemove', e => {
+    if (!isPanning) return;
+    view.panX = panStartVX + (e.clientX - panStartX);
+    view.panY = panStartVY + (e.clientY - panStartY);
+    computeTransform();
+    render();
+  });
+  window.addEventListener('mouseup', e => {
+    if (isPanning) {
+      isPanning = false;
+      canvas.style.cursor = 'crosshair';
+    }
+  });
+
+  // Double-click to reset zoom
+  canvas.addEventListener('dblclick', e => {
+    if (!e.shiftKey && !hitTest(e.clientX - canvas.getBoundingClientRect().left, e.clientY - canvas.getBoundingClientRect().top)) {
+      resetView();
+      computeTransform();
+      render();
+    }
+  });
+
+  // Resize
+  window.addEventListener('resize', resizeCanvas);
+}
+
+// ─── INIT ───
+function init() {
+  populateStrategySelect();
+  populateClusteringFamilySelect();
+  setupEvents();
+  // Activate default scenario after controls are populated
+  activateScenario('alpha0_k8');
+  resizeCanvas();
+}
+
+loadData();
+</script>
+</body>
+</html>

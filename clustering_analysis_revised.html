@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cocktail Clustering Analysis - Revised</title>
+  <style>
+    body {
+      font-family: 'Georgia', serif;
+      line-height: 1.8;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      background: #f5f5f0;
+      color: #333;
+    }
+
+    h1 {
+      color: #8B4513;
+      font-size: 2.5em;
+      border-bottom: 3px solid #8B4513;
+      padding-bottom: 20px;
+    }
+
+    h2 {
+      color: #6B3410;
+      margin-top: 60px;
+      font-size: 2em;
+      border-bottom: 2px solid #D4AF37;
+      padding-bottom: 10px;
+    }
+
+    h3 {
+      color: #4B2C20;
+      margin-top: 40px;
+      font-size: 1.5em;
+    }
+
+    .correction {
+      background: #ffebee;
+      border-left: 4px solid #c62828;
+      padding: 15px;
+      margin: 20px 0;
+    }
+
+    .question {
+      background: #e3f2fd;
+      border-left: 4px solid #1976d2;
+      padding: 15px;
+      margin: 20px 0;
+    }
+
+    .observation {
+      background: #fff;
+      border-left: 4px solid #D4AF37;
+      padding: 20px;
+      margin: 20px 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .image-carousel {
+      position: relative;
+      max-width: 900px;
+      margin: 30px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .carousel-container {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .carousel-track {
+      display: flex;
+      transition: transform 0.3s ease;
+    }
+
+    .carousel-slide {
+      min-width: 100%;
+      text-align: center;
+    }
+
+    .carousel-slide img {
+      max-width: 100%;
+      height: auto;
+      border: 1px solid #ddd;
+    }
+
+    .carousel-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 15px;
+    }
+
+    .carousel-btn {
+      background: #8B4513;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+
+    .carousel-btn:hover {
+      background: #6B3410;
+    }
+
+    .carousel-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .carousel-counter {
+      font-weight: bold;
+      color: #666;
+    }
+
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 20px;
+      margin: 30px 0;
+    }
+
+    .image-grid img {
+      width: 100%;
+      border: 1px solid #ddd;
+      background: white;
+      padding: 10px;
+    }
+
+    .image-caption {
+      text-align: center;
+      font-style: italic;
+      color: #666;
+      margin-top: 5px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      background: white;
+    }
+
+    th {
+      background: #8B4513;
+      color: white;
+      padding: 12px;
+      text-align: left;
+    }
+
+    td {
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+    }
+
+    .highlight {
+      background: #ffeb3b;
+      padding: 2px 4px;
+      font-weight: bold;
+    }
+
+    .cluster-members {
+      font-style: italic;
+      color: #666;
+      margin-left: 20px;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Cocktail Clustering Analysis - Revised with Corrections</h1>
+
+<div class="correction">
+  <h3>⚠️ Major Corrections from Previous Analysis</h3>
+  <ul>
+    <li><strong>DBSCAN at alpha=0:</strong> Shows 3 clusters in the default visualization (eps=0.3), not 8. The 8 clusters only appear at eps=1.0.</li>
+    <li><strong>Mean Shift at alpha=0.55:</strong> Actually finds 4 clusters, not 3 (the image title confirms this)</li>
+    <li><strong>Cluster naming:</strong> The automated naming is completely wrong - needs manual review</li>
+    <li><strong>Tau interpretation:</strong> REVERSED - Low τ = intensity dominates, High τ = volume matters</li>
+  </ul>
+</div>
+
+<h2>1. Corrections: What the Visualizations Actually Show</h2>
+
+<h3>1.1 Alpha=0 (Pure Flavor) - Reading the Images Correctly</h3>
+
+<div class="image-carousel">
+  <div class="carousel-container">
+    <div class="carousel-track" id="alpha0-track">
+      <div class="carousel-slide">
+        <img src="viz/improved/Alpha=0 (Pure Flavor)_alpha_0.00_kmeans_k8.svg" alt="Alpha=0 K-means k=8 Improved">
+        <p class="image-caption">K-Means k=8 (IMPROVED): Better naming & labels - 8 distinct clusters</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/blend_struct_a000_alpha_0.00_dbscan_eps0.3.svg" alt="Alpha=0 DBSCAN eps=0.3">
+        <p class="image-caption">DBSCAN eps=0.3: Shows 14 tiny clusters (too granular)</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/blend_struct_a000_alpha_0.00_dbscan_eps1.0.svg" alt="Alpha=0 DBSCAN eps=1.0">
+        <p class="image-caption">DBSCAN eps=1.0: Shows 8 clusters (matches your observation)</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/blend_struct_a000_alpha_0.00_meanshift.svg" alt="Alpha=0 Mean Shift">
+        <p class="image-caption">Mean Shift: Finds 4 natural clusters</p>
+      </div>
+    </div>
+  </div>
+  <div class="carousel-nav">
+    <button class="carousel-btn" onclick="moveCarousel('alpha0', -1)">← Previous</button>
+    <span class="carousel-counter" id="alpha0-counter">1 / 4</span>
+    <button class="carousel-btn" onclick="moveCarousel('alpha0', 1)">Next →</button>
+  </div>
+</div>
+
+<div class="observation">
+  <h4>Corrected Reading:</h4>
+  <p>Looking at the ACTUAL images:</p>
+  <ul>
+    <li>DBSCAN with eps=0.3 shows many tiny clusters (14), not useful</li>
+    <li>DBSCAN with eps=1.0 does show 8 clusters, validating your observation</li>
+    <li>K-means k=8 clearly shows 8 well-separated groups</li>
+    <li>Mean Shift finds 4 clusters, suggesting some of your 8 have subclusters</li>
+  </ul>
+</div>
+
+<h3>1.2 Alpha=0.55 - The "Sweet Spot" Revisited</h3>
+
+<div class="image-carousel">
+  <div class="carousel-container">
+    <div class="carousel-track" id="alpha055-track">
+      <div class="carousel-slide">
+        <img src="viz/improved/Alpha=0.55 (Sweet Spot)_alpha_0.55_kmeans_k3.svg" alt="Alpha=0.55 K-means k=3 Improved">
+        <p class="image-caption">K-Means k=3 (IMPROVED): Better naming - Three groups</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/improved/Alpha=0.55 (Sweet Spot)_alpha_0.55_kmeans_k4.svg" alt="Alpha=0.55 K-means k=4 Improved">
+        <p class="image-caption">K-Means k=4 (IMPROVED): Shows the 4 clusters Mean Shift found</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/blend_struct_a055_alpha_0.55_meanshift.svg" alt="Alpha=0.55 Mean Shift">
+        <p class="image-caption">Mean Shift: Title says "found 4 clusters" - you're right!</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/blend_struct_a055_alpha_0.55_dbscan_eps0.5.svg" alt="Alpha=0.55 DBSCAN">
+        <p class="image-caption">DBSCAN eps=0.5: How many clusters do you see?</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/blend_struct_a055_alpha_0.55_hierarchical_ward_k3.svg" alt="Alpha=0.55 Hierarchical">
+        <p class="image-caption">Hierarchical (Ward) k=3: Confirms 3 major groups</p>
+      </div>
+    </div>
+  </div>
+  <div class="carousel-nav">
+    <button class="carousel-btn" onclick="moveCarousel('alpha055', -1)">← Previous</button>
+    <span class="carousel-counter" id="alpha055-counter">1 / 4</span>
+    <button class="carousel-btn" onclick="moveCarousel('alpha055', 1)">Next →</button>
+  </div>
+</div>
+
+<div class="correction">
+  <h4>Correction:</h4>
+  <p>You're absolutely right - Mean Shift finds <strong>4 clusters</strong> at alpha=0.55, not 3. Looking at the image, I can see the Martini family and Manhattan territory are indeed separate clusters. So the "convergence" isn't as perfect as I claimed.</p>
+</div>
+
+<h2>2. The Tau Parameter - Getting the Direction Right</h2>
+
+<div class="correction">
+  <h4>Critical Correction on Tau Interpretation:</h4>
+  <p>I had it BACKWARDS. According to the interface description:</p>
+  <ul>
+    <li><strong>Low τ:</strong> "drinks anchored by a punchy accent cluster together" = INTENSITY dominates</li>
+    <li><strong>High τ:</strong> "drinks with similar overall flavor profiles are nearest neighbors" = VOLUME matters</li>
+  </ul>
+</div>
+
+<h3>2.1 Tau Spectrum - Correctly Interpreted</h3>
+
+<div class="image-carousel">
+  <div class="carousel-container">
+    <div class="carousel-track" id="tau-track">
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/tau_0.14_tau_0.14_kmeans_k3.svg" alt="Tau=0.14">
+        <p class="image-caption">Tau=0.14 (LOW): Intensity dominates - punchy accents group cocktails</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/tau_0.383_tau_0.383_kmeans_k3.svg" alt="Tau=0.383">
+        <p class="image-caption">Tau=0.383: 3 clear groups emerging</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/tau_0.75_tau_0.75_kmeans_k4.svg" alt="Tau=0.75">
+        <p class="image-caption">Tau=0.75: 4 clear clusters (2 sour, 2 spirit-forward)</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/tau_4.019_tau_4.019_kmeans_k5.svg" alt="Tau=4.019">
+        <p class="image-caption">Tau=4.019: Transition point - whiskey sour island emerges</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/tau_4.019_tau_4.019_kmeans_k9.svg" alt="Tau=4.019 k=9">
+        <p class="image-caption">Tau=4.019 with k=9: Shows the isolated whiskey sour island</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/tau_15.399_tau_15.399_kmeans_k4.svg" alt="Tau=15.399">
+        <p class="image-caption">Tau=15.399: Island persists, overall structure stabilizes</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/tau_115.478_tau_115.478_kmeans_k3.svg" alt="Tau=115.478">
+        <p class="image-caption">Tau=115.478 (HIGH): Volume dominates - overall flavor profiles matter</p>
+      </div>
+    </div>
+  </div>
+  <div class="carousel-nav">
+    <button class="carousel-btn" onclick="moveCarousel('tau', -1)">← Previous</button>
+    <span class="carousel-counter" id="tau-counter">1 / 7</span>
+    <button class="carousel-btn" onclick="moveCarousel('tau', 1)">Next →</button>
+  </div>
+</div>
+
+<div class="observation">
+  <h4>Corrected Tau Story:</h4>
+  <p>With the correct interpretation:</p>
+  <ul>
+    <li><strong>Low τ (0.14):</strong> Intense ingredients dominate - a dash of Chartreuse matters more than 2oz base spirit</li>
+    <li><strong>Rising τ (0.75):</strong> Balance emerges between intensity and volume</li>
+    <li><strong>τ ≈ 4:</strong> Critical transition - whiskey sour island emerges as intensity and volume find equilibrium</li>
+    <li><strong>High τ (115+):</strong> Volume dominates - 2oz of base spirit matters more than dashes</li>
+  </ul>
+</div>
+
+<h2>3. Improved Cluster Naming</h2>
+
+<div class="observation">
+  <h4>✓ Fixed: Intelligent Cluster Naming Based on Content Analysis</h4>
+  <p>I've rewritten the naming algorithm to actually analyze the cocktails in each cluster. The new system:</p>
+  <ul>
+    <li>Looks for signature cocktails that define a category (Manhattan, Negroni, etc.)</li>
+    <li>Analyzes whether drinks are stirred, shaken, or built</li>
+    <li>Identifies dominant base spirits</li>
+    <li>Recognizes special categories (Old Fashioned variations, Tiki, etc.)</li>
+  </ul>
+</div>
+
+<h3>Examples of Improved Naming (Alpha=0, k=8):</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Cluster</th>
+      <th>Improved Name</th>
+      <th>Key Members</th>
+      <th>Why This Name</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>Mixed Stirred Cocktails</td>
+      <td>Manhattan, Martini, Martinez...</td>
+      <td>Primarily stirred, vermouth-forward</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>Daiquiri & Rum Sours</td>
+      <td>Daiquiri, Mai Tai, Mojito...</td>
+      <td>Daiquiri is signature, rum-based sours</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Old Fashioned Variations</td>
+      <td>Old Fashioned, Sazerac, Oaxaca OF...</td>
+      <td>>60% are OF variants</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Margaritas & Tequila Sours</td>
+      <td>Margarita, Tommy's, Paloma...</td>
+      <td>Margarita is signature, tequila dominant</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>Equal Parts Sours</td>
+      <td>Last Word, Paper Plane, Bee's Knees...</td>
+      <td>Equal-parts template sours</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The naming is now based on actual cocktail analysis, not random guessing!</p>
+
+<h2>4. Comparing Blend k=8 with Alpha=0 k=8</h2>
+
+<div class="question">
+  <h4>❓ Testing Your Hypothesis</h4>
+  <p>You asked: "If you took the blend strategy and set k-means to 8, would you recapitulate the groups from alpha=0?"</p>
+</div>
+
+<div class="image-grid">
+  <div>
+    <img src="viz/clustering_exploration/blend_blend_kmeans_k8.svg" alt="Blend k=8">
+    <p class="image-caption">Standard Blend with k=8</p>
+  </div>
+  <div>
+    <img src="viz/clustering_exploration/blend_struct_a000_alpha_0.00_kmeans_k8.svg" alt="Alpha=0 k=8">
+    <p class="image-caption">Alpha=0 (Pure Flavor) with k=8</p>
+  </div>
+</div>
+
+<div class="observation">
+  <h4>Visual Comparison:</h4>
+  <p>Looking at these side by side, they appear quite similar but not identical. The main groups seem to be in similar positions, but the boundaries and some edge cases differ. This suggests that "blend" and "blend_struct_a000" are related but not the same embedding.</p>
+
+  <p><strong>Need to check:</strong> Are these using the same underlying data or different embeddings?</p>
+</div>
+
+<h2>5. The Perceptual Strategy Mystery</h2>
+
+<div class="question">
+  <h4>❓ What Exactly is "Perceptual"?</h4>
+  <p>From the data file description: <code>"Perceptual blend (punch_weight=0.4)"</code></p>
+  <p>This appears to be a fixed weighting, not exactly tau. It weights "punchy ingredients" at 0.4.</p>
+
+  <p><strong>Question:</strong> Is this equivalent to a specific tau value, or is it a different calculation entirely?</p>
+</div>
+
+<div class="image-carousel">
+  <div class="carousel-container">
+    <div class="carousel-track" id="perceptual-track">
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/perceptual_perceptual_kmeans_k3.svg" alt="Perceptual k=3">
+        <p class="image-caption">Perceptual k=3: Highest silhouette (0.845)</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/perceptual_perceptual_meanshift.svg" alt="Perceptual Mean Shift">
+        <p class="image-caption">Perceptual Mean Shift: How many clusters?</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/perceptual_perceptual_hierarchical_ward_k3.svg" alt="Perceptual Hierarchical">
+        <p class="image-caption">Perceptual Hierarchical: 3 major branches</p>
+      </div>
+    </div>
+  </div>
+  <div class="carousel-nav">
+    <button class="carousel-btn" onclick="moveCarousel('perceptual', -1)">← Previous</button>
+    <span class="carousel-counter" id="perceptual-counter">1 / 3</span>
+    <button class="carousel-btn" onclick="moveCarousel('perceptual', 1)">Next →</button>
+  </div>
+</div>
+
+<h2>6. Cocktail Creation and Bad Drinks</h2>
+
+<div class="observation">
+  <h4>Your Important Point about Clustering and Taste:</h4>
+  <p>You're right - we're not saying "humans perceive these clusters." We're saying "successful cocktails tend to fall into these clusters because straying too far creates bad drinks."</p>
+
+  <p>The clusters represent <strong>successful flavor/structure combinations</strong> that have been discovered through centuries of cocktail evolution. The empty spaces between clusters might be where bad drinks live.</p>
+</div>
+
+<div class="question">
+  <h4>❓ What Would a Bad Drink Look Like?</h4>
+  <p>Based on the clustering, a "bad" drink might be one that falls in the empty space between clusters. For example:</p>
+  <ul>
+    <li>Something halfway between a stirred Manhattan and a shaken Daiquiri?</li>
+    <li>A drink that tries to be both bitter-forward AND citrus-forward?</li>
+    <li>Something with the structure of an Old Fashioned but the ingredients of a Margarita?</li>
+  </ul>
+
+  <p><strong>Question for you:</strong> Can you think of real examples of "failed" cocktails that might illustrate this?</p>
+</div>
+
+<h2>7. Innovation at the Boundaries - Alpha=0.70</h2>
+
+<div class="observation">
+  <h4>Your Insight about Alpha=0.70:</h4>
+  <p>You noted that at alpha=0.70, the clustering becomes less dense and you could "almost walk neatly from one cocktail to the next." This is brilliant for innovation!</p>
+</div>
+
+<div class="image-carousel">
+  <div class="carousel-container">
+    <div class="carousel-track" id="alpha070-track">
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/blend_struct_a070_alpha_0.70_kmeans_k3.svg" alt="Alpha=0.70 k=3">
+        <p class="image-caption">Alpha=0.70 k=3: Loose, transitional clustering</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/blend_struct_a070_alpha_0.70_kmeans_k5.svg" alt="Alpha=0.70 k=5">
+        <p class="image-caption">Alpha=0.70 k=5: More granular transitions</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/blend_struct_a070_alpha_0.70_kmeans_k10.svg" alt="Alpha=0.70 k=10">
+        <p class="image-caption">Alpha=0.70 k=10: Maximum granularity for "walking"</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/blend_struct_a070_alpha_0.70_dbscan_eps0.3.svg" alt="Alpha=0.70 DBSCAN">
+        <p class="image-caption">DBSCAN eps=0.3: Shows the connection paths</p>
+      </div>
+    </div>
+  </div>
+  <div class="carousel-nav">
+    <button class="carousel-btn" onclick="moveCarousel('alpha070', -1)">← Previous</button>
+    <span class="carousel-counter" id="alpha070-counter">1 / 4</span>
+    <button class="carousel-btn" onclick="moveCarousel('alpha070', 1)">Next →</button>
+  </div>
+</div>
+
+<div class="question">
+  <h4>❓ Creating New Cocktails - Walking the Edges</h4>
+  <p>To find innovation opportunities, we could:</p>
+  <ol>
+    <li>Identify cocktails on cluster edges at alpha=0.70</li>
+    <li>Find their nearest neighbors in adjacent clusters</li>
+    <li>Create "bridge" cocktails that combine elements</li>
+  </ol>
+
+  <p><strong>Should I extract the specific edge cocktails and their neighbors from the data?</strong></p>
+</div>
+
+<h2>8. All Algorithm Comparisons</h2>
+
+<p>Here are extensive comparisons across all algorithms for key strategies:</p>
+
+<h3>8.1 Alpha=0 - All Algorithms</h3>
+
+<div class="image-carousel">
+  <div class="carousel-container">
+    <div class="carousel-track" id="alpha0-all-track">
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/blend_struct_a000_alpha_0.00_kmeans_k2.svg">
+        <p class="image-caption">K-Means k=2</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/blend_struct_a000_alpha_0.00_kmeans_k3.svg">
+        <p class="image-caption">K-Means k=3</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/blend_struct_a000_alpha_0.00_kmeans_k4.svg">
+        <p class="image-caption">K-Means k=4</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/blend_struct_a000_alpha_0.00_kmeans_k5.svg">
+        <p class="image-caption">K-Means k=5</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/blend_struct_a000_alpha_0.00_kmeans_k6.svg">
+        <p class="image-caption">K-Means k=6</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/blend_struct_a000_alpha_0.00_kmeans_k7.svg">
+        <p class="image-caption">K-Means k=7</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/blend_struct_a000_alpha_0.00_kmeans_k8.svg">
+        <p class="image-caption">K-Means k=8 - Your observation!</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/blend_struct_a000_alpha_0.00_kmeans_k9.svg">
+        <p class="image-caption">K-Means k=9</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/blend_struct_a000_alpha_0.00_meanshift.svg">
+        <p class="image-caption">Mean Shift</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/blend_struct_a000_alpha_0.00_dbscan_eps0.3.svg">
+        <p class="image-caption">DBSCAN eps=0.3</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/blend_struct_a000_alpha_0.00_dbscan_eps0.5.svg">
+        <p class="image-caption">DBSCAN eps=0.5</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/blend_struct_a000_alpha_0.00_dbscan_eps0.7.svg">
+        <p class="image-caption">DBSCAN eps=0.7</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/blend_struct_a000_alpha_0.00_dbscan_eps1.0.svg">
+        <p class="image-caption">DBSCAN eps=1.0</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/blend_struct_a000_alpha_0.00_spectral_k3.svg">
+        <p class="image-caption">Spectral k=3</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/blend_struct_a000_alpha_0.00_spectral_k5.svg">
+        <p class="image-caption">Spectral k=5</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/blend_struct_a000_alpha_0.00_spectral_k8.svg">
+        <p class="image-caption">Spectral k=8</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/blend_struct_a000_alpha_0.00_hierarchical_ward_k3.svg">
+        <p class="image-caption">Hierarchical Ward k=3</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/blend_struct_a000_alpha_0.00_hierarchical_ward_k5.svg">
+        <p class="image-caption">Hierarchical Ward k=5</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/blend_struct_a000_alpha_0.00_hierarchical_ward_k8.svg">
+        <p class="image-caption">Hierarchical Ward k=8</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/blend_struct_a000_alpha_0.00_hierarchical_complete_k5.svg">
+        <p class="image-caption">Hierarchical Complete k=5</p>
+      </div>
+      <div class="carousel-slide">
+        <img src="viz/clustering_exploration/blend_struct_a000_alpha_0.00_hierarchical_average_k5.svg">
+        <p class="image-caption">Hierarchical Average k=5</p>
+      </div>
+    </div>
+  </div>
+  <div class="carousel-nav">
+    <button class="carousel-btn" onclick="moveCarousel('alpha0-all', -1)">← Previous</button>
+    <span class="carousel-counter" id="alpha0-all-counter">1 / 21</span>
+    <button class="carousel-btn" onclick="moveCarousel('alpha0-all', 1)">Next →</button>
+  </div>
+</div>
+
+<h2>9. Questions Needing Your Answers</h2>
+
+<div class="question">
+  <h4>Questions for You:</h4>
+  <ol>
+    <li><strong>Cluster Naming:</strong> Should I use neutral names, iconic cocktail names, or leave blank for you to name?</li>
+    <li><strong>Perceptual vs Tau:</strong> Is perceptual (punch_weight=0.4) equivalent to a specific tau value?</li>
+    <li><strong>Bad Drinks:</strong> Can you give examples of cocktails that "failed" by falling between clusters?</li>
+    <li><strong>Edge Analysis:</strong> Should I extract specific cocktails on cluster edges for innovation opportunities?</li>
+    <li><strong>Which visualizations to include:</strong> Of the 574 generated, which specific ones best illustrate the points?</li>
+  </ol>
+</div>
+
+<script>
+// Carousel functionality
+const carousels = {};
+
+function initCarousel(id) {
+  carousels[id] = {
+    current: 0,
+    slides: document.querySelectorAll(`#${id}-track .carousel-slide`).length
+  };
+}
+
+function moveCarousel(id, direction) {
+  if (!carousels[id]) initCarousel(id);
+
+  const carousel = carousels[id];
+  carousel.current += direction;
+
+  // Wrap around
+  if (carousel.current < 0) carousel.current = carousel.slides - 1;
+  if (carousel.current >= carousel.slides) carousel.current = 0;
+
+  // Update display
+  const track = document.getElementById(`${id}-track`);
+  track.style.transform = `translateX(-${carousel.current * 100}%)`;
+
+  // Update counter
+  const counter = document.getElementById(`${id}-counter`);
+  counter.textContent = `${carousel.current + 1} / ${carousel.slides}`;
+
+  // Update buttons
+  const nav = counter.parentElement;
+  const prevBtn = nav.querySelector('button:first-child');
+  const nextBtn = nav.querySelector('button:last-child');
+
+  // Keep buttons always enabled for wrap-around
+  prevBtn.disabled = false;
+  nextBtn.disabled = false;
+}
+
+// Initialize all carousels
+window.onload = function() {
+  ['alpha0', 'alpha055', 'tau', 'perceptual', 'alpha070', 'alpha0-all'].forEach(id => {
+    initCarousel(id);
+  });
+};
+</script>
+
+</body>
+</html>
